@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 // ---------- Catégories & Compétences ----------
 
