@@ -967,6 +967,77 @@ const skillExamples = {
     ],
   },
 };
+
+function EasterEggTerminal({ onClose }) {
+  const lines = [
+    "$ ping 127.0.0.1",
+    "Réponse de 127.0.0.1 : temps=0ms  statut=✅ Profil détecté",
+    "Réponse de 127.0.0.1 : temps=1ms  statut=✅ Curiosité confirmée",
+    "Réponse de 127.0.0.1 : temps=2ms  statut=✅ Esprit technique validé",
+    "",
+    "Résumé : on devrait probablement discuter. 😉",
+  ];
+
+  const [visibleLines, setVisibleLines] = useState([]);
+
+  useEffect(() => {
+    let i = 0;
+    const id = setInterval(() => {
+      setVisibleLines((prev) => {
+        if (i >= lines.length) return prev;
+        return [...prev, lines[i++]];
+      });
+      if (i >= lines.length) {
+        clearInterval(id);
+      }
+    }, 420);
+
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div className="fixed bottom-6 left-6 z-50 w-[320px] rounded-xl border border-emerald-400/60 bg-slate-950/95 shadow-2xl shadow-emerald-500/30 text-[11px] font-mono text-emerald-100">
+      <div className="flex items-center justify-between border-b border-emerald-500/40 px-3 py-2">
+        <span className="text-[10px] uppercase tracking-[0.18em] text-emerald-300">
+          ping 127.0.0.1
+        </span>
+        <button
+          type="button"
+          onClick={onClose}
+          className="rounded-full px-2 py-[2px] text-[10px] text-emerald-200 hover:bg-emerald-500/10"
+        >
+          fermer
+        </button>
+      </div>
+      <div className="px-3 py-2 space-y-[2px]">
+        {visibleLines.map((line, i) => (
+          <p key={i}>{line}</p>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function EasterEggToast({ onHide }) {
+  useEffect(() => {
+    const id = setTimeout(onHide, 3800);
+    return () => clearTimeout(id);
+  }, [onHide]);
+
+  return (
+    <div className="fixed top-20 left-1/2 z-50 -translate-x-1/2">
+      <div className="rounded-full border border-emerald-500/60 bg-slate-950/95 px-4 py-2 text-[11px] text-emerald-100 shadow-lg shadow-emerald-500/40 flex items-center gap-2">
+        <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+        <span>
+          <span className="font-semibold">Mode explorateur débloqué.</span>{" "}
+          Un petit terminal vous attend en bas à gauche. 👀
+        </span>
+      </div>
+    </div>
+  );
+}
+
+
 // ---------- Hook pour animer les chiffres ----------
 
 function useCountUp(target, duration = 800) {
@@ -1032,16 +1103,22 @@ export default function Home() {
 
   // États
   const [recruiterMode, setRecruiterMode] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState("languages");
-  const [selectedSkillKey, setSelectedSkillKey] = useState("python");
-  const [photoClicks, setPhotoClicks] = useState(0);
-  const [showEasterEgg, setShowEasterEgg] = useState(false);
-  const [highlightedExp, setHighlightedExp] = useState(null);
-  const [activeSection, setActiveSection] = useState("about");
-  const [showScrollTop, setShowScrollTop] = useState(false);
-  const [activeHeroTab, setActiveHeroTab] = useState("thales");
-  const [selectedProjectKey, setSelectedProjectKey] = useState("thales");
-  const [projectFilter, setProjectFilter] = useState("all");
+const [selectedCategory, setSelectedCategory] = useState("languages");
+const [selectedSkillKey, setSelectedSkillKey] = useState("python");
+
+const [photoClicks, setPhotoClicks] = useState(0);
+const [showEasterEgg, setShowEasterEgg] = useState(false); // egg débloqué ?
+const [easterEggTerminalOpen, setEasterEggTerminalOpen] = useState(false); // terminal visible ?
+const [devMode, setDevMode] = useState(false); // mode développeur
+const [showEggToast, setShowEggToast] = useState(false); // petit toast
+
+const [highlightedExp, setHighlightedExp] = useState(null);
+const [activeSection, setActiveSection] = useState("about");
+const [showScrollTop, setShowScrollTop] = useState(false);
+const [activeHeroTab, setActiveHeroTab] = useState("thales");
+const [selectedProjectKey, setSelectedProjectKey] = useState("thales");
+const [projectFilter, setProjectFilter] = useState("all");
+
   
 
   const navRef = useRef(null);
@@ -1128,6 +1205,24 @@ export default function Home() {
     handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+    // Restaure l'easter egg si déjà débloqué
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    try {
+      const unlocked = window.localStorage.getItem("egg_unlocked");
+      if (unlocked === "1") {
+        setShowEasterEgg(true);
+      }
+    } catch {
+      // pas grave si le localStorage n'est pas dispo
+    }
+  }, []);
+
+
+  
+
 
   // Scroll vers une expérience
   const scrollToExperience = (expKey) => {
@@ -1242,14 +1337,27 @@ export default function Home() {
   };
 
   const handlePhotoClick = () => {
-    setPhotoClicks((prev) => {
-      const next = prev + 1;
-      if (!showEasterEgg && next >= 3) {
-        setShowEasterEgg(true);
+  setPhotoClicks((prev) => {
+    const next = prev + 1;
+
+    if (!showEasterEgg && next >= 3) {
+      setShowEasterEgg(true);
+      setEasterEggTerminalOpen(true);
+      setShowEggToast(true);
+
+      try {
+        if (typeof window !== "undefined") {
+          window.localStorage.setItem("egg_unlocked", "1");
+        }
+      } catch {
+        // ignore
       }
-      return next;
-    });
-  };
+    }
+
+    return next;
+  });
+};
+
 
   // Mode recruteur : seulement 2 expériences
   const visibleExperiences = recruiterMode ? experiences.slice(0, 2) : experiences;
@@ -1462,6 +1570,28 @@ export default function Home() {
             </div>
 
             <div className="h-5 w-px bg-slate-700/70" />
+            {showEasterEgg && (
+  <>
+    <button
+      type="button"
+      onClick={() => setDevMode((m) => !m)}
+      className={`relative flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] border transition-all cursor-pointer ${
+        devMode
+          ? "border-sky-400/70 bg-sky-500/10 text-sky-100 shadow-sm shadow-sky-500/40"
+          : "border-slate-700 bg-slate-900/80 text-slate-300 hover:border-sky-400 hover:text-sky-200"
+      }`}
+    >
+      <span className="hidden lg:inline text-[10px] tracking-[0.16em] uppercase text-slate-400">
+        Mode
+      </span>
+      <span className={devMode ? "font-semibold" : ""}>Développeur</span>
+      <span className="text-[9px] opacity-80 font-mono">beta</span>
+    </button>
+
+    <div className="h-5 w-px bg-slate-700/70" />
+  </>
+)}
+
 
             <button
               type="button"
@@ -1744,12 +1874,26 @@ export default function Home() {
                 )}
 
                 {showEasterEgg && (
-                  <p className="mt-3 text-[10px] text-emerald-300">
-                    Vous avez trouvé l&apos;easter egg 🎉 Pendant un entretien,
-                    dites-moi simplement :{" "}
-                    <span className="font-mono">ping 127.0.0.1</span>.
-                  </p>
-                )}
+  <div className="mt-3 rounded-xl border border-emerald-500/50 bg-emerald-500/5 px-3 py-2 text-[10px] text-emerald-200 flex flex-col gap-1">
+    <div className="flex items-center gap-2">
+      <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
+      <span className="font-semibold">
+        Vous avez trouvé l&apos;easter egg 🎉
+      </span>
+    </div>
+    <p>
+      Pendant un entretien, glissez simplement :{" "}
+      <span className="font-mono text-[10px] bg-slate-900/80 px-1.5 py-[1px] rounded">
+        ping 127.0.0.1
+      </span>{" "}
+      et on saura qu&apos;on parle le même langage.
+    </p>
+    <p className="text-[9px] text-emerald-300/80">
+      Tip : un mini terminal en bas à gauche vous en dira un peu plus.
+    </p>
+  </div>
+)}
+
               </div>
 
               {/* Photo flottante */}
@@ -3246,6 +3390,14 @@ export default function Home() {
           <span className="text-lg leading-none">↑</span>
         </div>
       </button>
+      {showEasterEgg && easterEggTerminalOpen && (
+  <EasterEggTerminal onClose={() => setEasterEggTerminalOpen(false)} />
+)}
+
+{showEasterEgg && showEggToast && (
+  <EasterEggToast onHide={() => setShowEggToast(false)} />
+)}
+
     </main>
   );
 }
