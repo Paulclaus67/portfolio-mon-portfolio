@@ -1037,6 +1037,366 @@ function EasterEggToast({ onHide }) {
   );
 }
 
+// ---------- Konami Game Overlay ----------
+
+function KonamiGameOverlay() {
+  const [active, setActive] = useState(false);
+  const [mode, setMode] = useState("idle"); // idle | running | won | lost
+  const [playerLane, setPlayerLane] = useState(1); // 0 / 1 / 2
+  const [items, setItems] = useState([]); // { id, lane, y, type }
+  const [reliability, setReliability] = useState(100);
+  const [score, setScore] = useState(0);
+  const [timeLeft, setTimeLeft] = useState(25); // secondes
+
+  const bufferRef = useRef([]);
+  const animRef = useRef(null);
+
+  const lanes = [20, 50, 80]; // positions (en %) pour gauche / centre / droite
+
+  const resetGame = () => {
+    setPlayerLane(1);
+    setItems([]);
+    setReliability(100);
+    setScore(0);
+    setTimeLeft(25);
+    setMode("running");
+  };
+
+  const closeGame = () => {
+    setActive(false);
+    setMode("idle");
+    setItems([]);
+  };
+
+  // Détection du Konami code + contrôles clavier
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    const konami = [
+      "ArrowUp",
+      "ArrowUp",
+      "ArrowDown",
+      "ArrowDown",
+      "ArrowLeft",
+      "ArrowRight",
+      "ArrowLeft",
+      "ArrowRight",
+      "b",
+      "a",
+    ];
+
+    const handleKeyDown = (e) => {
+      const key = e.key;
+
+      // Déplacement dans le jeu
+      if (active && mode === "running") {
+        if (key === "ArrowLeft" || key === "a" || key === "A") {
+          setPlayerLane((prev) => Math.max(0, prev - 1));
+        } else if (key === "ArrowRight" || key === "d" || key === "D") {
+          setPlayerLane((prev) => Math.min(2, prev + 1));
+        } else if (key === "Escape") {
+          closeGame();
+          return;
+        }
+      }
+
+      // Buffer pour le Konami
+      bufferRef.current = [...bufferRef.current, key].slice(-konami.length);
+      const ok =
+        bufferRef.current.length === konami.length &&
+        konami.every(
+          (k, i) =>
+            k.toLowerCase() === (bufferRef.current[i] || "").toLowerCase()
+        );
+
+      // Activation du jeu
+      if (!active && ok) {
+        setActive(true);
+        resetGame();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [active, mode]);
+
+  // Boucle d'animation du runner
+  useEffect(() => {
+    if (!active || mode !== "running") return;
+
+    let lastTime;
+    let spawnTimer = 0;
+    const spawnEvery = 0.8; // fréquence de spawn des éléments
+
+    const loop = (timestamp) => {
+      if (!lastTime) lastTime = timestamp;
+      const delta = (timestamp - lastTime) / 1000;
+      lastTime = timestamp;
+
+      // Spawn de nouveaux items (compétences / obstacles)
+      spawnTimer += delta;
+      if (spawnTimer >= spawnEvery) {
+        spawnTimer = 0;
+        setItems((prev) => {
+          const lane = Math.floor(Math.random() * 3);
+          const isSkill = Math.random() < 0.55;
+          const newItem = {
+            id: Math.random().toString(36).slice(2),
+            lane,
+            y: -10,
+            type: isSkill ? "skill" : "obstacle",
+          };
+          return [...prev, newItem];
+        });
+      }
+
+      // Mouvement + collisions
+      setItems((prev) => {
+        const updated = [];
+        let localReliability = reliability;
+        let localScore = score;
+
+        for (const item of prev) {
+          const newY = item.y + delta * 45; // vitesse de descente
+          if (newY > 120) continue; // en dehors de l'écran
+
+          const collided =
+            newY > 70 && newY < 88 && item.lane === playerLane;
+
+          if (collided) {
+            if (item.type === "skill") {
+              localScore += 10;
+              localReliability = Math.min(100, localReliability + 5);
+            } else {
+              localReliability = Math.max(0, localReliability - 20);
+            }
+            continue; // on ne garde pas l'item
+          }
+
+          updated.push({ ...item, y: newY });
+        }
+
+        if (localReliability !== reliability) {
+          setReliability(localReliability);
+        }
+        if (localScore !== score) {
+          setScore(localScore);
+        }
+        if (localReliability <= 0 && mode === "running") {
+          setMode("lost");
+        }
+
+        return updated;
+      });
+
+      // Timer
+      setTimeLeft((prev) => {
+        const next = Math.max(prev - delta, 0);
+        if (next === 0 && mode === "running") {
+          setMode("won");
+        }
+        return next;
+      });
+
+      if (active && mode === "running") {
+        animRef.current = requestAnimationFrame(loop);
+      }
+    };
+
+    animRef.current = requestAnimationFrame(loop);
+
+    return () => {
+      if (animRef.current) cancelAnimationFrame(animRef.current);
+    };
+  }, [active, mode, playerLane, reliability, score]);
+
+  if (!active) return null;
+
+  const roundedReliability = Math.round(reliability);
+  const roundedTime = Math.ceil(timeLeft);
+
+  const modeLabel =
+    mode === "running"
+      ? "Mission en cours : atteignez le serveur sans perdre votre paquet."
+      : mode === "won"
+      ? "Mission réussie : serveur de production atteint ✅"
+      : "Packet dropped : trop d'incidents sur le chemin ❌";
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.28),_transparent_60%),radial-gradient(circle_at_bottom,_rgba(129,140,248,0.25),_transparent_55%)] pointer-events-none" />
+
+      <div className="relative w-full max-w-xl aspect-[9/16] rounded-3xl border border-cyan-500/50 bg-slate-950/95 shadow-[0_0_50px_rgba(8,47,73,0.9)] overflow-hidden">
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3 border-b border-slate-800 bg-slate-950/80">
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.22em] text-cyan-400">
+              Packet Runner
+            </p>
+            <p className="text-xs text-slate-300">
+              Network Mission · Konami mode
+            </p>
+          </div>
+          <button
+            type="button"
+            onClick={closeGame}
+            className="rounded-full border border-slate-600 bg-slate-900/80 px-3 py-1 text-[11px] text-slate-200 hover:border-cyan-400 hover:text-cyan-200 transition"
+          >
+            Fermer
+          </button>
+        </div>
+
+        {/* HUD */}
+        <div className="px-4 pt-3 flex items-center justify-between text-[11px] text-slate-300">
+          <div className="flex flex-col gap-1">
+            <span className="text-[10px] uppercase tracking-[0.18em] text-slate-400">
+              Fiabilité
+            </span>
+            <div className="w-40 h-2 rounded-full bg-slate-900 ring-1 ring-slate-700 overflow-hidden">
+              <div
+                className="h-full rounded-full bg-gradient-to-r from-emerald-400 via-cyan-400 to-sky-400 transition-all"
+                style={{ width: `${roundedReliability}%` }}
+              />
+            </div>
+            <span className="text-[10px] text-slate-400">
+              {roundedReliability}% – stabilité du trajet
+            </span>
+          </div>
+
+          <div className="flex flex-col items-end gap-1">
+            <span className="text-[10px] uppercase tracking-[0.18em] text-slate-400">
+              Score
+            </span>
+            <span className="text-lg font-semibold text-slate-50">
+              {score}
+              <span className="ml-1 text-[10px] text-slate-400">pts</span>
+            </span>
+            <span className="text-[10px] text-slate-400">
+              Temps restant :{" "}
+              <span className="text-cyan-300">{roundedTime}s</span>
+            </span>
+          </div>
+        </div>
+
+        {/* Zone de jeu */}
+        <div className="relative mt-3 mx-3 h-[72%] rounded-2xl border border-slate-800 bg-gradient-to-b from-slate-950 via-slate-950 to-slate-950 overflow-hidden">
+          {/* Grille réseau animée */}
+          <div className="absolute inset-0 opacity-40">
+            <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.22),_transparent_55%)]" />
+            <div className="absolute inset-0 bg-[repeating-linear-gradient(to_bottom,_rgba(15,23,42,0.2)_0px,_rgba(15,23,42,0.2)_1px,_rgba(15,23,42,0)_20px)] animate-[scroll-grid_12s_linear_infinite]" />
+          </div>
+
+          {/* Lignes de "voies" */}
+          <div className="absolute inset-0 flex justify-between px-6">
+            {lanes.map((_, index) => (
+              <div
+                key={index}
+                className="h-full w-px bg-slate-700/40 border-l border-slate-900/80"
+              />
+            ))}
+          </div>
+
+          {/* Joueur (paquet) */}
+          <div
+            className="absolute bottom-6 h-10 w-10 rounded-2xl border border-cyan-400/80 bg-slate-950 shadow-[0_0_20px_rgba(34,211,238,0.8)] flex items-center justify-center text-[10px] font-semibold text-cyan-300 transition-transform duration-150"
+            style={{
+              left: `${lanes[playerLane]}%`,
+              transform: "translateX(-50%)",
+            }}
+          >
+            <span className="block text-[9px] uppercase tracking-[0.18em]">
+              pkt
+            </span>
+          </div>
+
+          {/* Items (compétences / obstacles) */}
+          {items.map((item) => {
+            const isSkill = item.type === "skill";
+            const label = isSkill ? "Skill +" : "Err";
+
+            const bgClass = isSkill
+              ? "bg-emerald-500/20 border-emerald-400/70 text-emerald-200 shadow-[0_0_16px_rgba(16,185,129,0.8)]"
+              : "bg-red-500/10 border-red-400/70 text-red-200 shadow-[0_0_14px_rgba(248,113,113,0.8)]";
+
+            return (
+              <div
+                key={item.id}
+                className={`absolute h-8 px-3 rounded-2xl border text-[10px] flex items-center justify-center font-semibold ${bgClass}`}
+                style={{
+                  left: `${lanes[item.lane]}%`,
+                  transform: "translateX(-50%)",
+                  top: `${item.y}%`,
+                }}
+              >
+                {isSkill ? (
+                  <span className="flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-emerald-300" />
+                    <span>Py / JS / Net / IA</span>
+                  </span>
+                ) : (
+                  <span className="flex items-center gap-1">
+                    <span className="h-1.5 w-1.5 rounded-full bg-red-300" />
+                    <span>Bug / 500 / Timeout</span>
+                  </span>
+                )}
+              </div>
+            );
+          })}
+
+          {/* Légende en bas */}
+          <div className="absolute inset-x-0 bottom-1 px-3 flex items-center justify-between text-[10px] text-slate-400 bg-gradient-to-t from-slate-950/95 via-slate-950/60 to-transparent pt-4 pb-1">
+            <span>
+              ← → / A D : déplacer le paquet · Évitez le rouge, prenez le vert.
+            </span>
+            <span className="text-cyan-300/80">Esc : fermer</span>
+          </div>
+        </div>
+
+        {/* Texte d'ambiance */}
+        <div className="px-4 py-3 border-t border-slate-800 bg-slate-950/90">
+          <p className="text-[11px] text-slate-300">{modeLabel}</p>
+          {mode !== "running" && (
+            <div className="mt-2 flex items-center justify-between text-[10px] text-slate-400">
+              <p>
+                Si vous êtes arrivé jusque là, on devrait probablement discuter
+                d&apos;un projet ensemble.
+              </p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={resetGame}
+                  className="rounded-full border border-cyan-500/70 bg-cyan-500/10 px-3 py-1 text-[10px] text-cyan-100 hover:bg-cyan-500/20 transition"
+                >
+                  Rejouer
+                </button>
+                <button
+                  type="button"
+                  onClick={closeGame}
+                  className="rounded-full border border-slate-600 bg-slate-900/80 px-3 py-1 text-[10px] text-slate-200 hover:border-cyan-400 hover:text-cyan-200 transition"
+                >
+                  Fermer
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+
+      <style jsx global>{`
+        @keyframes scroll-grid {
+          0% {
+            transform: translateY(0);
+          }
+          100% {
+            transform: translateY(40px);
+          }
+        }
+      `}</style>
+    </div>
+  );
+}
+
+
 
 // ---------- Hook pour animer les chiffres ----------
 
@@ -3377,6 +3737,17 @@ const [projectFilter, setProjectFilter] = useState("all");
 {showEasterEgg && showEggToast && (
   <EasterEggToast onHide={() => setShowEggToast(false)} />
 )}
+      {showEasterEgg && easterEggTerminalOpen && (
+        <EasterEggTerminal onClose={() => setEasterEggTerminalOpen(false)} />
+      )}
+
+      {showEasterEgg && showEggToast && (
+        <EasterEggToast onHide={() => setShowEggToast(false)} />
+      )}
+
+      {/* Konami game */}
+      <KonamiGameOverlay />
+
 
     </main>
   );
