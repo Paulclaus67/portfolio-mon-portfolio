@@ -1548,9 +1548,9 @@ export default function Home() {
               <h1 className="mt-6 text-[2.6rem] leading-tight font-semibold tracking-tight sm:text-[3rem] xl:text-[3.5rem]">
               Je conçois des{" "}
               <span className="bg-gradient-to-r from-cyan-400 via-sky-500 to-purple-500 bg-clip-text text-transparent">
-                interfaces propres
+                interfaces propres,
               </span>{" "}
-              et des{" "}
+              des{" "}
               <span className="bg-gradient-to-r from-emerald-400 to-sky-400 bg-clip-text text-transparent">
                 outils web utiles
               </span>{" "}
