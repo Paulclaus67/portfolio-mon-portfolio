@@ -1570,27 +1570,7 @@ const [projectFilter, setProjectFilter] = useState("all");
             </div>
 
             <div className="h-5 w-px bg-slate-700/70" />
-            {showEasterEgg && (
-  <>
-    <button
-      type="button"
-      onClick={() => setDevMode((m) => !m)}
-      className={`relative flex items-center gap-1 rounded-full px-3 py-1.5 text-[11px] border transition-all cursor-pointer ${
-        devMode
-          ? "border-sky-400/70 bg-sky-500/10 text-sky-100 shadow-sm shadow-sky-500/40"
-          : "border-slate-700 bg-slate-900/80 text-slate-300 hover:border-sky-400 hover:text-sky-200"
-      }`}
-    >
-      <span className="hidden lg:inline text-[10px] tracking-[0.16em] uppercase text-slate-400">
-        Mode
-      </span>
-      <span className={devMode ? "font-semibold" : ""}>Développeur</span>
-      <span className="text-[9px] opacity-80 font-mono">beta</span>
-    </button>
-
-    <div className="h-5 w-px bg-slate-700/70" />
-  </>
-)}
+            
 
 
             <button
