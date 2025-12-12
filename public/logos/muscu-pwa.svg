@@ -1,0 +1,27 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="200" height="200" fill="#0f172a" rx="20"/>
+  
+  <!-- Dumbbell icon -->
+  <g transform="translate(50, 60)">
+    <!-- Left weight -->
+    <rect x="0" y="25" width="20" height="40" fill="#3b82f6" rx="3"/>
+    <rect x="5" y="20" width="10" height="50" fill="#1e40af"/>
+    
+    <!-- Bar -->
+    <rect x="20" y="35" width="60" height="20" fill="#64748b"/>
+    
+    <!-- Right weight -->
+    <rect x="80" y="25" width="20" height="40" fill="#3b82f6" rx="3"/>
+    <rect x="75" y="20" width="10" height="50" fill="#1e40af"/>
+  </g>
+  
+  <!-- PWA indicator -->
+  <g transform="translate(130, 20)">
+    <circle cx="15" cy="15" r="15" fill="#10b981"/>
+    <text x="15" y="22" font-size="20" font-weight="bold" fill="white" text-anchor="middle">✓</text>
+  </g>
+  
+  <!-- Text -->
+  <text x="100" y="175" font-size="14" font-weight="bold" fill="#e2e8f0" text-anchor="middle">Muscu PWA</text>
+</svg>

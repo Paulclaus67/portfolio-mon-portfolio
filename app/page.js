@@ -84,18 +84,23 @@ const skillDetails = {
 
   csharp: {
     title: "C# .NET",
-    level: "projet",
-    desc: "Notions de C# et de programmation orientée objet pour des applications simples.",
+    level: "prod",
+    desc: "Développement d'une application de gestion d'incidents (IncidentFlow) : API REST, modèle de données, interface web, tests unitaires.",
     context:
-      "Abordé lors de la formation pour des projets académiques, prêt à être approfondi selon les besoins du poste.",
-    tags: [{ type: "context", label: "Projets d'école" }],
+      "Projet personnel depuis 2023 : application de gestion d'incidents inspirée du fonctionnement d'une DSI, avec ASP.NET Core, architecture en couches, REST, tests unitaires et CI GitHub Actions.",
+    tags: [
+      { type: "context", label: "Projet personnel IncidentFlow" },
+      { type: "context", label: "API REST ASP.NET Core" },
+      { type: "context", label: "Tests unitaires" },
+      { type: "context", label: "GitHub Actions" },
+    ],
     metrics: {
-      confidence: 60,
-      experience: 45,
-      recentUse: 35,
+      confidence: 75,
+      experience: 70,
+      recentUse: 80,
     },
     employerValue:
-      "Si votre environnement est orienté .NET, je pars déjà avec des bases en C# et en POO, ce qui me permet de m’intégrer plus vite dans une équipe existante et de reprendre du code avec un temps d’adaptation réduit.",
+      "Si votre environnement est orienté .NET, je pars avec une expérience concrète en C# sur un projet complet (backend, API REST, tests), ce qui me permet de m'intégrer plus vite dans une équipe existante et de reprendre du code avec un temps d'adaptation réduit.",
   },
 
   javascript: {
@@ -611,34 +616,72 @@ const caseStudies = [
     prioRecruiter: true,
   },
   {
-    key: "schertz",
-    company: "Groupe Schertz",
-    logo: "/logos/schertz.png",
-    role: "Administrateur systèmes – Stage",
-    year: "2022",
+    key: "incidentflow",
+    company: "Projet personnel",
+    logo: null,
+    role: "Développeur C#/.NET – Projet personnel",
+    year: "2023",
     location: "France",
-    category: "systems",
-    contractLabel: "Stage",
-    headline: "Déploiement d’un nouvel antivirus sur 600+ postes",
+    category: "web",
+    contractLabel: "Projet personnel",
+    headline: "Application de gestion d'incidents IncidentFlow",
     summary:
-      "Scripts Bash et outillage pour déployer un nouvel antivirus sur l’ensemble du parc, avec coordination des utilisateurs.",
+      "Application C#/.NET pour gérer les incidents et demandes : suivi des tickets, SLA, affectations, avec tableau de bord pour l'équipe IT.",
     contextBullets: [
-      "Parc de plus de 600 postes à migrer vers un nouvel antivirus.",
-      "Besoin de limiter l’impact sur les utilisateurs et les interruptions.",
+      "Projet personnel inspiré du fonctionnement d'une DSI type.",
+      "Objectif : concevoir une application de gestion d'incidents permettant de suivre les tickets, les priorités, les SLA et les affectations, avec un tableau de bord pour l'équipe IT.",
     ],
     actionsBullets: [
-      "Rédaction de scripts Bash pour automatiser le déploiement.",
-      "Utilisation d’outils de prise en main à distance (TeamViewer, etc.).",
-      "Communication et coordination avec les utilisateurs lors du déploiement.",
+      "Recueil et formalisation des besoins en s'inspirant du fonctionnement d'une DSI (types de tickets, statuts, SLA, rôles).",
+      "Conception du modèle de données (tickets, utilisateurs, services, journaux d'activité).",
+      "Développement d'une API REST en ASP.NET Core pour gérer les tickets (CRUD, filtres, pagination).",
+      "Implémentation d'une interface web simple (Razor Pages ou petit front React) pour la saisie et le suivi des tickets.",
+      "Mise en place d'un tableau de bord (tickets par statut, par priorité, par service).",
+      "Ajout de tests unitaires sur les services métier et configuration d'une CI GitHub Actions pour lancer les tests à chaque commit.",
     ],
     impactBullets: [
-      "Parc complet migré vers le nouvel antivirus.",
-      "Vision plus claire de l’état de sécurité des postes de travail.",
-      "Expérience utilisateur maîtrisée malgré le volume de postes.",
+      "Application fonctionnelle permettant de gérer les incidents et les demandes.",
+      "Meilleure compréhension de l'architecture en couches, REST, tests unitaires.",
+      "Kanban personnel pour suivre l'avancement (TODO / DOING / DONE).",
     ],
-    techs: ["Bash", "Administration systèmes", "Déploiement", "Support"],
-    skillTags: ["sysadmin", "deploy"],
-    prioRecruiter: false,
+    techs: ["C#", ".NET", "ASP.NET Core", "HTML/CSS", "SQL", "REST", "Git", "GitHub Actions", "Agile"],
+    skillTags: ["csharp", "sql", "frontend", "git", "agile"],
+    prioRecruiter: true,
+  },
+  {
+    key: "muscu-pwa",
+    company: "Projet personnel",
+    logo: null,
+    role: "Développeur Full-Stack – Projet personnel",
+    year: "2024–2025",
+    location: "France",
+    category: "web",
+    contractLabel: "Projet personnel",
+    headline: "Muscu PWA – Application Web Progressive de Suivi d'Entraînement",
+    summary:
+      "Plateforme complète de suivi d'entraînement : application web progressive avec React 19, Express, Prisma, authentification JWT, visualisations en temps réel et fonctionnalités offline.",
+    contextBullets: [
+      "Besoin : créer une application performante et accessible pour suivre et planifier les entraînements de musculation.",
+      "Objectif : démontrer une compétence full-stack moderne avec architecture scalable, UX premium et fonctionnalités PWA avancées.",
+    ],
+    actionsBullets: [
+      "Architecture full-stack TypeScript : React 19 + Vite côté frontend, Express + TypeScript côté backend.",
+      "Frontend PWA : React Router pour navigation fluide, Tailwind CSS pour design responsive, Service Worker pour mode offline complet.",
+      "Backend robuste : Express API RESTful, Prisma ORM pour requêtes type-safe, authentification JWT sécurisée, CORS configuré.",
+      "Base de données : Prisma migrations, SQLite en développement, support PostgreSQL en production.",
+      "Visualisations : Chart.js pour graphiques de progression, tableaux de statistiques, gestion de données en temps réel.",
+      "DevOps & déploiement : Docker & Docker-compose, CI/CD GitHub Actions, déploiement automatisé en production.",
+      "Expérience utilisateur : Thème clair/sombre, interface responsive, installation sur écran d'accueil, mode offline complet.",
+    ],
+    impactBullets: [
+      "Application production-ready avec 100% des fonctionnalités PWA et expérience utilisateur premium.",
+      "Architecture full-stack moderne et maintenable, prête pour montée en charge et scaling.",
+      "Démonstration complète des compétences DevOps : containerisation, CI/CD, déploiement automatisé.",
+      "Documentation professionnelle : API docs, guides de déploiement, guidelines de contribution.",
+    ],
+    techs: ["React 19", "TypeScript", "Express.js", "Prisma", "Node.js", "Tailwind CSS", "Chart.js", "PWA", "Docker", "GitHub Actions", "SQLite", "PostgreSQL", "JWT"],
+    skillTags: ["react", "javascript", "frontend", "sql", "agile", "git"],
+    prioRecruiter: true,
   },
 ];
 
@@ -687,22 +730,33 @@ const skillExamples = {
     ],
   },
   csharp: {
-    title: "Formatage d’un message métier simple",
+    title: "Service de gestion des tickets (IncidentFlow)",
     lines: [
-      "public class UserNotification",
+      "public class TicketService",
       "{",
-      "    public string Message { get; set; }",
-      "    public bool IsCritical { get; set; }",
+      "    private readonly ApplicationDbContext _context;",
       "",
-      "    public string Format()",
+      "    public TicketService(ApplicationDbContext context)",
       "    {",
-      "        return IsCritical ? \"[CRITIQUE] \" + Message : Message;",
+      "        _context = context;",
+      "    }",
+      "",
+      "    public async Task<Ticket> CreateTicketAsync(TicketDto dto)",
+      "    {",
+      "        var ticket = new Ticket",
+      "        {",
+      "            Title = dto.Title,",
+      "            Description = dto.Description,",
+      "            Status = TicketStatus.Open,",
+      "            Priority = dto.Priority,",
+      "            CreatedAt = DateTime.UtcNow",
+      "        };",
+      "",
+      "        _context.Tickets.Add(ticket);",
+      "        await _context.SaveChangesAsync();",
+      "        return ticket;",
       "    }",
       "}",
-      "",
-      "// Utilisation",
-      "// var notif = new UserNotification { Message = \"Backup terminé\", IsCritical = false };",
-      "// Console.WriteLine(notif.Format());",
     ],
   },
   javascript: {
@@ -969,7 +1023,7 @@ const skillExamples = {
 };
 
 function EasterEggTerminal({ onClose }) {
-  const lines = [
+  const eggLines = [
     "$ ping 127.0.0.1",
     "Réponse de 127.0.0.1 : temps=0ms  statut=✅ Profil détecté",
     "Réponse de 127.0.0.1 : temps=1ms  statut=✅ Curiosité confirmée",
@@ -984,15 +1038,16 @@ function EasterEggTerminal({ onClose }) {
     let i = 0;
     const id = setInterval(() => {
       setVisibleLines((prev) => {
-        if (i >= lines.length) return prev;
-        return [...prev, lines[i++]];
+        if (i >= eggLines.length) return prev;
+        return [...prev, eggLines[i++]];
       });
-      if (i >= lines.length) {
+      if (i >= eggLines.length) {
         clearInterval(id);
       }
     }, 420);
 
     return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -1573,7 +1628,8 @@ const [projectFilter, setProjectFilter] = useState("all");
     try {
       const unlocked = window.localStorage.getItem("egg_unlocked");
       if (unlocked === "1") {
-        setShowEasterEgg(true);
+        // Utiliser setTimeout pour éviter setState synchrone dans effect
+        setTimeout(() => setShowEasterEgg(true), 0);
       }
     } catch {
       // pas grave si le localStorage n'est pas dispo
@@ -1767,6 +1823,10 @@ const [projectFilter, setProjectFilter] = useState("all");
     <main className="min-h-screen bg-slate-950 text-slate-100">
       {/* Styles custom */}
       <style>{`
+        * {
+          scroll-behavior: smooth;
+        }
+
         .stat-bar {
           transform-origin: bottom;
           transform: scaleY(0);
@@ -1834,13 +1894,16 @@ const [projectFilter, setProjectFilter] = useState("all");
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,_#38bdf8_0,_transparent_45%),radial-gradient(circle_at_bottom,_#4f46e5_0,_#020617_55%)] opacity-60" />
 
       {/* HEADER */}
-      <header className="sticky top-0 z-40 border-b border-slate-900/70 bg-slate-950/80 backdrop-blur">
+      <header className="sticky top-0 z-40 border-b border-slate-900/70 bg-gradient-to-b from-slate-950/95 to-slate-950/80 backdrop-blur-xl transition-all duration-300">
         <div className="px-4 sm:px-8 lg:px-16 xl:px-24 py-3 flex items-center justify-between">
-          <div className="flex items-center gap-3">
+          <button
+            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+            className="flex items-center gap-3 group cursor-pointer transition-transform hover:scale-105"
+          >
             {/* Logo en haut à gauche */}
             <div className="relative h-10 w-10">
-              <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-cyan-500/40 via-sky-500/10 to-transparent blur-[7px] opacity-80" />
-              <div className="relative h-10 w-10 rounded-xl bg-slate-950 ring-1 ring-slate-700 shadow-sm shadow-black/40 overflow-hidden">
+              <div className="absolute inset-0 rounded-xl bg-gradient-to-tr from-cyan-500/40 via-sky-500/10 to-transparent blur-[7px] opacity-80 group-hover:opacity-100 transition-opacity" />
+              <div className="relative h-10 w-10 rounded-xl bg-slate-950 ring-1 ring-slate-700 shadow-sm shadow-black/40 overflow-hidden group-hover:ring-cyan-500 transition-all">
                 <Image
                   src="/logos/logo_site.png"
                   alt="Logo Paul Claus"
@@ -1851,15 +1914,15 @@ const [projectFilter, setProjectFilter] = useState("all");
               </div>
             </div>
 
-            <div className="leading-tight">
-              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400">
+            <div className="leading-tight group-hover:text-cyan-300 transition-colors">
+              <p className="text-xs font-semibold uppercase tracking-[0.3em] text-slate-400 group-hover:text-cyan-300 transition-colors">
                 Paul Claus
               </p>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-slate-400 group-hover:text-cyan-400 transition-colors">
                 Ingénieur informatique junior
               </p>
             </div>
-          </div>
+          </button>
 
           <nav className="hidden items-center gap-6 text-[13px] md:flex">
             <div ref={navRef} className="relative flex items-center gap-6">
@@ -3083,15 +3146,21 @@ const [projectFilter, setProjectFilter] = useState("all");
                           }`}
                         >
                           <div className="flex items-center gap-3">
-                            <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white ring-1 ring-slate-200 shadow-sm shadow-black/20">
-                              <Image
-                                src={proj.logo}
-                                alt={proj.company}
-                                width={36}
-                                height={36}
-                                className="h-8 w-8 object-contain"
-                              />
-                            </div>
+                            {proj.logo ? (
+                              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white ring-1 ring-slate-200 shadow-sm shadow-black/20">
+                                <Image
+                                  src={proj.logo}
+                                  alt={proj.company}
+                                  width={36}
+                                  height={36}
+                                  className="h-8 w-8 object-contain"
+                                />
+                              </div>
+                            ) : (
+                              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 text-white font-bold text-lg shadow-sm shadow-black/20">
+                                {proj.company.charAt(0)}
+                              </div>
+                            )}
                             <div className="flex-1 min-w-0">
                               <div className="flex items-center gap-2">
                                 <p className="text-[13px] font-semibold text-slate-50 truncate">

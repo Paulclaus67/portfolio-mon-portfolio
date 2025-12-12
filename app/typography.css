@@ -1,0 +1,261 @@
+/**
+ * Typography Configuration - Améliorations de Typographie
+ * Utilise les fonts Google (Geist) + système de hiérarchie clair
+ */
+
+/* Font Sizing Hierarchy */
+.heading-hero {
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.heading-1 {
+  font-size: clamp(2rem, 4vw, 3rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+}
+
+.heading-2 {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: -0.005em;
+}
+
+.heading-3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.heading-4 {
+  font-size: 1.125rem;
+  font-weight: 600;
+  line-height: 1.4;
+}
+
+.body-large {
+  font-size: 1.125rem;
+  line-height: 1.6;
+  color: var(--color-text-secondary);
+}
+
+.body-normal {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--color-text-primary);
+}
+
+.body-small {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-text-secondary);
+}
+
+.label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+}
+
+.caption {
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--color-text-muted);
+}
+
+/* Emphasis */
+.text-bold {
+  font-weight: 600;
+}
+
+.text-semibold {
+  font-weight: 500;
+}
+
+.text-gradient {
+  background: linear-gradient(135deg, var(--color-cyan-primary), var(--color-sky-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.text-gradient-warm {
+  background: linear-gradient(135deg, var(--color-emerald-accent), var(--color-sky-accent));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Code and Mono fonts */
+.font-mono {
+  font-family: var(--font-geist-mono), monospace;
+  letter-spacing: 0.02em;
+}
+
+.code-block {
+  font-family: var(--font-geist-mono);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  background-color: var(--color-bg-secondary);
+  padding: 1rem;
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  border: 1px solid var(--color-bg-tertiary);
+}
+
+.inline-code {
+  font-family: var(--font-geist-mono);
+  font-size: 0.875em;
+  background-color: var(--color-bg-secondary);
+  padding: 0.25em 0.5em;
+  border-radius: 0.25rem;
+  border: 1px solid var(--color-bg-tertiary);
+  color: var(--color-cyan-primary);
+}
+
+/* List Styles */
+.list-elegant {
+  list-style: none;
+  padding-left: 0;
+}
+
+.list-elegant li {
+  padding-left: 1.5rem;
+  position: relative;
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.list-elegant li:before {
+  content: "→";
+  position: absolute;
+  left: 0;
+  color: var(--color-cyan-primary);
+  font-weight: bold;
+}
+
+/* Link Styles */
+a {
+  color: var(--color-cyan-primary);
+  text-decoration: none;
+  position: relative;
+  transition: color var(--duration-normal) var(--easing-ease-out);
+}
+
+a:hover {
+  color: var(--color-sky-accent);
+}
+
+a:focus-visible {
+  outline: 2px solid var(--color-cyan-primary);
+  outline-offset: 2px;
+}
+
+/* Underline animated link */
+.link-animated {
+  position: relative;
+  display: inline-block;
+  padding-bottom: 2px;
+}
+
+.link-animated::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0;
+  height: 2px;
+  background: var(--color-cyan-primary);
+  transition: width var(--duration-normal) var(--easing-ease-out);
+}
+
+.link-animated:hover::after {
+  width: 100%;
+}
+
+/* Responsive Typography */
+@media (max-width: 640px) {
+  .heading-hero {
+    font-size: 2rem;
+  }
+
+  .heading-1 {
+    font-size: 1.5rem;
+  }
+
+  .heading-2 {
+    font-size: 1.25rem;
+  }
+
+  .body-large {
+    font-size: 1rem;
+  }
+}
+
+/* Print Styles */
+@media print {
+  .heading-hero,
+  .heading-1,
+  .heading-2,
+  .heading-3,
+  .heading-4 {
+    color: #000;
+    page-break-after: avoid;
+  }
+
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  .code-block {
+    border: 1px solid #000;
+    background-color: #f5f5f5;
+  }
+}
+
+/* Dark mode optimization */
+@media (prefers-color-scheme: dark) {
+  .inline-code {
+    background-color: var(--color-bg-secondary);
+    border-color: var(--color-bg-tertiary);
+  }
+
+  .code-block {
+    background-color: var(--color-bg-secondary);
+    border-color: var(--color-bg-tertiary);
+  }
+}
+
+/* Text Contrast Improvements */
+.high-contrast {
+  color: var(--color-text-primary);
+  font-weight: 500;
+}
+
+/* Accessible text truncation */
+.text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.text-clamp {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.text-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
