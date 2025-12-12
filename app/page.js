@@ -3840,13 +3840,7 @@ const [projectFilter, setProjectFilter] = useState("all");
           <span className="text-lg sm:text-xl leading-none">↑</span>
         </div>
       </button>
-      {showEasterEgg && easterEggTerminalOpen && (
-  <EasterEggTerminal onClose={() => setEasterEggTerminalOpen(false)} />
-)}
 
-{showEasterEgg && showEggToast && (
-  <EasterEggToast onHide={() => setShowEggToast(false)} />
-)}
       {showEasterEgg && easterEggTerminalOpen && (
         <EasterEggTerminal onClose={() => setEasterEggTerminalOpen(false)} />
       )}
