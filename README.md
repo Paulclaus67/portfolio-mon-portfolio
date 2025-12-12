@@ -1,219 +1,250 @@
 # 🌟 Portfolio Paul Claus - Premium Edition v2.0
 
-Portfolio professionnel moderne et optimisé de Paul Claus, ingénieur informatique junior spécialisé en **développement web**, **réseau** et **IA générative**.
+**Portfolio professionnel moderne** de Paul Claus, ingénieur informatique junior spécialisé en **développement web**, **réseau** et **IA générative**.
 
 Réalisé avec **Next.js 16+**, **React 19**, **Tailwind CSS 4** et **animations CSS premium**.
 
-## ✨ Améliorations Clés (v2.0)
+🔗 **[Portfolio en ligne](https://portfolio-mon-portfolio.vercel.app/)** • 🔗 **[LinkedIn](https://www.linkedin.com/in/paul-claus/)** • 🔗 **[GitHub](https://github.com/Paulclaus67)**
 
-- ✅ **Animations Premium**: CSS3 custom keyframes fluides et professionnelles
-- ✅ **Design System Complet**: Variables CSS, thème cohérent, palette optimisée
-- ✅ **Composants Réutilisables**: Badge, Card, Button, StatBox, etc.
-- ✅ **SEO Optimisé**: Métadonnées, Open Graph, Twitter Cards
-- ✅ **Accessibilité WCAG AA**: Focus visible, contraste optimisé
-- ✅ **Performance 90+**: Lighthouse score excellent, Core Web Vitals optimisés
-- ✅ **Responsive Design**: Mobile-first, touch-friendly
-- ✅ **Sécurité Headers**: HSTS, CSP, X-Frame-Options, etc.
+---
 
-🔗 **Portfolio en ligne** : (https://portfolio-mon-portfolio.vercel.app/)  
-🔗 **Profil LinkedIn** : [linkedin.com/in/paul-claus](https://www.linkedin.com/in/paul-claus/)  
-🔗 **GitHub** : [github.com/Paulclaus67](https://github.com/Paulclaus67)
+## 📋 Table of Contents
+
+- [✨ Fonctionnalités](#-fonctionnalités)
+- [🧰 Stack](#-stack-technique)
+- [🚀 Démarrage](#-démarrage-rapide)
+- [📁 Architecture](#-architecture)
+- [🌐 Déploiement](#-déploiement)
+- [🔧 Personnalisation](#-personnalisation)
+- [📞 Contact](#-contact)
 
 ---
 
 ## ✨ Fonctionnalités
 
-- **Page d’accueil orientée recruteur**
-  - Message clair : ce que je sais livrer concrètement (interfaces propres, outils web, applis métier).
-  - Stats rapides (outils en production, postes impactés, expérience, fiabilité…).
-  - Logos des entreprises qui m’ont fait confiance (Thales, ES, Milla & Partner, Groupe Schertz).
+### 🎯 Orientation Recruteur
+- **Message percutant** : ce que je sais livrer (interfaces web, outils métier, systèmes)
+- **Stats clés** : outils en production, postes impactés, années d'expérience
+- **Clients de référence** : Thales, Électricité de Strasbourg, Milla & Partner, Groupe Schertz
 
-- **Mode “Recruteur pressé”**
-  - Toggle en header.
-  - Affiche une version **plus concise** du portfolio : expériences principales, projets prioritaires, texte allégé.
+### 🎭 Mode "Recruteur Pressé"
+- Toggle en header pour une version condensée
+- Expériences et projets prioritaires en avant
+- Texte allégé et points clés visibles
 
-- **Expériences détaillées**
-  - Cartes par expérience avec :
-    - contexte,
-    - stack utilisée,
-    - tags cliquables (qui renvoient vers la compétence associée),
-    - distinction stage / CDD / stage à l’étranger.
+### 💼 Expériences Détaillées
+- **Cartes enrichies** avec contexte, stack, tags cliquables
+- Distinction stage / CDD / stage international
+- Liens directs vers les compétences associées
 
-- **Case studies / Projets**
-  - Cas concrets structurés “problème → actions → impact” :
-    - outil réseau chez Thales,
-    - back-office catalogue matériel pour Électricité de Strasbourg,
-    - assistant d’onboarding IA pour Milla & Partner,
-    - déploiement antivirus sur 600+ postes (Groupe Schertz).
-  - Filtrage par domaine : Réseau, Web, IA, Systèmes.
+### 🎬 Case Studies Structurés
+- Format **Problème → Actions → Impact**
+- Exemples concrets :
+  - Outil de gestion réseau (Thales)
+  - Back-office catalogue matériel (EDF Strasbourg)
+  - Assistant IA pour onboarding (Milla & Partner)
+  - Déploiement antivirus 600+ postes (Groupe Schertz)
+- Filtrage par domaine (Réseau, Web, IA, Systèmes)
 
-- **Compétences structurées**
-  - Regroupement par catégories :
-    - Langages & paradigmes
-    - Web & Front
-    - Data & IA
-    - Infra & réseaux
-    - Méthodes & outils
-  - Pour chaque compétence :
-    - niveau (production / projet / en cours),
-    - contexte d’utilisation,
-    - valeur pour l’employeur,
-    - mini-dashboard (confiance, expérience, usage récent),
-    - petit exemple de code représentatif.
+### 🔧 Compétences Structurées
+- **5 catégories** : Langages, Web, Data & IA, Infra, Méthodes
+- **Pour chaque skill** :
+  - Niveau (production / projet / en cours)
+  - Contexte d'utilisation
+  - Mini-dashboard (confiance, expérience, usage récent)
+  - Exemple de code représentatif
 
-- **Animations & UX**
-  - Animation au scroll (sections qui apparaissent progressivement).
-  - Scrollspy : le menu met en surbrillance la section en cours.
-  - Soulignement fluide dans la navigation.
-  - Bouton “remonter en haut” flottant.
-  - Petit easter egg sur la photo de profil 👀
+### ✨ UX & Animations
+- Animation au scroll (Intersection Observer)
+- Scrollspy dynamique
+- Soulignement fluide dans la navigation
+- Bouton "retour en haut" flottant
+- Easter egg sur la photo de profil 👀
 
-- **Contact**
-  - Formulaire minimal qui ouvre un mail prérempli (`mailto:`).
-  - Rappel des informations de contact : email, téléphone, LinkedIn, GitHub.
-  - CV téléchargeable en PDF.
+### 📧 Contact
+- Formulaire avec `mailto:` (sans backend)
+- Infos de contact consolidées
+- CV téléchargeable
 
 ---
 
-## 🧰 Stack technique
+## 🧰 Stack Technique
 
-- **Framework** : [Next.js](https://nextjs.org/)
-- **Langage** : JavaScript (React côté client)
-- **UI** :
-  - [React](https://react.dev/)
-  - [Tailwind CSS](https://tailwindcss.com/)
-  - Composants full custom
-- **Déploiement** : pensé pour [Vercel](https://vercel.com/)
-- **Autres** :
-  - `IntersectionObserver` pour les animations au scroll
-  - Hooks React personnalisés (ex : `useCountUp` pour les chiffres animés)
-  - Formulaire contact via `mailto:` (pas de backend nécessaire)
+| Élément | Tech |
+|---------|------|
+| **Framework** | [Next.js 16](https://nextjs.org/) |
+| **Runtime** | [React 19](https://react.dev/) |
+| **Styling** | [Tailwind CSS 4](https://tailwindcss.com/) |
+| **Déploiement** | [Vercel](https://vercel.com/) |
+| **Monitoring** | [Vercel Speed Insights](https://vercel.com/docs/speed-insights) |
+
+**Détails techniques** :
+- Components React avec hooks custom (`useCountUp`, animations)
+- IntersectionObserver pour le scroll spy
+- CSS3 animations personnalisées
+- Responsive design mobile-first
+- SEO optimisé (Open Graph, Twitter Cards)
+- Accessibilité WCAG AA
 
 ---
 
-## 🚀 Démarrage en local
+## 🚀 Démarrage Rapide
 
-### 1. Cloner le projet
+### Prérequis
+- Node.js 18+
+- npm / yarn / pnpm
+
+### Installation
 
 ```bash
+# Clone le repo
 git clone https://github.com/Paulclaus67/portfolio-mon-portfolio.git
 cd portfolio-mon-portfolio
-````
 
-### 2. Installer les dépendances
-
-```bash
+# Installe les dépendances
 npm install
-# ou
-yarn
-# ou
-pnpm install
+
+# Lance le serveur de dev
+npm run dev
 ```
 
-### 3. Lancer le serveur de dev
+Accès : **http://localhost:3000**
+
+### Scripts Disponibles
 
 ```bash
-npm run dev
-# ou
-yarn dev
-# ou
-pnpm dev
-```
-
-Le site sera accessible sur :
-
-```text
-http://localhost:3000
+npm run dev      # Serveur de développement
+npm run build    # Build production
+npm run start    # Serveur production (après build)
+npm run lint     # Linter ESLint
 ```
 
 ---
 
-## 🏗️ Scripts disponibles
+## 📁 Architecture
 
-Dans `package.json`, les scripts classiques Next.js :
-
-* `npm run dev` – lance le serveur de développement
-* `npm run build` – construit la version de production
-* `npm run start` – démarre le serveur en mode production (après `build`)
-* `npm run lint` – lance les linters (si configurés)
-
----
-
-## 📁 Organisation globale
-
-*(structure indicative – peut être ajustée selon le projet réel)*
-
-```text
+```
 .
-├─ app/                # Entrée principale (App Router)
-│  └─ page.jsx         # Page unique du portfolio
-├─ public/
-│  ├─ logos/           # Logos des entreprises, réseaux, favicon, etc.
-│  └─ Paul_PDP.jpg     # Photo de profil
-├─ styles/             # Configuration Tailwind / global.css (si utilisé)
-├─ package.json
-├─ next.config.mjs / js
-├─ tailwind.config.js / cjs
-└─ README.md
+├── app/
+│   ├── layout.js              # Layout principal
+│   ├── page.js                # Page unique (tout le portfolio)
+│   ├── globals.css            # Styles globaux
+│   ├── animations.css         # Animations premium
+│   ├── theme.css              # Variables CSS
+│   ├── typography.css         # Typographie
+│   ├── config/                # Configuration (vide - à remplir)
+│   └── utils/                 # Utilitaires
+│
+├── public/
+│   ├── logos/                 # Logos entreprises & réseaux
+│   └── *.jpg|png              # Images (photo profil, etc.)
+│
+├── package.json               # Dépendances & scripts
+├── next.config.mjs            # Config Next.js
+├── jsconfig.json              # Config JavaScript
+├── eslint.config.mjs          # Config linter
+├── postcss.config.mjs         # PostCSS (Tailwind)
+└── README.md                  # Ce fichier
+
 ```
 
-Toute la logique métier du portfolio (expériences, compétences, projets, etc.) est centralisée dans `app/page.jsx` via de grosses constantes (`skills`, `skillDetails`, `experiences`, `caseStudies`, etc.) et des hooks React.
+**Architecture du portfolio** :
+- **Mono-fichier** : toute la logique dans `app/page.js`
+- **Constantes centralisées** : `skills`, `skillDetails`, `experiences`, `caseStudies`
+- **Zero backend** : formulaire contact via `mailto:`
+- **Fully client** : rendu côté client pour l'interactivité
 
 ---
 
 ## 🌐 Déploiement
 
-Le projet est pensé pour être déployé sur **Vercel** :
+### Sur Vercel (Recommandé)
 
-1. Connecter le repo GitHub à Vercel.
-2. Importer le projet via **“Add New → Project”**.
-3. Laisser la configuration par défaut :
+1. **Connecte ton GitHub** à [Vercel](https://vercel.com)
+2. **Importe le projet** : "Add New → Project"
+3. **Laisse les defaults** :
+   - Framework : Next.js
+   - Build : `npm run build`
+   - Output : `.next`
+4. **Deploy !** 🚀
 
-   * Framework : Next.js
-   * Install command : `npm install`
-   * Build command : `npm run build`
-   * Output directory : `.next`
-4. Cliquer sur **Deploy**.
+Chaque `git push` redéploie automatiquement.
 
-À chaque `git push` sur la branche principale, Vercel reconstruit et redéploie automatiquement le portfolio.
+### Variables d'environnement
+- Voir `.env.example` pour les variables disponibles
+- Copie-le en `.env.local` localement
 
 ---
 
 ## 🔧 Personnalisation
 
-Quelques points faciles à adapter :
+### Contenu facile à adapter
 
-* **Identité / texte**
+**Données** (dans `app/page.js`) :
+- `experiences` : entreprises, dates, descriptions, tags
+- `caseStudies` : projets, contexte, actions, impact
+- `skills` et `skillDetails` : compétences, exemples de code
+- `skillCategories` : regroupement des skills
 
-  * H1, sous-titres, paragraphes d’intro.
-  * Les 3 “points clés” orientés entreprise dans la section “En 30 secondes”.
+**Identité** :
+- Titres, sous-titres, paragraphes d'intro
+- Section "En 30 secondes"
 
-* **Données**
+**Visuels** :
+- Logos dans `public/logos/`
+- Photo profil dans `public/`
+- Couleurs/gradients (Tailwind classes)
 
-  * `experiences` : entreprises, dates, descriptions, tags.
-  * `caseStudies` : projets mis en avant (headline, contexte, actions, impact).
-  * `skills`, `skillDetails`, `skillExamples` : compétences et exemples de code.
+### Styles
 
-* **Visuels**
+Fichiers CSS prédéfinis :
+- `app/globals.css` : reset et base
+- `app/theme.css` : variables CSS (couleurs, espaces, etc.)
+- `app/animations.css` : keyframes premium
+- `app/typography.css` : font stacks
 
-  * Logos dans `public/logos/`.
-  * Photo de profil `public/Paul_PDP.jpg`.
-  * Couleurs/gradients dans les classes Tailwind.
+Modification facile via **variables CSS** ou **classes Tailwind**.
+
+---
+
+## 📊 Performance
+
+Lighthouse scores visés :
+- ✅ Performance : 90+
+- ✅ Accessibility : 95+
+- ✅ Best Practices : 95+
+- ✅ SEO : 100
+
+Core Web Vitals optimisés (LCP, FID, CLS).
 
 ---
 
 ## 📄 Licence
 
 Projet personnel de portfolio.
-Tu peux t’inspirer de la structure, mais merci de ne pas réutiliser tel quel le contenu textuel (expériences, descriptions, visuels) ni l’identité (nom, photo, logos).
+
+**Tu peux** : t'inspirer de la structure et du code technique.
+
+**Tu ne peux pas** : réutiliser le contenu textuel, les images ou l'identité (nom, photo).
 
 ---
 
-## 📬 Contact
+## 🤝 Contribution
 
-* **Email** : `paul.claus@viacesi.fr`
-* **Téléphone** : `+33 6 67 06 14 73`
-* **LinkedIn** : [linkedin.com/in/paul-claus](https://www.linkedin.com/in/paul-claus/)
-* **GitHub** : [github.com/Paulclaus67](https://github.com/Paulclaus67)
-Si tu veux, je peux te faire une version plus courte “mode recruteur” pour le README (tout en haut du fichier) ou une version en anglais aussi.
-```
+Pour les bugs ou améliorations :
+1. Crée une issue ou propose une PR
+2. Follow le code style existant
+3. Teste sur localhost avant de pusher
+
+---
+
+## 📞 Contact
+
+- **Email** : paul.claus@viacesi.fr
+- **Téléphone** : +33 6 67 06 14 73
+- **LinkedIn** : [linkedin.com/in/paul-claus](https://www.linkedin.com/in/paul-claus/)
+- **GitHub** : [github.com/Paulclaus67](https://github.com/Paulclaus67)
+
+---
+
+Made with 🎨 by Paul Claus | Deployed on [Vercel](https://vercel.com)
