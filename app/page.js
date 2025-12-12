@@ -4,6 +4,10 @@ import { useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 
+import dynamic from "next/dynamic";
+
+const BurgerMenu = dynamic(() => import("./components/BurgerMenu"), { ssr: false });
+
 // ---------- Catégories & Compétences ----------
 
 const skillCategories = [
@@ -1558,6 +1562,7 @@ const [selectedSkillKey, setSelectedSkillKey] = useState("python");
 
 const [photoClicks, setPhotoClicks] = useState(0);
 const [showEasterEgg, setShowEasterEgg] = useState(false); // egg débloqué ?
+const easterEggTimeoutRef = useRef();
 const [easterEggTerminalOpen, setEasterEggTerminalOpen] = useState(false); // terminal visible ?
 const [devMode, setDevMode] = useState(false); // mode développeur
 const [showEggToast, setShowEggToast] = useState(false); // petit toast
@@ -1794,6 +1799,9 @@ const [projectFilter, setProjectFilter] = useState("all");
     if (!showEasterEgg && next >= 3) {
       setShowEasterEgg(true);
       setEasterEggTerminalOpen(true);
+      // Ferme l'easter egg après 8s
+      clearTimeout(easterEggTimeoutRef.current);
+      easterEggTimeoutRef.current = setTimeout(() => setShowEasterEgg(false), 8000);
       setShowEggToast(true);
 
       try {
@@ -1929,7 +1937,7 @@ const [projectFilter, setProjectFilter] = useState("all");
       <div className="pointer-events-none fixed inset-0 -z-10 bg-[radial-gradient(circle_at_top,_#38bdf8_0,_transparent_45%),radial-gradient(circle_at_bottom,_#4f46e5_0,_#020617_55%)] opacity-60" />
 
       {/* HEADER */}
-      <header className="sticky top-0 z-40 border-b border-slate-900/70 bg-gradient-to-b from-slate-950/95 to-slate-950/80 backdrop-blur-xl transition-all duration-300">
+      <header className="fixed top-0 left-0 w-full z-40 border-b border-slate-900/70 bg-gradient-to-b from-slate-950/95 to-slate-950/80 backdrop-blur-xl transition-all duration-300 md:sticky md:left-auto md:w-auto">
         <div className="px-4 sm:px-8 lg:px-16 xl:px-24 py-3 flex items-center justify-between">
           <button
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
@@ -1959,6 +1967,23 @@ const [projectFilter, setProjectFilter] = useState("all");
             </div>
           </button>
 
+          {/* Burger menu mobile */}
+          <div className="flex md:hidden">
+            <BurgerMenu
+              navLinks={[
+                { id: "about", label: "À propos", onClick: () => scrollToSection("about") },
+                { id: "experience", label: "Expériences", onClick: () => scrollToSection("experience") },
+                ...(!recruiterMode ? [{ id: "trusted", label: "Références", onClick: () => scrollToSection("trusted") }] : []),
+                ...(!recruiterMode ? [{ id: "projects", label: "Projets", onClick: () => scrollToSection("projects") }] : []),
+                { id: "skills", label: "Compétences", onClick: () => scrollToSection("skills") },
+                { id: "contact", label: "Contact", onClick: () => scrollToSection("contact") },
+                { id: "linkedin", label: "LinkedIn", onClick: () => window.open("https://www.linkedin.com/in/paul-claus/", "_blank") },
+                { id: "github", label: "GitHub", onClick: () => window.open("https://github.com/Paulclaus67", "_blank") },
+                { id: "mode", label: recruiterMode ? "Standard" : "Recruteur pressé", onClick: () => setRecruiterMode((m) => !m) },
+              ]}
+            />
+          </div>
+          {/* Navbar desktop */}
           <nav className="hidden items-center gap-6 text-[13px] md:flex">
             <div ref={navRef} className="relative flex items-center gap-6">
               <button
@@ -2101,7 +2126,7 @@ const [projectFilter, setProjectFilter] = useState("all");
       </header>
 
       {/* CONTENU */}
-      <div className="min-h-[calc(100vh-3rem)] w-full max-w-[100vw] px-4 sm:px-8 lg:px-16 xl:px-24 pt-10 pb-16 flex flex-col space-y-24">
+      <div className="min-h-[calc(100vh-3rem)] w-full max-w-[100vw] px-4 sm:px-8 lg:px-16 xl:px-24 pt-20 md:pt-10 pb-16 flex flex-col space-y-24">
         {/* HERO */}
         <section id="about" className="flex-1 w-full">
           <div className="flex flex-col lg:grid gap-10 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] items-center">
@@ -2170,7 +2195,7 @@ const [projectFilter, setProjectFilter] = useState("all");
                   onClick={() => scrollToSection("projects")}
                   className="rounded-full bg-slate-50 px-7 py-3 text-sm font-medium text-slate-950 shadow-lg shadow-slate-50/20 transition hover:-translate-y-0.5 hover:bg-slate-200 cursor-pointer"
                 >
-                  Voir 2 cas concrets en 90 secondes
+                  Voir 5 cas concrets en 90 secondes
                 </button>
                 <a
                   href="/Paul_Claus_CV.pdf"
@@ -2313,7 +2338,13 @@ const [projectFilter, setProjectFilter] = useState("all");
                 )}
 
                 {showEasterEgg && (
-  <div className="mt-3 rounded-xl border border-emerald-500/50 bg-emerald-500/5 px-3 py-2 text-[10px] text-emerald-200 flex flex-col gap-1">
+  <div className="mt-3 rounded-xl border border-emerald-500/50 bg-emerald-500/5 px-3 py-2 text-[10px] text-emerald-200 flex flex-col gap-1 relative animate-fade-in">
+    <button
+      className="absolute top-1 right-2 text-emerald-300/80 hover:text-emerald-400 text-xs font-bold px-1 rounded transition"
+      aria-label="Fermer"
+      onClick={() => setShowEasterEgg(false)}
+      tabIndex={0}
+    >✕</button>
     <div className="flex items-center gap-2">
       <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
       <span className="font-semibold">
