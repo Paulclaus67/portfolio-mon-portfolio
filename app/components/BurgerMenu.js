@@ -15,9 +15,17 @@ export default function BurgerMenu({ navLinks }) {
         <span className={`block h-0.5 w-6 my-1 rounded bg-gradient-to-r from-cyan-400 via-sky-400 to-purple-400 transition-transform ${open ? "-rotate-45 -translate-y-2" : ""}`}></span>
       </button>
       {open && (
-        <div className="fixed inset-0 z-40" onClick={() => setOpen(false)}>
-          <div className="absolute top-0 left-0 w-full h-full bg-black/40 backdrop-blur-sm" />
-          <div className="absolute top-14 right-4 min-w-[180px] bg-gradient-to-br from-slate-900/95 via-slate-900/80 to-slate-800/90 border border-cyan-500/30 shadow-2xl rounded-2xl p-4 z-50 flex flex-col gap-2">
+        <div className="fixed inset-0 z-40 pointer-events-none">
+          {/* Backdrop sous le menu, ne bloque pas la croix */}
+          <div className="absolute top-14 left-0 w-full h-[calc(100vh-theme(spacing.14))] bg-black/40 backdrop-blur-sm pointer-events-auto" onClick={() => setOpen(false)} />
+          <div className="absolute top-14 right-4 min-w-[180px] bg-gradient-to-br from-slate-900/95 via-slate-900/80 to-slate-800/90 border border-cyan-500/30 shadow-2xl rounded-2xl p-4 z-50 flex flex-col gap-2 pointer-events-auto">
+            <button
+              className="absolute top-2 right-2 text-slate-400 hover:text-cyan-400 text-xl font-bold px-1 rounded transition"
+              aria-label="Fermer le menu"
+              onClick={() => setOpen(false)}
+              tabIndex={0}
+              style={{ zIndex: 60 }}
+            >✕</button>
             {navLinks.map((link) => (
               <button
                 key={link.id}
