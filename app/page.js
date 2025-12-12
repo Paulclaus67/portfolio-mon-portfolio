@@ -3200,7 +3200,9 @@ const [projectFilter, setProjectFilter] = useState("all");
                         >
                           <div className="flex items-center gap-3">
                             {proj.logo ? (
-                              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white ring-1 ring-slate-200 shadow-sm shadow-black/20">
+                              <div
+                                className={`flex h-11 w-11 items-center justify-center rounded-full ring-1 ring-slate-200 shadow-sm shadow-black/20 ${proj.key === "muscu-pwa" ? "bg-cyan-500" : "bg-white"}`}
+                              >
                                 <Image
                                   src={proj.logo}
                                   alt={proj.company}
