@@ -684,6 +684,40 @@ const caseStudies = [
     skillTags: ["react", "javascript", "frontend", "sql", "agile", "git"],
     prioRecruiter: true,
   },
+  {
+    key: "gite-servance",
+    company: "Projet client réel",
+    logo: "/logos/gite-servance.png",
+    role: "Développeur Web – Projet client",
+    year: "2023",
+    location: "France",
+    category: "web",
+    contractLabel: "Client réel",
+    headline: "Site vitrine pour le Gîte de Servance",
+    summary:
+      "Création complète d'un site WordPress pour un gîte touristique : présentation, réservations, galerie photos et optimisation SEO.",
+    link: "http://gite-servance.fr",
+    contextBullets: [
+      "Client réel : gîte touristique dans les Vosges cherchant à améliorer sa visibilité en ligne.",
+      "Besoin d'un site vitrine simple, élégant et facile à mettre à jour par le propriétaire.",
+    ],
+    actionsBullets: [
+      "Analyse des besoins : présentation du gîte, galerie photos, calendrier de disponibilités, formulaire de contact.",
+      "Sélection et personnalisation d'un thème WordPress adapté au secteur touristique.",
+      "Configuration de plugins essentiels : SEO, formulaires de contact, galerie responsive.",
+      "Optimisation des performances : compression d'images, cache, temps de chargement.",
+      "Formation du client à la mise à jour autonome du contenu.",
+    ],
+    impactBullets: [
+      "Site professionnel et responsive, accessible sur tous les appareils.",
+      "Meilleure visibilité en ligne pour le gîte grâce au SEO de base.",
+      "Client autonome pour mettre à jour les disponibilités et les informations.",
+      "Expérience utilisateur fluide pour les visiteurs potentiels.",
+    ],
+    techs: ["WordPress", "HTML/CSS", "SEO", "Plugins WordPress"],
+    skillTags: ["wordpress", "frontend"],
+    prioRecruiter: false,
+  },
 ];
 
 const skillExamples = {
