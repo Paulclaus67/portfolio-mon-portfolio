@@ -618,7 +618,7 @@ const caseStudies = [
   {
     key: "incidentflow",
     company: "Projet personnel",
-    logo: "/logos/incidentflow.png",
+    logo: "/logos/IncidentFlow.png",
     role: "Développeur C#/.NET – Projet personnel",
     year: "2023",
     location: "France",
