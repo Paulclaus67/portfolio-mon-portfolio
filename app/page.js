@@ -2190,6 +2190,7 @@ const [projectFilter, setProjectFilter] = useState("all");
                           width={18}
                           height={18}
                           className="object-contain"
+                          style={{ width: 'auto', height: 'auto' }}
                         />
                       </span>
                       <span className="hidden sm:inline text-[11px] text-slate-300 group-hover:text-cyan-200">
@@ -3156,6 +3157,7 @@ const [projectFilter, setProjectFilter] = useState("all");
                                   width={36}
                                   height={36}
                                   className="h-8 w-8 object-contain"
+                                  style={{ width: 'auto', height: 'auto' }}
                                 />
                               </div>
                             ) : (
