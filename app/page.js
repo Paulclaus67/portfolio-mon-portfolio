@@ -651,7 +651,7 @@ const caseStudies = [
   {
     key: "muscu-pwa",
     company: "Projet personnel",
-    logo: "/logos/muscu-pwa.svg",
+    logo: "/logos/fitforge.png",
     role: "Développeur Full-Stack – Projet personnel",
     year: "2024–2025",
     location: "France",
