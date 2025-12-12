@@ -3614,12 +3614,12 @@ const [projectFilter, setProjectFilter] = useState("all");
                   </div>
                 </div>
 
-                <div className="mt-4 rounded-xl bg-slate-950 border border-slate-800 p-3 text-[11px] font-mono text-slate-200 shadow-inner shadow-black/60">
-                  <p className="text-sky-400 mb-1">{example.title}</p>
+                <div className="mt-4 rounded-xl bg-slate-950 border border-slate-800 p-3 text-[11px] font-mono text-slate-200 shadow-inner shadow-black/60 overflow-x-auto">
+                  <p className="text-sky-400 mb-1 whitespace-nowrap">{example.title}</p>
                   {example.lines.map((line, idx) => (
                     <p
                       key={idx}
-                      className={
+                      className={`whitespace-nowrap ${
                         line.trim().startsWith("#") ||
                         line.trim().startsWith("//") ||
                         line.trim().startsWith("/*") ||
@@ -3627,7 +3627,7 @@ const [projectFilter, setProjectFilter] = useState("all");
                         line.trim().startsWith("- ")
                           ? "text-slate-400"
                           : "text-slate-200"
-                      }
+                      }`}
                     >
                       {line}
                     </p>
