@@ -2845,22 +2845,37 @@ const [projectFilter, setProjectFilter] = useState("all");
                   </div>
 
                   <div className="mt-3 flex items-center gap-4">
-                    <div className="relative h-20 w-20 donut-anim">
-                      <div className="absolute inset-0 rounded-full bg-slate-900" />
-                      <div
-                        className="absolute inset-1 rounded-full"
-                        style={{
-                          background:
-                            "conic-gradient(from 220deg, #22c55e 0deg, #22c55e 331deg, #020617 331deg, #020617 360deg)",
-                        }}
-                      />
-                      <div className="absolute inset-4 rounded-full bg-slate-950 flex items-center justify-center">
-                        <span className="text-sm font-semibold">
+                    <div className="relative h-20 w-20 shrink-0">
+                      <svg className="h-20 w-20 -rotate-90" viewBox="0 0 80 80">
+                        {/* Background circle */}
+                        <circle
+                          cx="40"
+                          cy="40"
+                          r="36"
+                          fill="none"
+                          stroke="#0f172a"
+                          strokeWidth="8"
+                        />
+                        {/* Progress circle */}
+                        <circle
+                          cx="40"
+                          cy="40"
+                          r="36"
+                          fill="none"
+                          stroke="#22c55e"
+                          strokeWidth="8"
+                          strokeDasharray={`${(reliability * 226) / 100} 226`}
+                          strokeLinecap="round"
+                          className="transition-all duration-1000"
+                        />
+                      </svg>
+                      <div className="absolute inset-0 flex items-center justify-center">
+                        <span className="text-lg font-semibold text-emerald-400">
                           {reliability}%
                         </span>
                       </div>
                     </div>
-                    <div className="text-[12px] text-slate-300">
+                    <div className="flex-1 text-[12px] text-slate-300">
                       <p>
                         Appréciation globale de ma fiabilité (respect des
                         engagements, autonomie, communication) d&apos;après les
