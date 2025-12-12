@@ -1051,7 +1051,7 @@ function EasterEggTerminal({ onClose }) {
   }, []);
 
   return (
-    <div className="fixed bottom-6 left-6 z-50 w-[320px] rounded-xl border border-emerald-400/60 bg-slate-950/95 shadow-2xl shadow-emerald-500/30 text-[11px] font-mono text-emerald-100">
+    <div className="fixed bottom-4 left-4 sm:bottom-6 sm:left-6 z-50 w-[90vw] max-w-[320px] rounded-xl border border-emerald-400/60 bg-slate-950/95 shadow-2xl shadow-emerald-500/30 text-[11px] font-mono text-emerald-100">
       <div className="flex items-center justify-between border-b border-emerald-500/40 px-3 py-2">
         <span className="text-[10px] uppercase tracking-[0.18em] text-emerald-300">
           ping 127.0.0.1
@@ -1278,7 +1278,7 @@ function KonamiGameOverlay() {
       : "Packet dropped : trop d'incidents sur le chemin ❌";
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/90 backdrop-blur p-4">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,_rgba(56,189,248,0.28),_transparent_60%),radial-gradient(circle_at_bottom,_rgba(129,140,248,0.25),_transparent_55%)] pointer-events-none" />
 
       <div className="relative w-full max-w-xl aspect-[9/16] rounded-3xl border border-cyan-500/50 bg-slate-950/95 shadow-[0_0_50px_rgba(8,47,73,0.9)] overflow-hidden">
@@ -2066,10 +2066,10 @@ const [projectFilter, setProjectFilter] = useState("all");
       </header>
 
       {/* CONTENU */}
-      <div className="min-h-[calc(100vh-3rem)] px-4 sm:px-8 lg:px-16 xl:px-24 pt-10 pb-16 flex flex-col space-y-24">
+      <div className="min-h-[calc(100vh-3rem)] w-full max-w-[100vw] px-4 sm:px-8 lg:px-16 xl:px-24 pt-10 pb-16 flex flex-col space-y-24">
         {/* HERO */}
-        <section id="about" className="flex-1">
-          <div className="grid gap-10 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] items-center">
+        <section id="about" className="flex-1 w-full">
+          <div className="flex flex-col lg:grid gap-10 lg:grid-cols-[minmax(0,1.6fr)_minmax(0,1fr)] items-center">
             {/* Colonne gauche : message principal */}
             <div>
               <div className="inline-flex items-center gap-2 rounded-full border border-slate-700/80 bg-slate-900/70 px-3.5 py-1.5 text-[12px] font-medium text-slate-300 backdrop-blur">
@@ -2399,7 +2399,7 @@ const [projectFilter, setProjectFilter] = useState("all");
             </div>
           </div>
 
-          <div className="mt-2 grid gap-6 lg:grid-cols-2">
+          <div className="mt-2 flex flex-col lg:grid gap-6 lg:grid-cols-2">
             {visibleExperiences.map((exp) => {
               const isHighlighted = highlightedExp === exp.key;
               const description = recruiterMode ? exp.shortDesc : exp.desc;
@@ -2531,7 +2531,7 @@ const [projectFilter, setProjectFilter] = useState("all");
 
             <div className="rounded-3xl border border-slate-800 bg-slate-950/80 p-5 lg:p-6 shadow-sm shadow-black/40">
               {/* Résumé chiffré */}
-              <div className="grid gap-4 sm:grid-cols-3 text-[12px]">
+              <div className="flex flex-col sm:grid gap-4 sm:grid-cols-3 text-[12px]">
                 <div className="rounded-2xl bg-slate-950/90 border border-slate-800 px-4 py-3">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                     Entreprises
@@ -2594,7 +2594,7 @@ const [projectFilter, setProjectFilter] = useState("all");
                       key={`trusted-${exp.key}`}
                       type="button"
                       onClick={() => scrollToExperience(exp.key)}
-                      className="group flex-1 min-w-[220px] max-w-xs rounded-2xl border border-slate-800 bg-slate-950/90 px-4 py-3 text-left hover:border-cyan-500/70 hover:bg-slate-900/90 transition-all hover:-translate-y-0.5 cursor-pointer"
+                      className="group flex-1 min-w-[180px] sm:min-w-[220px] max-w-xs rounded-2xl border border-slate-800 bg-slate-950/90 px-4 py-3 text-left hover:border-cyan-500/70 hover:bg-slate-900/90 transition-all hover:-translate-y-0.5 cursor-pointer"
                     >
                       <div className="flex items-center gap-3">
                         <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white ring-1 ring-slate-200 shadow-sm shadow-black/20">
@@ -2678,7 +2678,7 @@ const [projectFilter, setProjectFilter] = useState("all");
               </div>
             </div>
 
-            <div className="mt-4 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
+            <div className="mt-4 flex flex-col sm:grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
               <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-5 shadow-sm shadow-black/40">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-400">
                   Outils en production
@@ -2744,7 +2744,7 @@ const [projectFilter, setProjectFilter] = useState("all");
               </div>
             </div>
 
-            <div className="mt-6 grid gap-6 lg:grid-cols-[1.7fr_1.3fr]">
+            <div className="mt-6 flex flex-col lg:grid gap-6 lg:grid-cols-[1.7fr_1.3fr]">
               <div className="space-y-4">
                 <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-6 shadow-sm shadow-black/40">
                   <div className="flex items-center justify-between">
@@ -3129,7 +3129,7 @@ const [projectFilter, setProjectFilter] = useState("all");
                   })}
                 </div>
 
-                <div className="grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1.6fr)]">
+                <div className="flex flex-col lg:grid gap-6 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,1.6fr)]">
                   {/* Colonne gauche : liste des projets */}
                   <div className="space-y-3">
                     {effectiveList.map((proj) => {
@@ -3237,7 +3237,7 @@ const [projectFilter, setProjectFilter] = useState("all");
                       {activeStudy.summary}
                     </p>
 
-                    <div className="mt-4 grid gap-4 md:grid-cols-3 text-[11px] text-slate-300">
+                    <div className="mt-4 flex flex-col md:grid gap-4 md:grid-cols-3 text-[11px] text-slate-300">
                       <div className="rounded-2xl bg-slate-950 border border-slate-800 p-3">
                         <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-400">
                           Contexte & problème
@@ -3433,7 +3433,7 @@ const [projectFilter, setProjectFilter] = useState("all");
               })}
             </div>
 
-            <div className="mt-7 grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)]">
+            <div className="mt-7 flex flex-col lg:grid gap-5 lg:grid-cols-[minmax(0,1.5fr)_minmax(0,1.2fr)]">
               <div className="rounded-2xl border border-slate-800 bg-slate-950/80 p-5 text-[13px] text-slate-200">
                 <div className="flex items-center justify-between gap-2">
                   <div>
@@ -3666,7 +3666,7 @@ const [projectFilter, setProjectFilter] = useState("all");
             </div>
           </div>
 
-          <div className="mt-2 grid gap-6 lg:grid-cols-[2fr_1.1fr]">
+          <div className="mt-2 flex flex-col lg:grid gap-6 lg:grid-cols-[2fr_1.1fr]">
             <form className="space-y-4 text-sm" onSubmit={handleContactSubmit}>
               <div>
                 <label className="block text-xs font-medium text-slate-300">
@@ -3788,15 +3788,15 @@ const [projectFilter, setProjectFilter] = useState("all");
             behavior: "smooth",
           })
         }
-        className={`fixed bottom-6 right-6 z-40 flex items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 via-sky-500 to-purple-500 p-[2px] cursor-pointer scroll-top-pulse transition-all duration-300 ${
+        className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 flex items-center justify-center rounded-full bg-gradient-to-br from-cyan-500 via-sky-500 to-purple-500 p-[2px] cursor-pointer scroll-top-pulse transition-all duration-300 ${
           showScrollTop
             ? "opacity-100 translate-y-0"
             : "opacity-0 translate-y-3 pointer-events-none"
         }`}
         aria-label="Remonter en haut de la page"
       >
-        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 text-slate-50">
-          <span className="text-lg leading-none">↑</span>
+        <div className="flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-full bg-slate-950 text-slate-50">
+          <span className="text-lg sm:text-xl leading-none">↑</span>
         </div>
       </button>
       {showEasterEgg && easterEggTerminalOpen && (

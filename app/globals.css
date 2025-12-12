@@ -29,12 +29,17 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  max-width: 100vw;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
+  max-width: 100vw;
+  position: relative;
 }
 
 /* Animations fluides et premium */
@@ -161,6 +166,18 @@ a {
 /* Images fluides */
 img {
   transition: transform 0.3s var(--transition-smooth);
+  max-width: 100%;
+  height: auto;
+}
+
+/* Assurer que tous les conteneurs ne débordent pas */
+* {
+  box-sizing: border-box;
+}
+
+main {
+  max-width: 100vw;
+  overflow-x: hidden;
 }
 
 /* Backdrop blur support */
@@ -178,4 +195,18 @@ img {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* Responsive utilities */
+@media (max-width: 640px) {
+  /* Ajuster les paddings sur mobile */
+  .sm\:px-8 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* Prevent horizontal overflow on all elements */
+section, div, article, aside, header, footer, main {
+  max-width: 100%;
 }
