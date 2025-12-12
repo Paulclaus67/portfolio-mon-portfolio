@@ -2428,6 +2428,7 @@ const [projectFilter, setProjectFilter] = useState("all");
                           width={48}
                           height={48}
                           className="h-10 w-10 object-contain"
+                          style={{ width: 'auto', height: 'auto' }}
                         />
                       </div>
                       <div>
@@ -2604,6 +2605,7 @@ const [projectFilter, setProjectFilter] = useState("all");
                             width={40}
                             height={40}
                             className="h-8 w-8 object-contain"
+                            style={{ width: 'auto', height: 'auto' }}
                           />
                         </div>
                         <div className="flex-1">
