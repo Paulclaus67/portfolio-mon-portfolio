@@ -618,7 +618,7 @@ const caseStudies = [
   {
     key: "incidentflow",
     company: "Projet personnel",
-    logo: null,
+    logo: "/logos/incidentflow.png",
     role: "Développeur C#/.NET – Projet personnel",
     year: "2023",
     location: "France",
@@ -651,7 +651,7 @@ const caseStudies = [
   {
     key: "muscu-pwa",
     company: "Projet personnel",
-    logo: null,
+    logo: "/logos/fitforge.png",
     role: "Développeur Full-Stack – Projet personnel",
     year: "2024–2025",
     location: "France",
@@ -660,6 +660,7 @@ const caseStudies = [
     headline: "Muscu PWA – Application Web Progressive de Suivi d'Entraînement",
     summary:
       "Plateforme complète de suivi d'entraînement : application web progressive avec React 19, Express, Prisma, authentification JWT, visualisations en temps réel et fonctionnalités offline.",
+    link: "https://fitforge-muscu.fr/",
     contextBullets: [
       "Besoin : créer une application performante et accessible pour suivre et planifier les entraînements de musculation.",
       "Objectif : démontrer une compétence full-stack moderne avec architecture scalable, UX premium et fonctionnalités PWA avancées.",
@@ -3165,13 +3166,13 @@ const [projectFilter, setProjectFilter] = useState("all");
                         >
                           <div className="flex items-center gap-3">
                             {proj.logo ? (
-                              <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-white ring-1 ring-slate-200 shadow-sm shadow-black/20">
+                              <div className="flex h-11 w-11 items-center justify-center rounded-full bg-white ring-1 ring-slate-200 shadow-sm shadow-black/20">
                                 <Image
                                   src={proj.logo}
                                   alt={proj.company}
                                   width={36}
                                   height={36}
-                                  className="h-8 w-8 object-contain"
+                                  className="h-8 w-8 object-contain rounded-full"
                                   style={{ width: 'auto', height: 'auto' }}
                                 />
                               </div>
@@ -3301,37 +3302,52 @@ const [projectFilter, setProjectFilter] = useState("all");
                     </div>
 
                     {/* Tags / compétences liées */}
-                    <div className="mt-4 flex flex-wrap gap-1.5 text-[11px]">
-                      {activeStudy.techs.map((tech) => (
-                        <span
-                          key={tech}
-                          className="inline-flex items-center gap-1 rounded-full border border-slate-700 bg-slate-900/80 px-2.5 py-[4px] text-slate-200"
+                    <div className="mt-4 flex flex-col gap-3">
+                      {activeStudy.link && (
+                        <a
+                          href={activeStudy.link}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-600 text-white font-semibold text-sm px-4 py-2.5 hover:from-cyan-400 hover:to-blue-500 transition-all shadow-sm hover:shadow-md cursor-pointer"
                         >
-                          <span className="h-1 w-1 rounded-full bg-slate-500" />
-                          <span>{tech}</span>
-                        </span>
-                      ))}
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                          </svg>
+                          Visiter l&apos;application
+                        </a>
+                      )}
+                      <div className="flex flex-wrap gap-1.5 text-[11px]">
+                        {activeStudy.techs.map((tech) => (
+                          <span
+                            key={tech}
+                            className="inline-flex items-center gap-1 rounded-full border border-slate-700 bg-slate-900/80 px-2.5 py-[4px] text-slate-200"
+                          >
+                            <span className="h-1 w-1 rounded-full bg-slate-500" />
+                            <span>{tech}</span>
+                          </span>
+                        ))}
 
-                      {activeStudy.skillTags &&
-                        activeStudy.skillTags.map((skillKey) => {
-                          const meta = skills.find((s) => s.key === skillKey);
-                          if (!meta) return null;
-                          return (
-                            <button
-                              key={`skill-${skillKey}`}
-                              type="button"
-                              onClick={() =>
-                                focusSkillFromExperienceTag(skillKey)
-                              }
-                              className="inline-flex items-center gap-1 rounded-full border border-cyan-500/70 bg-cyan-500/10 px-2.5 py-[4px] text-cyan-100 cursor-pointer hover:bg-cyan-400/20 hover:border-cyan-300 transition-all"
-                              title="Voir la compétence associée"
-                            >
-                              <span className="h-1 w-1 rounded-full bg-cyan-300" />
-                              <span>{meta.label}</span>
-                              <span className="text-[9px] opacity-70">★</span>
-                            </button>
-                          );
-                        })}
+                        {activeStudy.skillTags &&
+                          activeStudy.skillTags.map((skillKey) => {
+                            const meta = skills.find((s) => s.key === skillKey);
+                            if (!meta) return null;
+                            return (
+                              <button
+                                key={`skill-${skillKey}`}
+                                type="button"
+                                onClick={() =>
+                                  focusSkillFromExperienceTag(skillKey)
+                                }
+                                className="inline-flex items-center gap-1 rounded-full border border-cyan-500/70 bg-cyan-500/10 px-2.5 py-[4px] text-cyan-100 cursor-pointer hover:bg-cyan-400/20 hover:border-cyan-300 transition-all"
+                                title="Voir la compétence associée"
+                              >
+                                <span className="h-1 w-1 rounded-full bg-cyan-300" />
+                                <span>{meta.label}</span>
+                                <span className="text-[9px] opacity-70">★</span>
+                              </button>
+                            );
+                          })}
+                      </div>
                     </div>
 
                     <p className="mt-3 text-[10px] text-slate-500">
