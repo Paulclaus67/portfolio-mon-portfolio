@@ -3673,34 +3673,40 @@ const [projectFilter, setProjectFilter] = useState("all");
           <div className="mt-2 flex flex-col lg:grid gap-6 lg:grid-cols-[2fr_1.1fr]">
             <form className="space-y-4 text-sm" onSubmit={handleContactSubmit}>
               <div>
-                <label className="block text-xs font-medium text-slate-300">
+                <label htmlFor="contact-name" className="block text-xs font-medium text-slate-300">
                   Nom
                 </label>
                 <input
                   type="text"
+                  id="contact-name"
                   name="name"
+                  autoComplete="name"
                   className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950/70 px-3.5 py-2.5 text-sm text-slate-100 outline-none ring-cyan-500/30 focus:border-cyan-400 focus:ring-2"
                   placeholder="Votre nom"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-300">
+                <label htmlFor="contact-email" className="block text-xs font-medium text-slate-300">
                   Email
                 </label>
                 <input
                   type="email"
+                  id="contact-email"
                   name="email"
+                  autoComplete="email"
                   className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950/70 px-3.5 py-2.5 text-sm text-slate-100 outline-none ring-cyan-500/30 focus:border-cyan-400 focus:ring-2"
                   placeholder="vous@example.com"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-slate-300">
+                <label htmlFor="contact-message" className="block text-xs font-medium text-slate-300">
                   Message
                 </label>
                 <textarea
                   rows={4}
+                  id="contact-message"
                   name="message"
+                  autoComplete="off"
                   className="mt-1 w-full rounded-lg border border-slate-700 bg-slate-950/70 px-3.5 py-2.5 text-sm text-slate-100 outline-none ring-cyan-500/30 focus:border-cyan-400 focus:ring-2"
                   placeholder="Votre message..."
                 />
