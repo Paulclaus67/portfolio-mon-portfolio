@@ -608,7 +608,7 @@ export const caseStudies = [
     role: "Développeur C#/.NET – Projet personnel",
     year: "2023",
     location: "France",
-    category: "web",
+    category: "logiciel",
     contractLabel: "Projet personnel",
     headline: "Application de gestion d'incidents IncidentFlow",
     summary:
@@ -630,7 +630,7 @@ export const caseStudies = [
       "Meilleure compréhension de l'architecture en couches, REST, tests unitaires.",
       "Kanban personnel pour suivre l'avancement (TODO / DOING / DONE).",
     ],
-    techs: ["C#", ".NET", "ASP.NET Core", "HTML/CSS", "SQL", "REST", "Git", "GitHub Actions", "Agile"],
+    techs: ["C#/.NET", "ASP.NET Core", "REST API", "SQL", "Tests unitaires", "CI GitHub Actions", "HTML/CSS", "Git"],
     skillTags: ["csharp", "sql", "frontend", "git", "agile"],
     prioRecruiter: true,
   },

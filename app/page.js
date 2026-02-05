@@ -6,6 +6,7 @@ import {
   motion,
   AnimatePresence,
   useScroll,
+  useSpring,
   useTransform
 } from "framer-motion";
 import {
@@ -62,6 +63,14 @@ const scaleIn = {
   hidden: { scale: 0.9, opacity: 0 },
   visible: { scale: 1, opacity: 1, transition: { duration: 0.5 } }
 };
+
+const NAV_ITEMS = [
+  { label: "Introduction", id: "introduction" },
+  { label: "Expérience", id: "experience" },
+  { label: "Projets", id: "projets" },
+  { label: "Compétences", id: "competences" },
+  { label: "Contact", id: "contact" },
+];
 
 // --- COMPONENTS ---
 
@@ -163,6 +172,7 @@ function KonamiGameOverlay() {
 export default function Home() {
   // States
   const recruiterMode = false;
+  const [activeSection, setActiveSection] = useState("introduction");
   const [activeTab, setActiveTab] = useState("all");
   const [selectedSkillKey, setSelectedSkillKey] = useState("python");
   const [selectedCategory, setSelectedCategory] = useState("languages");
@@ -170,6 +180,7 @@ export default function Home() {
   const [expandedExperienceKey, setExpandedExperienceKey] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showAllProjectActions, setShowAllProjectActions] = useState(false);
 
   // Easter Egg states
   const [clicks, setClicks] = useState(0);
@@ -189,6 +200,7 @@ export default function Home() {
 
   // Filter projects
   const activeStudy = caseStudies.find(p => p.key === selectedProjectKey) || caseStudies[0];
+  const projectActionBullets = activeStudy.actionsBullets ?? [];
   const displayedProjects = recruiterMode
     ? caseStudies.filter(p => p.prioRecruiter)
     : caseStudies;
@@ -211,6 +223,7 @@ export default function Home() {
 
   const handleViewCaseStudy = (key) => {
     setSelectedProjectKey(key);
+    setShowAllProjectActions(false);
     setExpandedExperienceKey(null);
     document.getElementById("projets")?.scrollIntoView({ behavior: "smooth", block: "start" });
   };
@@ -224,9 +237,72 @@ export default function Home() {
     }
   };
 
+  useEffect(() => {
+    const getNavOffset = () => {
+      const nav = document.querySelector("[data-nav='main']");
+      const navHeight = nav?.getBoundingClientRect().height ?? 80;
+      return Math.round(navHeight + 12);
+    };
+
+    const elements = NAV_ITEMS
+      .map((item) => document.getElementById(item.id))
+      .filter(Boolean);
+
+    if (!elements.length) return undefined;
+
+    let observer;
+
+    const handleIntersect = (entries) => {
+      const navOffset = getNavOffset();
+      const visible = entries.filter((e) => e.isIntersecting);
+      if (!visible.length) return;
+
+      visible.sort((a, b) => {
+        const aDist = Math.abs(a.boundingClientRect.top - navOffset);
+        const bDist = Math.abs(b.boundingClientRect.top - navOffset);
+        return aDist - bDist;
+      });
+
+      setActiveSection(visible[0].target.id);
+    };
+
+    const setupObserver = () => {
+      observer?.disconnect();
+      const navOffset = getNavOffset();
+      const bottomMarginPx = Math.round(window.innerHeight * 0.55);
+
+      observer = new IntersectionObserver(handleIntersect, {
+        root: null,
+        rootMargin: `-${navOffset}px 0px -${bottomMarginPx}px 0px`,
+        threshold: [0.05, 0.15, 0.3],
+      });
+
+      elements.forEach((el) => observer.observe(el));
+    };
+
+    const handleScroll = () => {
+      const scrollBottom = window.scrollY + window.innerHeight;
+      const docHeight = document.documentElement.scrollHeight;
+      if (docHeight - scrollBottom < 80) setActiveSection("contact");
+    };
+
+    setupObserver();
+    handleScroll();
+
+    window.addEventListener("resize", setupObserver);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+
+    return () => {
+      observer?.disconnect();
+      window.removeEventListener("resize", setupObserver);
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
   // Scroll Progress
   const { scrollYProgress } = useScroll();
-  const progressWidth = useTransform(scrollYProgress, (v) => `${v * 100}%`);
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.2 });
+  const progressWidth = useTransform(smoothProgress, (v) => `${v * 100}%`);
 
   return (
     <main className="relative min-h-screen bg-slate-950 text-slate-200 selection:bg-cyan-500/30 selection:text-cyan-100 font-sans overflow-x-hidden">
@@ -246,7 +322,7 @@ export default function Home() {
       </div>
 
       {/* Navigation */}
-      <nav className="fixed inset-x-0 top-0 w-full z-50 border-b border-white/10 bg-slate-950/90 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+      <nav data-nav="main" className="fixed inset-x-0 top-0 w-full z-50 border-b border-white/10 bg-slate-950/90 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-500/35 to-transparent pointer-events-none" aria-hidden="true" />
         <div className="max-w-6xl mx-auto px-6 md:px-8 h-20 flex items-center justify-between">
           <motion.div
@@ -265,14 +341,24 @@ export default function Home() {
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center gap-10 text-[13px] font-semibold text-slate-300">
-            {["Introduction", "Expérience", "Projets", "Compétences", "Contact"].map((item) => (
-              <a
-                key={item}
-                href={`#${item.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`}
+            {NAV_ITEMS.map((item) => (
+              <motion.a
+                key={item.id}
+                href={`#${item.id}`}
                 className="nav-link"
+                data-active={activeSection === item.id ? "true" : undefined}
+                aria-current={activeSection === item.id ? "location" : undefined}
+                onClick={() => setActiveSection(item.id)}
               >
-                {item}
-              </a>
+                <span className="relative z-[1]">{item.label}</span>
+                {activeSection === item.id ? (
+                  <motion.span
+                    layoutId="nav-active-indicator"
+                    className="nav-indicator"
+                    transition={{ type: "spring", stiffness: 560, damping: 44 }}
+                  />
+                ) : null}
+              </motion.a>
             ))}
           </div>
 
@@ -296,14 +382,20 @@ export default function Home() {
               className="md:hidden border-t border-white/10 bg-slate-950/80 backdrop-blur-xl overflow-hidden"
             >
               <div className="flex flex-col p-6 space-y-3 text-slate-200">
-                {["Introduction", "Expérience", "Projets", "Compétences", "Contact"].map((item) => (
+                {NAV_ITEMS.map((item) => (
                   <a
-                    key={item}
-                    href={`#${item.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`}
-                    onClick={() => setMenuOpen(false)}
-                    className="rounded-xl px-4 py-3 bg-white/0 hover:bg-white/5 border border-white/0 hover:border-white/10 transition-colors text-base font-semibold"
+                    key={item.id}
+                    href={`#${item.id}`}
+                    onClick={() => {
+                      setActiveSection(item.id);
+                      setMenuOpen(false);
+                    }}
+                    className={`rounded-xl px-4 py-3 transition-colors text-base font-semibold border ${activeSection === item.id
+                        ? "bg-white/6 border-cyan-400/30 text-cyan-100"
+                        : "bg-white/0 hover:bg-white/5 border-white/0 hover:border-white/10"
+                      }`}
                   >
-                    {item}
+                    {item.label}
                   </a>
                 ))}
               </div>
@@ -368,11 +460,39 @@ export default function Home() {
             </motion.a>
           </motion.div>
 
-          <motion.div variants={fadeInUp} className="mt-12 flex gap-4 text-slate-500">
-            <a href="https://github.com/Paulclaus67" target="_blank" rel="noreferrer noopener" className="hover:text-white transition-colors"><Github /></a>
-            <a href="https://www.linkedin.com/in/paul-claus/" target="_blank" rel="noreferrer noopener" className="hover:text-blue-400 transition-colors"><Linkedin /></a>
-            <a href="mailto:paul.claus@viacesi.fr" className="hover:text-cyan-400 transition-colors"><Mail /></a>
-            <a href="#contact" className="hover:text-emerald-400 transition-colors"><MapPin /></a>
+          <motion.div variants={fadeInUp} className="mt-12 flex gap-3">
+            <a
+              href="https://github.com/Paulclaus67"
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="GitHub"
+              className="group inline-flex items-center justify-center rounded-full p-2 hover:bg-sky-400/10 transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/70"
+            >
+              <Github className="text-sky-400 group-hover:text-sky-300 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
+            </a>
+            <a
+              href="https://www.linkedin.com/in/paul-claus/"
+              target="_blank"
+              rel="noreferrer noopener"
+              aria-label="LinkedIn"
+              className="group inline-flex items-center justify-center rounded-full p-2 hover:bg-sky-400/10 transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/70"
+            >
+              <Linkedin className="text-sky-400 group-hover:text-sky-300 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
+            </a>
+            <a
+              href="mailto:paul.claus@viacesi.fr"
+              aria-label="Email"
+              className="group inline-flex items-center justify-center rounded-full p-2 hover:bg-sky-400/10 transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/70"
+            >
+              <Mail className="text-sky-400 group-hover:text-sky-300 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
+            </a>
+            <a
+              href="#contact"
+              aria-label="Localisation"
+              className="group inline-flex items-center justify-center rounded-full p-2 hover:bg-sky-400/10 transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/70"
+            >
+              <MapPin className="text-sky-400 group-hover:text-sky-300 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
+            </a>
           </motion.div>
         </motion.section>
 
@@ -585,6 +705,7 @@ export default function Home() {
                 { key: "all", label: "Tous" },
                 { key: "reseau", label: "Réseau" },
                 { key: "web", label: "Web" },
+                { key: "logiciel", label: "Logiciel" },
                 { key: "ia", label: "IA" },
               ].map(cat => (
                 <button
@@ -607,7 +728,10 @@ export default function Home() {
               {filteredProjectsList.map((proj) => (
                 <motion.button
                   key={proj.key}
-                  onClick={() => setSelectedProjectKey(proj.key)}
+                  onClick={() => {
+                    setSelectedProjectKey(proj.key);
+                    setShowAllProjectActions(false);
+                  }}
                   layout
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
@@ -630,6 +754,13 @@ export default function Home() {
                         {proj.headline}
                       </h4>
                       <p className="text-xs text-slate-300/90">{proj.company}</p>
+                      {proj.stackLabel ? (
+                        <div className="mt-1 flex items-center gap-2">
+                          <span className="inline-flex items-center rounded-full border border-sky-400/30 bg-sky-400/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-sky-200">
+                            {proj.stackLabel}
+                          </span>
+                        </div>
+                      ) : null}
                     </div>
                   </div>
                   {/* Active Indicator */}
@@ -683,9 +814,34 @@ export default function Home() {
                   </div>
                   <div className="premium-subcard p-4 rounded-2xl">
                     <h4 className="text-xs font-bold text-sky-500 uppercase tracking-wider mb-3">Action</h4>
-                    <ul className="text-sm text-slate-300 space-y-2">
-                      {activeStudy.actionsBullets.map((b, i) => <li key={i} className="flex gap-2"><span className="text-sky-800">•</span>{b}</li>)}
-                    </ul>
+                    <AnimatePresence initial={false} mode="popLayout">
+                      <motion.ul
+                        key={showAllProjectActions ? "all" : "preview"}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -6 }}
+                        transition={{ duration: 0.18, ease: "easeOut" }}
+                        className="text-sm text-slate-300 space-y-2"
+                      >
+                        {(showAllProjectActions ? projectActionBullets : projectActionBullets.slice(0, 3)).map((b, i) => (
+                          <li key={i} className="flex gap-2">
+                            <span className="text-sky-800">•</span>
+                            <span className="leading-relaxed">{b}</span>
+                          </li>
+                        ))}
+                      </motion.ul>
+                    </AnimatePresence>
+
+                    {projectActionBullets.length > 3 ? (
+                      <button
+                        type="button"
+                        onClick={() => setShowAllProjectActions((v) => !v)}
+                        className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-950/30 px-3 py-1.5 text-[11px] font-semibold text-slate-200 hover:bg-slate-900/40 hover:border-white/15 transition-colors"
+                      >
+                        {showAllProjectActions ? "Voir moins" : `Voir plus (${projectActionBullets.length - 3})`}
+                        <ArrowRight size={14} className={`transition-transform ${showAllProjectActions ? "-rotate-90" : "rotate-90"}`} />
+                      </button>
+                    ) : null}
                   </div>
                   <div className="premium-subcard p-4 rounded-2xl">
                     <h4 className="text-xs font-bold text-emerald-500 uppercase tracking-wider mb-3">Impact</h4>
@@ -847,7 +1003,7 @@ export default function Home() {
 
             <h2 className="text-3xl font-bold text-white mb-4">Prêt à collaborer ?</h2>
             <p className="text-slate-300 mb-8">
-              {"Je suis actuellement à l'écoute d'opportunités pour des postes de développeur Fullstack ou Python."}
+              {"Je suis actuellement à l'écoute d'opportunités pour des postes de développeur Fullstack ou Python/C#."}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -878,7 +1034,7 @@ export default function Home() {
               © {new Date().getFullYear()} Paul Claus.
             </p>
           </motion.div>
-        </section>
+        </section>  
 
       </div>
 
