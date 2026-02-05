@@ -4,7 +4,7 @@ Portfolio professionnel moderne de Paul Claus, ingénieur informatique junior sp
 
 Réalisé avec **Next.js 16**, **React 19**, **Tailwind CSS 4** et des animations (CSS + Framer Motion).
 
-🔗 **[Portfolio en ligne](https://portfolio-mon-portfolio.vercel.app/)** • 🔗 **[LinkedIn](https://www.linkedin.com/in/paul-claus/)** • 🔗 **[GitHub](https://github.com/Paulclaus67)**
+🔗 **[Portfolio en ligne](https://portfolio-mon-portfolio.vercel.app/)** • 🔗 **[LinkedIn](https://www.linkedin.com/in/paul-claus/)** • 
 
 ---
 
