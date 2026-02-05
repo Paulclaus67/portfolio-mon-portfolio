@@ -142,14 +142,14 @@
 
 /* Link Styles */
 a {
-  color: var(--color-cyan-primary);
+  color: inherit;
   text-decoration: none;
   position: relative;
   transition: color var(--duration-normal) var(--easing-ease-out);
 }
 
 a:hover {
-  color: var(--color-sky-accent);
+  color: inherit;
 }
 
 a:focus-visible {
@@ -157,11 +157,21 @@ a:focus-visible {
   outline-offset: 2px;
 }
 
+/* Accent links (opt-in) */
+.link-accent {
+  color: var(--color-cyan-primary);
+}
+
+.link-accent:hover {
+  color: var(--color-sky-accent);
+}
+
 /* Underline animated link */
 .link-animated {
   position: relative;
   display: inline-block;
   padding-bottom: 2px;
+  color: var(--color-cyan-primary);
 }
 
 .link-animated::after {

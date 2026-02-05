@@ -25,7 +25,7 @@ export default function BurgerMenu({ navLinks }) {
               onClick={() => setOpen(false)}
               tabIndex={0}
               style={{ zIndex: 60 }}
-            >✕</button>
+            >×</button>
             {navLinks.map((link) => (
               <button
                 key={link.id}
