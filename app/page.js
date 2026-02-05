@@ -30,7 +30,8 @@ import {
   Database,
   Server,
   Briefcase,
-  Cpu
+  Cpu,
+  ArrowUp
 } from "lucide-react";
 
 import {
@@ -482,7 +483,7 @@ function KonamiGameOverlay() {
 
       <div className="relative mx-auto flex h-full w-full max-w-6xl flex-col px-4 py-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="min-w-[260px]">
+          <div className="min-w-0 flex-1">
             <div className="inline-flex items-center gap-2">
               <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-[11px] font-semibold tracking-wide text-cyan-200">
                 Konami
@@ -491,7 +492,7 @@ function KonamiGameOverlay() {
                 2048 Dev
               </span>
             </div>
-            <h1 className="mt-3 text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-purple-300">
+            <h1 className="mt-3 text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-purple-300">
               Merge ta stack
             </h1>
             <p className="mt-1 text-sm text-slate-300">
@@ -500,8 +501,8 @@ function KonamiGameOverlay() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
-            <div className="rounded-2xl border border-slate-700/70 bg-slate-900/35 px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.40)]">
+          <div className="flex flex-wrap items-center justify-end gap-2">
+            <div className="w-full sm:w-auto rounded-2xl border border-slate-700/70 bg-slate-900/35 px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.40)]">
               <div className="flex items-center gap-4">
                 <div>
                   <div className="text-[11px] uppercase tracking-wider text-slate-400">Score</div>
@@ -517,7 +518,7 @@ function KonamiGameOverlay() {
 
             <button
               onClick={() => resetGame()}
-              className="rounded-2xl border border-slate-700/70 bg-slate-900/35 px-4 py-3 text-sm font-semibold text-slate-200 shadow-[0_18px_60px_rgba(0,0,0,0.40)] hover:border-cyan-500/40 hover:text-white"
+              className="w-full sm:w-auto rounded-2xl border border-slate-700/70 bg-slate-900/35 px-4 py-3 text-sm font-semibold text-slate-200 shadow-[0_18px_60px_rgba(0,0,0,0.40)] hover:border-cyan-500/40 hover:text-white"
             >
               Rejouer
             </button>
@@ -757,6 +758,8 @@ export default function Home() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showAllProjectActions, setShowAllProjectActions] = useState(false);
+  const [showScrollTop, setShowScrollTop] = useState(false);
+  const reduceMotion = useReducedMotion();
 
   // Easter Egg states
   const [clicks, setClicks] = useState(0);
@@ -875,13 +878,24 @@ export default function Home() {
     };
   }, []);
 
+  useEffect(() => {
+    const onScroll = () => setShowScrollTop(window.scrollY > 700);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  const scrollToTop = useCallback(() => {
+    window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
+  }, [reduceMotion]);
+
   // Scroll Progress
   const { scrollYProgress } = useScroll();
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.2 });
   const progressWidth = useTransform(smoothProgress, (v) => `${v * 100}%`);
 
   return (
-    <main className="relative min-h-screen bg-slate-950 text-slate-200 selection:bg-cyan-500/30 selection:text-cyan-100 font-sans overflow-x-hidden">
+    <main className="relative min-h-[100dvh] bg-slate-950 text-slate-200 selection:bg-cyan-500/30 selection:text-cyan-100 font-sans overflow-x-hidden">
       {/* Background Elements */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay"></div>
@@ -890,7 +904,7 @@ export default function Home() {
       </div>
 
       {/* Progress Bar */}
-      <div className="fixed top-20 left-0 right-0 h-[2px] md:h-[3px] z-40 pointer-events-none bg-white/5 ring-1 ring-white/5 overflow-hidden" aria-hidden="true">
+      <div className="fixed top-[calc(5rem+env(safe-area-inset-top))] left-0 right-0 h-[2px] md:h-[3px] z-40 pointer-events-none bg-white/5 ring-1 ring-white/5 overflow-hidden" aria-hidden="true">
         <motion.div
           className="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 shadow-[0_0_12px_rgba(34,211,238,0.28)]"
           style={{ width: progressWidth }}
@@ -898,9 +912,9 @@ export default function Home() {
       </div>
 
       {/* Navigation */}
-      <nav data-nav="main" className="fixed inset-x-0 top-0 w-full z-50 border-b border-white/10 bg-slate-950/90 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
+      <nav data-nav="main" className="fixed inset-x-0 top-0 w-full z-50 border-b border-white/10 bg-slate-950/90 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.35)] pt-[env(safe-area-inset-top)]">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-500/35 to-transparent pointer-events-none" aria-hidden="true" />
-        <div className="max-w-6xl mx-auto px-6 md:px-8 h-20 flex items-center justify-between">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 h-20 flex items-center justify-between">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
@@ -955,9 +969,9 @@ export default function Home() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="md:hidden border-t border-white/10 bg-slate-950/80 backdrop-blur-xl overflow-hidden"
+              className="md:hidden border-t border-white/10 bg-slate-950/80 backdrop-blur-xl overflow-hidden max-h-[calc(100dvh-5rem-env(safe-area-inset-top))] overflow-y-auto overscroll-contain"
             >
-              <div className="flex flex-col p-6 space-y-3 text-slate-200">
+              <div className="flex flex-col p-4 sm:p-6 space-y-3 text-slate-200">
                 {NAV_ITEMS.map((item) => (
                   <a
                     key={item.id}
@@ -980,7 +994,7 @@ export default function Home() {
         </AnimatePresence>
       </nav>
 
-      <div className="max-w-5xl mx-auto px-6 pt-32 pb-20 space-y-32 relative z-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-16 sm:pb-20 space-y-16 md:space-y-32 relative z-10">
 
         {/* HERO SECTION */}
         <motion.section
@@ -1002,24 +1016,24 @@ export default function Home() {
 
           <motion.h1
             variants={fadeInUp}
-            className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-[1.1]"
+            className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-[1.08]"
           >
             Développeur <span className="text-gradient-cyan">Polyvalent</span><br />
             et Créatif.
           </motion.h1>
 
-          <motion.p variants={fadeInUp} className="text-lg text-slate-300 max-w-2xl mb-8 leading-relaxed">
+          <motion.p variants={fadeInUp} className="text-base sm:text-lg text-slate-300 max-w-2xl mb-8 leading-relaxed">
             Je suis <strong className="text-slate-200">Paul Claus</strong>. Ingénieur informatique (CESI), je conçois des solutions web, logicielles et IA concrètes.
             Mon but : <span className="text-slate-200">transformer la complexité technique en outils simples et performants.</span>
           </motion.p>
 
-          <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
+          <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
             <motion.a
               href="#contact"
               whileHover={{ y: -3, scale: 1.02 }}
               whileTap={{ y: 0, scale: 0.98 }}
               transition={{ type: "spring", stiffness: 500, damping: 32 }}
-              className="btn-cta btn-text-dark inline-flex items-center gap-2 rounded-full px-6 py-3 font-bold border border-cyan-400/35 bg-white hover:bg-white hover:border-cyan-400/55 transition-all shadow-[0_12px_35px_rgba(0,0,0,0.45),0_0_30px_rgba(34,211,238,0.18)]"
+              className="btn-cta btn-text-dark inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full px-6 py-3 font-bold border border-cyan-400/35 bg-white hover:bg-white hover:border-cyan-400/55 transition-all shadow-[0_12px_35px_rgba(0,0,0,0.45),0_0_30px_rgba(34,211,238,0.18)]"
             >
               Me contacter <ArrowRight size={18} />
             </motion.a>
@@ -1030,13 +1044,13 @@ export default function Home() {
               whileHover={{ y: -2, scale: 1.01 }}
               whileTap={{ y: 0, scale: 0.99 }}
               transition={{ type: "spring", stiffness: 500, damping: 32 }}
-              className="btn-cta inline-flex items-center gap-2 glass-panel hover:bg-white/10 text-white font-medium px-6 py-3 rounded-full transition-all border border-white/10 hover:border-white/20"
+              className="btn-cta inline-flex w-full sm:w-auto items-center justify-center gap-2 glass-panel hover:bg-white/10 text-white font-medium px-6 py-3 rounded-full transition-all border border-white/10 hover:border-white/20"
             >
               <Download size={18} /> Télécharger CV
             </motion.a>
           </motion.div>
 
-          <motion.div variants={fadeInUp} className="mt-12 flex gap-3">
+          <motion.div variants={fadeInUp} className="mt-12 flex flex-wrap justify-center sm:justify-start gap-3">
             <a
               href="https://github.com/Paulclaus67"
               target="_blank"
@@ -1358,7 +1372,7 @@ export default function Home() {
                 animate={{ opacity: 1, x: 0 }}
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
-                className="premium-card rounded-3xl p-6 md:p-8 min-h-[520px] overflow-hidden"
+                className="premium-card rounded-3xl p-6 md:p-8 min-h-[420px] sm:min-h-[520px] overflow-hidden"
               >
                 <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
                   <div>
@@ -1459,12 +1473,12 @@ export default function Home() {
 
           <div className="premium-card rounded-3xl p-6 md:p-8">
             {/* Category Tabs */}
-            <div className="flex flex-wrap gap-2 mb-8 border-b border-white/5 pb-5">
+            <div className="flex gap-2 mb-8 border-b border-white/5 pb-4 overflow-x-auto scrollbar-none pr-2 md:flex-wrap md:overflow-visible md:pb-5 md:pr-0">
               {skillCategories.map(cat => (
                 <button
                   key={cat.key}
                   onClick={() => setSelectedCategory(cat.key)}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-all border backdrop-blur ${selectedCategory === cat.key
+                  className={`shrink-0 whitespace-nowrap px-3 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all border backdrop-blur md:px-4 ${selectedCategory === cat.key
                       ? "bg-gradient-to-r from-cyan-500/25 to-purple-500/15 text-cyan-100 border-cyan-400/35 shadow-[0_0_0_1px_rgba(34,211,238,0.08)]"
                       : "bg-slate-950/30 text-slate-300 border-slate-800/70 hover:border-slate-700 hover:bg-slate-900/50"
                     }`}
@@ -1475,12 +1489,12 @@ export default function Home() {
             </div>
 
             {/* Skills Grid */}
-            <div className="flex flex-wrap gap-3 mb-10">
+            <div className="flex gap-2 mb-10 overflow-x-auto scrollbar-none pr-2 pb-2 md:flex-wrap md:overflow-visible md:pr-0 md:pb-0 md:gap-3">
               {filteredSkills.map(skill => (
                 <button
                   key={skill.key}
                   onClick={() => setSelectedSkillKey(skill.key)}
-                  className={`px-4 py-2 rounded-full border text-sm font-semibold transition-all backdrop-blur ${selectedSkillKey === skill.key
+                  className={`shrink-0 whitespace-nowrap px-3 py-2 rounded-full border text-xs sm:text-sm font-semibold transition-all backdrop-blur md:px-4 ${selectedSkillKey === skill.key
                       ? "bg-cyan-500/10 border-cyan-400/50 text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_25px_rgba(0,0,0,0.35)]"
                       : "bg-slate-950/30 border-slate-800/70 text-slate-300 hover:border-slate-700 hover:bg-slate-900/40"
                     }`}
@@ -1491,16 +1505,16 @@ export default function Home() {
             </div>
 
             {/* Detailed View */}
-            <div className="grid md:grid-cols-2 gap-8 items-start">
-              <div className="space-y-6">
+            <div className="grid md:grid-cols-2 gap-8 items-start min-w-0">
+              <div className="min-w-0 space-y-6">
                 <div>
-                  <h3 className="text-3xl font-bold text-white mb-2">{currentSkillDetail.title}</h3>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 break-words">{currentSkillDetail.title}</h3>
                   <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold uppercase tracking-wider ${levelColor}`}>
                     {currentSkillDetail.level === "prod" ? "Production" : "Projet / Expérimentation"}
                   </div>
                 </div>
 
-                <p className="text-slate-300 text-lg leading-relaxed">
+                <p className="text-slate-300 text-base sm:text-lg leading-relaxed break-words">
                   {currentSkillDetail.desc}
                 </p>
 
@@ -1508,24 +1522,24 @@ export default function Home() {
                   <div className="flex items-center gap-2 mb-2 text-cyan-400 text-sm font-semibold">
                     <Briefcase size={16} /> {"Contexte d'utilisation"}
                   </div>
-                  <p className="text-sm text-slate-300">{currentSkillDetail.context}</p>
+                  <p className="text-sm text-slate-300 break-words">{currentSkillDetail.context}</p>
                 </div>
 
                 <div className="premium-subcard p-5 rounded-2xl">
                   <div className="flex items-center gap-2 mb-2 text-emerald-400 text-sm font-semibold">
                     <CheckCircle2 size={16} /> Valeur pour vous
                   </div>
-                  <p className="text-sm text-slate-300">{currentSkillDetail.employerValue}</p>
+                  <p className="text-sm text-slate-300 break-words">{currentSkillDetail.employerValue}</p>
                 </div>
               </div>
 
               {/* Code Snippet Card */}
-              <div className="relative group">
+              <div className="relative group min-w-0">
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-3xl blur opacity-15 group-hover:opacity-25 transition-opacity" />
                 <div className="premium-card relative rounded-3xl p-6 md:p-7 font-mono text-sm overflow-hidden">
-                  <div className="flex items-center justify-between mb-4 border-b border-white/5 pb-3">
-                    <span className="text-slate-500 text-xs">Exemple de code</span>
-                    <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center justify-between gap-3 md:flex-nowrap md:gap-2 mb-4 border-b border-white/5 pb-3">
+                    <span className="text-slate-500 text-xs shrink-0">Exemple de code</span>
+                    <div className="flex flex-wrap items-center justify-end gap-2 md:flex-nowrap">
                       <button
                         type="button"
                         onClick={handleCopyExample}
@@ -1540,9 +1554,9 @@ export default function Home() {
                       <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/20" />
                     </div>
                   </div>
-                  <div className="code-scroll-hint rounded-2xl border border-white/5 bg-slate-950/35 p-4">
-                    <pre className="overflow-x-auto text-[13px] leading-6 text-slate-200">
-                      <code className="block min-w-max whitespace-pre">{exampleText}</code>
+                  <div className="code-scroll-hint rounded-2xl border border-white/5 bg-slate-950/35 p-4 overflow-hidden">
+                    <pre className="overflow-x-auto max-w-full text-[13px] leading-6 text-slate-200">
+                      <code className="block whitespace-pre">{exampleText}</code>
                     </pre>
                   </div>
                 </div>
@@ -1552,20 +1566,28 @@ export default function Home() {
         </motion.section>
 
         {/* TRUSTED BY */}
-        <section className="py-14 md:py-18 border-y border-slate-800/50 bg-black/20 -mx-6 px-6">
-          <p className="text-center text-slate-300 text-sm md:text-base font-semibold uppercase tracking-[0.3em] mb-10">
+        <section className="py-14 md:py-16 border-y border-slate-800/50 bg-black/20 -mx-4 sm:-mx-6 px-4 sm:px-6">
+          <p className="text-center text-slate-300 text-sm md:text-base font-semibold uppercase tracking-[0.25em] md:tracking-[0.3em] mb-8 md:mb-10">
             {"Ils m'ont fait confiance"}
           </p>
-          <div className="flex flex-wrap justify-center items-center gap-10 md:gap-14 opacity-80 grayscale hover:grayscale-0 transition-all duration-500">
+          <div className="grid grid-cols-2 sm:grid-cols-3 place-items-center gap-x-8 gap-y-8 opacity-90 transition-all duration-500 md:opacity-80 md:grayscale md:hover:grayscale-0 md:flex md:flex-wrap md:justify-center md:items-center md:gap-10">
             {trustedLogos.map((brand) => (
               <a
                 key={brand.name}
                 href={brand.url}
                 target="_blank"
                 rel="noreferrer noopener"
-                className="hover:scale-110 transition-transform"
+                className="group inline-flex items-center justify-center p-1.5 md:p-2 hover:scale-105 md:hover:scale-105 transition-transform"
               >
-                <Image src={brand.src} alt={brand.name} width={180} height={72} className="h-12 md:h-14 w-auto object-contain" />
+                <div className="relative h-10 w-[140px] sm:h-11 sm:w-[160px] md:h-12 md:w-[168px] lg:h-14 lg:w-[190px]">
+                  <Image
+                    src={brand.src}
+                    alt={brand.name}
+                    fill
+                    sizes="(min-width: 1024px) 190px, (min-width: 768px) 168px, (min-width: 640px) 160px, 140px"
+                    className="object-contain"
+                  />
+                </div>
               </a>
             ))}
           </div>
@@ -1577,11 +1599,11 @@ export default function Home() {
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
-            className="glass-panel p-10 relative overflow-hidden"
+            className="glass-panel p-6 sm:p-10 relative overflow-hidden"
           >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500" />
 
-            <h2 className="text-3xl font-bold text-white mb-4">Prêt à collaborer ?</h2>
+            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">Prêt à collaborer ?</h2>
             <p className="text-slate-300 mb-8">
               {"Je suis actuellement à l'écoute d'opportunités pour des postes de développeur Fullstack ou Python/C#."}
             </p>
@@ -1617,6 +1639,39 @@ export default function Home() {
         </section>  
 
       </div>
+
+      <AnimatePresence>
+        {showScrollTop ? (
+          <motion.button
+            type="button"
+            aria-label="Remonter en haut de la page"
+            onClick={scrollToTop}
+            initial={reduceMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 14, scale: 0.95 }}
+            animate={reduceMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 1, y: 0, scale: 1 }}
+            exit={reduceMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 14, scale: 0.95 }}
+            transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 460, damping: 34 }}
+            className="fixed z-50 right-[calc(1rem+env(safe-area-inset-right))] sm:right-[calc(1.5rem+env(safe-area-inset-right))] bottom-[calc(1rem+env(safe-area-inset-bottom))] sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))] inline-flex h-12 w-12 items-center justify-center rounded-full shadow-[0_18px_55px_rgba(0,0,0,0.55)] transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/70 group isolate overflow-hidden"
+          >
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400/70 via-purple-500/55 to-pink-500/45 opacity-70 blur-[10px] transition-opacity group-hover:opacity-90"
+            />
+            <span
+              aria-hidden="true"
+              className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400/70 via-purple-500/60 to-pink-500/55 opacity-55"
+            />
+            <span
+              aria-hidden="true"
+              className="absolute inset-[1px] rounded-full border border-white/10 bg-slate-950/70 backdrop-blur-xl transition-colors group-hover:bg-slate-950/60 group-hover:border-white/15"
+            />
+            <span
+              aria-hidden="true"
+              className="absolute -left-10 top-0 h-full w-12 rotate-12 bg-white/10 blur-sm opacity-0 transition-all duration-700 group-hover:left-[120%] group-hover:opacity-100"
+            />
+            <ArrowUp size={18} className="relative z-10 text-slate-100 drop-shadow-[0_0_12px_rgba(34,211,238,0.18)]" />
+          </motion.button>
+        ) : null}
+      </AnimatePresence>
 
       {showTerminal && <EasterEggTerminal onClose={() => setShowTerminal(false)} />}
       <KonamiGameOverlay />
