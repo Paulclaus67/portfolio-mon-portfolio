@@ -178,6 +178,28 @@
   animation: floatingElement 4s ease-in-out infinite;
 }
 
+/* Background blobs (slow, subtle) */
+@keyframes blobDrift {
+  0%, 100% {
+    transform: translate3d(0, 0, 0) scale(1);
+    opacity: 0.9;
+  }
+  50% {
+    transform: translate3d(0, -18px, 0) scale(1.06);
+    opacity: 1;
+  }
+}
+
+.bg-blob {
+  animation: blobDrift 14s ease-in-out infinite;
+  will-change: transform, opacity;
+}
+
+.bg-blob--slow {
+  animation-duration: 18s;
+  animation-delay: 2.5s;
+}
+
 /* Shimmer effect (loading state) */
 @keyframes shimmerEffect {
   0% {
@@ -214,5 +236,10 @@ textarea:focus-visible {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .bg-blob,
+  .bg-blob--slow {
+    animation: none !important;
   }
 }
