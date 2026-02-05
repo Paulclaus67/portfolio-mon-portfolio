@@ -191,6 +191,40 @@ body {
   }
 }
 
+.nav-link {
+  position: relative;
+  padding: 10px 6px;
+  color: rgba(203, 213, 225, 0.92);
+  transition: color 150ms ease;
+}
+
+.nav-link:hover {
+  color: rgba(165, 243, 252, 0.95);
+}
+
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 6px;
+  right: 6px;
+  bottom: 6px;
+  height: 1px;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 220ms ease;
+  background: linear-gradient(90deg, rgba(34, 211, 238, 0.0), rgba(34, 211, 238, 0.85), rgba(168, 85, 247, 0.65));
+}
+
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-link::after {
+    transition: none;
+  }
+}
+
 .icon-cyan {
   color: #0891b2 !important;
 }

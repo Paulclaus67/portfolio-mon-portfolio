@@ -246,35 +246,39 @@ export default function Home() {
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-40 border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
-        <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
+      <nav className="fixed top-0 w-full z-40 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.35)] relative">
+        <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-500/35 to-transparent pointer-events-none" aria-hidden="true" />
+        <div className="max-w-6xl mx-auto px-6 md:px-8 h-20 flex items-center justify-between">
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-2"
+            className="flex items-center gap-3"
           >
-            <div className="relative w-8 h-8 rounded-full overflow-hidden border border-slate-700 cursor-pointer" onClick={handleProfileClick}>
-              <Image src="/Paul_PDP.jpg" alt="Paul Claus" fill sizes="32px" className="object-cover" />
+            <div className="relative w-10 h-10 rounded-full overflow-hidden border border-slate-600/70 cursor-pointer shadow-sm shadow-black/40" onClick={handleProfileClick}>
+              <Image src="/Paul_PDP.jpg" alt="Paul Claus" fill sizes="40px" className="object-cover" />
             </div>
-            <span className="font-semibold text-slate-100 tracking-tight">Paul Claus</span>
+            <div className="leading-none">
+              <span className="block font-semibold text-slate-100 tracking-tight text-[15px]">Paul Claus</span>
+              <span className="hidden sm:block text-[11px] text-slate-400/90 mt-1">Développeur Fullstack</span>
+            </div>
           </motion.div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+          <div className="hidden md:flex items-center gap-10 text-[13px] font-semibold text-slate-300">
             {["Introduction", "Expérience", "Projets", "Compétences", "Contact"].map((item) => (
               <a
                 key={item}
                 href={`#${item.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`}
-                className="hover:text-cyan-400 transition-colors"
+                className="nav-link"
               >
                 {item}
               </a>
             ))}
             <button
               onClick={() => setRecruiterMode(!recruiterMode)}
-              className={`px-4 py-1.5 rounded-full text-xs font-semibold transition-all border ${recruiterMode
-                  ? "bg-amber-500/10 text-amber-300 border-amber-500/50 shadow-amber-900/20"
-                  : "bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700"
+              className={`px-4 py-2 rounded-full text-[11px] font-bold transition-all border shadow-sm ${recruiterMode
+                  ? "bg-amber-500/10 text-amber-200 border-amber-500/50 shadow-amber-900/20"
+                  : "bg-slate-900/40 text-slate-200 border-white/10 hover:bg-slate-900/60 hover:border-white/20"
                 }`}
             >
               {recruiterMode ? "⚡ Mode Recruteur ACTIF" : "Mode Standard"}
@@ -282,7 +286,11 @@ export default function Home() {
           </div>
 
           {/* Mobile Menu Toggle */}
-          <button className="md:hidden text-slate-300" onClick={() => setMenuOpen(!menuOpen)}>
+          <button
+            className="md:hidden inline-flex items-center justify-center rounded-full border border-white/10 bg-slate-900/40 p-2.5 text-slate-200 hover:bg-slate-900/60 transition-colors"
+            onClick={() => setMenuOpen(!menuOpen)}
+            aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+          >
             {menuOpen ? <X /> : <Menu />}
           </button>
         </div>
@@ -294,15 +302,15 @@ export default function Home() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="md:hidden border-t border-slate-800 bg-slate-950 overflow-hidden"
+              className="md:hidden border-t border-white/10 bg-slate-950/80 backdrop-blur-xl overflow-hidden"
             >
-              <div className="flex flex-col p-6 space-y-4 text-slate-300">
+              <div className="flex flex-col p-6 space-y-3 text-slate-200">
                 {["Introduction", "Expérience", "Projets", "Compétences", "Contact"].map((item) => (
                   <a
                     key={item}
                     href={`#${item.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "")}`}
                     onClick={() => setMenuOpen(false)}
-                    className="block text-lg"
+                    className="rounded-xl px-4 py-3 bg-white/0 hover:bg-white/5 border border-white/0 hover:border-white/10 transition-colors text-base font-semibold"
                   >
                     {item}
                   </a>
@@ -312,7 +320,7 @@ export default function Home() {
                     setRecruiterMode(!recruiterMode);
                     setMenuOpen(false);
                   }}
-                  className="w-full py-3 text-center rounded-lg bg-slate-800 text-slate-200 mt-4"
+                  className="w-full py-3.5 text-center rounded-xl bg-slate-900/60 hover:bg-slate-900/80 text-slate-100 mt-2 border border-white/10 hover:border-white/20 transition-colors font-bold"
                 >
                   {recruiterMode ? "Désactiver Mode Recruteur" : "Activer Mode Recruteur"}
                 </button>
