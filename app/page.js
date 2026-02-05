@@ -359,7 +359,7 @@ export default function Home() {
           </motion.h1>
 
           <motion.p variants={fadeInUp} className="text-lg text-slate-300 max-w-2xl mb-8 leading-relaxed">
-            Je suis <strong className="text-slate-200">Paul Claus</strong>. Ingénieur généraliste (CESI), je conçois des solutions web, logicielles et IA concrètes.
+            Je suis <strong className="text-slate-200">Paul Claus</strong>. Ingénieur informatique (CESI), je conçois des solutions web, logicielles et IA concrètes.
             Mon but : <span className="text-slate-200">transformer la complexité technique en outils simples et performants.</span>
           </motion.p>
 
