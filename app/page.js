@@ -148,7 +148,7 @@ function KonamiGameOverlay() {
       <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-4">
         MODE KONAMI ACTIVÉ !
       </h1>
-      <p className="text-slate-400 mb-8">Un mini-jeu caché se lancerait ici...</p>
+      <p className="text-slate-300 mb-8">Un mini-jeu caché se lancerait ici...</p>
       <button
         onClick={() => setActive(false)}
         className="px-6 py-2 bg-cyan-600 rounded-full hover:bg-cyan-500 text-white font-bold"
@@ -226,7 +226,7 @@ export default function Home() {
 
   // Scroll Progress
   const { scrollYProgress } = useScroll();
-  const scaleX = useTransform(scrollYProgress, [0, 1], [0, 1]);
+  const progressWidth = useTransform(scrollYProgress, (v) => `${v * 100}%`);
 
   return (
     <main className="relative min-h-screen bg-slate-950 text-slate-200 selection:bg-cyan-500/30 selection:text-cyan-100 font-sans overflow-x-hidden">
@@ -238,10 +238,12 @@ export default function Home() {
       </div>
 
       {/* Progress Bar */}
-      <motion.div
-        className="fixed top-0 left-0 right-0 h-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500 origin-left z-50"
-        style={{ scaleX }}
-      />
+      <div className="fixed top-0 left-0 right-0 h-1 z-50 pointer-events-none" aria-hidden="true">
+        <motion.div
+          className="h-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500"
+          style={{ width: progressWidth }}
+        />
+      </div>
 
       {/* Navigation */}
       <nav className="fixed top-0 w-full z-40 border-b border-white/5 bg-slate-950/80 backdrop-blur-md">
@@ -258,7 +260,7 @@ export default function Home() {
           </motion.div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-400">
+          <div className="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
             {["Introduction", "Expérience", "Projets", "Compétences", "Contact"].map((item) => (
               <a
                 key={item}
@@ -345,29 +347,35 @@ export default function Home() {
             className="text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-[1.1]"
           >
             Développeur <span className="text-gradient-cyan">Polyvalent</span><br />
-            & Créatif.
+            et Créatif.
           </motion.h1>
 
-          <motion.p variants={fadeInUp} className="text-lg text-slate-400 max-w-2xl mb-8 leading-relaxed">
+          <motion.p variants={fadeInUp} className="text-lg text-slate-300 max-w-2xl mb-8 leading-relaxed">
             Je suis <strong className="text-slate-200">Paul Claus</strong>. Ingénieur généraliste (CESI), je conçois des solutions web, logicielles et IA concrètes.
             Mon but : <span className="text-slate-200">transformer la complexité technique en outils simples et performants.</span>
           </motion.p>
 
           <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
-            <a
+            <motion.a
               href="#contact"
-              className="btn-text-dark inline-flex items-center gap-2 rounded-full px-6 py-3 font-bold border border-cyan-400/35 bg-white hover:bg-white hover:border-cyan-400/55 transition-all hover:-translate-y-1 shadow-[0_12px_35px_rgba(0,0,0,0.45),0_0_30px_rgba(34,211,238,0.18)]"
+              whileHover={{ y: -3, scale: 1.02 }}
+              whileTap={{ y: 0, scale: 0.98 }}
+              transition={{ type: "spring", stiffness: 500, damping: 32 }}
+              className="btn-cta btn-text-dark inline-flex items-center gap-2 rounded-full px-6 py-3 font-bold border border-cyan-400/35 bg-white hover:bg-white hover:border-cyan-400/55 transition-all shadow-[0_12px_35px_rgba(0,0,0,0.45),0_0_30px_rgba(34,211,238,0.18)]"
             >
               Me contacter <ArrowRight size={18} />
-            </a>
-            <a
+            </motion.a>
+            <motion.a
               href="/Paul_Claus_CV.pdf"
               target="_blank"
               rel="noreferrer noopener"
-              className="inline-flex items-center gap-2 glass-panel hover:bg-white/10 text-white font-medium px-6 py-3 rounded-full transition-all border border-white/10 hover:border-white/20"
+              whileHover={{ y: -2, scale: 1.01 }}
+              whileTap={{ y: 0, scale: 0.99 }}
+              transition={{ type: "spring", stiffness: 500, damping: 32 }}
+              className="btn-cta inline-flex items-center gap-2 glass-panel hover:bg-white/10 text-white font-medium px-6 py-3 rounded-full transition-all border border-white/10 hover:border-white/20"
             >
               <Download size={18} /> Télécharger CV
-            </a>
+            </motion.a>
           </motion.div>
 
           <motion.div variants={fadeInUp} className="mt-12 flex gap-4 text-slate-500">
@@ -392,7 +400,7 @@ export default function Home() {
               <div className="h-px w-12 bg-cyan-500/50" />
               <div>
                 <h2 className="text-2xl font-bold text-slate-100">Expériences</h2>
-                <p className="text-sm text-slate-400 mt-1">
+                <p className="text-sm text-slate-300 mt-1">
                   Résultats concrets, missions variées (réseau, web, IA) — cliquez pour voir les détails.
                 </p>
               </div>
@@ -515,7 +523,7 @@ export default function Home() {
                           <div className="grid md:grid-cols-3 gap-3 mt-5">
                             <div className="bg-slate-950/50 p-4 rounded-xl border border-slate-800/50">
                               <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Contexte</h4>
-                              <ul className="text-sm text-slate-400 space-y-2">
+                              <ul className="text-sm text-slate-300 space-y-2">
                                 {study.contextBullets?.slice(0, 3).map((b, i) => (
                                   <li key={i} className="flex gap-2"><span className="text-slate-600">•</span>{b}</li>
                                 ))}
@@ -523,7 +531,7 @@ export default function Home() {
                             </div>
                             <div className="bg-slate-950/50 p-4 rounded-xl border border-slate-800/50">
                               <h4 className="text-xs font-bold text-sky-500 uppercase tracking-wider mb-3">Action</h4>
-                              <ul className="text-sm text-slate-400 space-y-2">
+                              <ul className="text-sm text-slate-300 space-y-2">
                                 {study.actionsBullets?.slice(0, 3).map((b, i) => (
                                   <li key={i} className="flex gap-2"><span className="text-sky-800">•</span>{b}</li>
                                 ))}
@@ -531,7 +539,7 @@ export default function Home() {
                             </div>
                             <div className="bg-slate-950/50 p-4 rounded-xl border border-slate-800/50">
                               <h4 className="text-xs font-bold text-emerald-500 uppercase tracking-wider mb-3">Impact</h4>
-                              <ul className="text-sm text-slate-400 space-y-2">
+                              <ul className="text-sm text-slate-300 space-y-2">
                                 {study.impactBullets?.slice(0, 3).map((b, i) => (
                                   <li key={i} className="flex gap-2"><span className="text-emerald-800">•</span>{b}</li>
                                 ))}
@@ -631,7 +639,7 @@ export default function Home() {
                       <h4 className={`text-sm font-semibold leading-snug line-clamp-2 break-words ${selectedProjectKey === proj.key ? "text-cyan-200" : "text-slate-100"}`}>
                         {proj.headline}
                       </h4>
-                      <p className="text-xs text-slate-400/90">{proj.company}</p>
+                      <p className="text-xs text-slate-300/90">{proj.company}</p>
                     </div>
                   </div>
                   {/* Active Indicator */}
@@ -679,19 +687,19 @@ export default function Home() {
                 <div className="grid md:grid-cols-3 gap-4 mb-8">
                   <div className="premium-subcard p-4 rounded-2xl">
                     <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Contexte</h4>
-                    <ul className="text-sm text-slate-400 space-y-2">
+                    <ul className="text-sm text-slate-300 space-y-2">
                       {activeStudy.contextBullets.map((b, i) => <li key={i} className="flex gap-2"><span className="text-slate-600">•</span>{b}</li>)}
                     </ul>
                   </div>
                   <div className="premium-subcard p-4 rounded-2xl">
                     <h4 className="text-xs font-bold text-sky-500 uppercase tracking-wider mb-3">Action</h4>
-                    <ul className="text-sm text-slate-400 space-y-2">
+                    <ul className="text-sm text-slate-300 space-y-2">
                       {activeStudy.actionsBullets.map((b, i) => <li key={i} className="flex gap-2"><span className="text-sky-800">•</span>{b}</li>)}
                     </ul>
                   </div>
                   <div className="premium-subcard p-4 rounded-2xl">
                     <h4 className="text-xs font-bold text-emerald-500 uppercase tracking-wider mb-3">Impact</h4>
-                    <ul className="text-sm text-slate-400 space-y-2">
+                    <ul className="text-sm text-slate-300 space-y-2">
                       {activeStudy.impactBullets.map((b, i) => <li key={i} className="flex gap-2"><span className="text-emerald-800">•</span>{b}</li>)}
                     </ul>
                   </div>
@@ -774,14 +782,14 @@ export default function Home() {
                   <div className="flex items-center gap-2 mb-2 text-cyan-400 text-sm font-semibold">
                     <Briefcase size={16} /> {"Contexte d'utilisation"}
                   </div>
-                  <p className="text-sm text-slate-400">{currentSkillDetail.context}</p>
+                  <p className="text-sm text-slate-300">{currentSkillDetail.context}</p>
                 </div>
 
                 <div className="premium-subcard p-5 rounded-2xl">
                   <div className="flex items-center gap-2 mb-2 text-emerald-400 text-sm font-semibold">
                     <CheckCircle2 size={16} /> Valeur pour vous
                   </div>
-                  <p className="text-sm text-slate-400">{currentSkillDetail.employerValue}</p>
+                  <p className="text-sm text-slate-300">{currentSkillDetail.employerValue}</p>
                 </div>
               </div>
 
@@ -819,7 +827,7 @@ export default function Home() {
 
         {/* TRUSTED BY */}
         <section className="py-14 md:py-18 border-y border-slate-800/50 bg-black/20 -mx-6 px-6">
-          <p className="text-center text-slate-400 text-sm md:text-base font-semibold uppercase tracking-[0.3em] mb-10">
+          <p className="text-center text-slate-300 text-sm md:text-base font-semibold uppercase tracking-[0.3em] mb-10">
             {"Ils m'ont fait confiance"}
           </p>
           <div className="flex flex-wrap justify-center items-center gap-10 md:gap-14 opacity-80 grayscale hover:grayscale-0 transition-all duration-500">
@@ -831,7 +839,7 @@ export default function Home() {
                 rel="noreferrer noopener"
                 className="hover:scale-110 transition-transform"
               >
-                <Image src={brand.src} alt={brand.name} width={140} height={56} className="h-10 md:h-12 w-auto object-contain" />
+                <Image src={brand.src} alt={brand.name} width={180} height={72} className="h-12 md:h-14 w-auto object-contain" />
               </a>
             ))}
           </div>
@@ -848,25 +856,31 @@ export default function Home() {
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500" />
 
             <h2 className="text-3xl font-bold text-white mb-4">Prêt à collaborer ?</h2>
-            <p className="text-slate-400 mb-8">
+            <p className="text-slate-300 mb-8">
               {"Je suis actuellement à l'écoute d'opportunités pour des postes de développeur Fullstack ou Python."}
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <a
+              <motion.a
                 href="mailto:paul.claus@viacesi.fr"
-                className="btn-text-dark inline-flex items-center justify-center gap-2 bg-white font-bold px-6 py-3 rounded-full transition-all border border-white/10 hover:border-cyan-400/35 shadow-[0_12px_35px_rgba(0,0,0,0.45)]"
+                whileHover={{ y: -3, scale: 1.02 }}
+                whileTap={{ y: 0, scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 500, damping: 32 }}
+                className="btn-cta btn-text-dark inline-flex items-center justify-center gap-2 bg-white font-bold px-6 py-3 rounded-full transition-all border border-white/10 hover:border-cyan-400/35 shadow-[0_12px_35px_rgba(0,0,0,0.45)]"
               >
                 <Mail size={18} className="icon-cyan" /> paul.claus@viacesi.fr
-              </a>
-              <a
+              </motion.a>
+              <motion.a
                 href="https://www.linkedin.com/in/paul-claus/"
                 target="_blank"
                 rel="noreferrer noopener"
-                className="inline-flex items-center justify-center gap-2 bg-[#0A66C2] hover:bg-[#0958A8] text-white font-bold px-6 py-3 rounded-full transition-all shadow-[0_12px_35px_rgba(0,0,0,0.45),0_0_30px_rgba(10,102,194,0.25)]"
+                whileHover={{ y: -3, scale: 1.02 }}
+                whileTap={{ y: 0, scale: 0.98 }}
+                transition={{ type: "spring", stiffness: 500, damping: 32 }}
+                className="btn-cta inline-flex items-center justify-center gap-2 bg-[#0A66C2] hover:bg-[#0958A8] text-white font-bold px-6 py-3 rounded-full transition-all shadow-[0_12px_35px_rgba(0,0,0,0.45),0_0_30px_rgba(10,102,194,0.25)]"
               >
                 <Linkedin size={18} /> LinkedIn
-              </a>
+              </motion.a>
             </div>
 
             <p className="mt-8 text-xs text-slate-500 border-t border-slate-800/50 pt-6">

@@ -143,6 +143,54 @@ body {
   color: #0f172a !important;
 }
 
+/* CTA micro-interactions */
+.btn-cta {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  transform: translateZ(0);
+}
+
+.btn-cta::after {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(
+    110deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.0) 35%,
+    rgba(255, 255, 255, 0.35) 50%,
+    rgba(255, 255, 255, 0.0) 65%,
+    transparent 100%
+  );
+  transform: translateX(-140%) skewX(-18deg);
+  opacity: 0;
+  transition: transform 700ms ease, opacity 150ms ease;
+  pointer-events: none;
+}
+
+.btn-cta:hover::after {
+  transform: translateX(140%) skewX(-18deg);
+  opacity: 0.9;
+}
+
+.btn-cta > * {
+  position: relative;
+  z-index: 1;
+}
+
+.btn-cta:focus-visible {
+  outline: 2px solid rgba(34, 211, 238, 0.7);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn-cta::after {
+    transition: none;
+    opacity: 0;
+  }
+}
+
 .icon-cyan {
   color: #0891b2 !important;
 }
