@@ -1,10 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import {
   motion,
   AnimatePresence,
+  LayoutGroup,
+  useAnimationControls,
+  useReducedMotion,
   useScroll,
   useSpring,
   useTransform
@@ -122,11 +125,247 @@ function EasterEggTerminal({ onClose }) {
 
 // 2. KONAMI GAME OVERLAY
 function KonamiGameOverlay() {
+  const reduceMotion = useReducedMotion();
+  const shakeControls = useAnimationControls();
   const [active, setActive] = useState(false);
-  const [score, setScore] = useState(0);
+  const [best, setBest] = useState(0);
+  const [game, setGame] = useState(() => ({
+    grid: Array(16).fill(null),
+    tiles: {},
+    score: 0,
+    won: false,
+    over: false,
+    tick: 0,
+    shakeTick: 0,
+  }));
+  const pointerStartRef = useRef(null);
+  const nextTileIdRef = useRef(1);
+  const lastShakeTickRef = useRef(0);
 
-  // Hook Konami Code simplifié pour l'exemple
+  const tileMeta = useMemo(() => {
+    const mk = (label, cls) => ({ label, cls });
+    return {
+      2: mk("var", "from-slate-600/35 to-slate-900/25 border-slate-500/40"),
+      4: mk("let", "from-sky-600/35 to-slate-900/25 border-sky-500/40"),
+      8: mk("const", "from-cyan-600/35 to-slate-900/25 border-cyan-500/40"),
+      16: mk("if", "from-emerald-600/35 to-slate-900/25 border-emerald-500/40"),
+      32: mk("else", "from-lime-600/30 to-slate-900/25 border-lime-500/40"),
+      64: mk("for", "from-amber-600/30 to-slate-900/25 border-amber-500/40"),
+      128: mk("while", "from-orange-600/30 to-slate-900/25 border-orange-500/40"),
+      256: mk("function", "from-rose-600/30 to-slate-900/25 border-rose-500/40"),
+      512: mk("class", "from-fuchsia-600/30 to-slate-900/25 border-fuchsia-500/40"),
+      1024: mk("async", "from-purple-600/30 to-slate-900/25 border-purple-500/40"),
+      2048: mk("AI", "from-cyan-400/35 to-purple-500/25 border-cyan-300/50"),
+      4096: mk("∞", "from-white/20 to-slate-900/25 border-white/30"),
+    };
+  }, []);
+
+  const getValueAt = useCallback((tiles, id) => {
+    if (!id) return 0;
+    return tiles[id]?.value ?? 0;
+  }, []);
+
+  const pickEmptyCell = useCallback((grid) => {
+    const empties = [];
+    for (let i = 0; i < grid.length; i++) if (grid[i] == null) empties.push(i);
+    if (!empties.length) return null;
+    return empties[Math.floor(Math.random() * empties.length)];
+  }, []);
+
+  const isGameOver = useCallback(
+    (grid, tiles) => {
+      for (let i = 0; i < 16; i++) if (grid[i] == null) return false;
+      for (let r = 0; r < 4; r++) {
+        for (let c = 0; c < 4; c++) {
+          const i = r * 4 + c;
+          const v = getValueAt(tiles, grid[i]);
+          if (c < 3 && v === getValueAt(tiles, grid[i + 1])) return false;
+          if (r < 3 && v === getValueAt(tiles, grid[i + 4])) return false;
+        }
+      }
+      return true;
+    },
+    [getValueAt]
+  );
+
+  const spawnRandomTile = useCallback(
+    ({ grid, tiles, tick }) => {
+      const cell = pickEmptyCell(grid);
+      if (cell == null) return { grid, tiles };
+
+      const id = nextTileIdRef.current++;
+      const value = Math.random() < 0.9 ? 2 : 4;
+      const nextGrid = grid.slice();
+      nextGrid[cell] = id;
+      const nextTiles = {
+        ...tiles,
+        [id]: { id, value, spawnTick: tick, mergeTick: -1 },
+      };
+      return { grid: nextGrid, tiles: nextTiles };
+    },
+    [pickEmptyCell]
+  );
+
+  const buildInitialGame = useCallback(() => {
+    nextTileIdRef.current = 1;
+    let base = {
+      grid: Array(16).fill(null),
+      tiles: {},
+      score: 0,
+      won: false,
+      over: false,
+      tick: 1,
+      shakeTick: 0,
+    };
+    base = { ...base, ...spawnRandomTile(base) };
+    base = { ...base, ...spawnRandomTile(base) };
+    return base;
+  }, [spawnRandomTile]);
+
+  const moveGrid = useCallback(
+    (grid, tiles, dir, nextTick) => {
+      const nextGrid = Array(16).fill(null);
+      const nextTiles = { ...tiles };
+      const mergedThisMove = new Set();
+      let gained = 0;
+      let moved = false;
+
+      const readLine = (index) => {
+        if (dir === "left" || dir === "right") {
+          const row = index;
+          const base = row * 4;
+          const line = [grid[base], grid[base + 1], grid[base + 2], grid[base + 3]];
+          return dir === "right" ? line.reverse() : line;
+        }
+        const col = index;
+        const line = [grid[col], grid[col + 4], grid[col + 8], grid[col + 12]];
+        return dir === "down" ? line.reverse() : line;
+      };
+
+      const writeLine = (index, line) => {
+        const out = dir === "right" || dir === "down" ? line.slice().reverse() : line;
+        if (dir === "left" || dir === "right") {
+          const row = index;
+          const base = row * 4;
+          nextGrid[base] = out[0];
+          nextGrid[base + 1] = out[1];
+          nextGrid[base + 2] = out[2];
+          nextGrid[base + 3] = out[3];
+          return;
+        }
+        const col = index;
+        nextGrid[col] = out[0];
+        nextGrid[col + 4] = out[1];
+        nextGrid[col + 8] = out[2];
+        nextGrid[col + 12] = out[3];
+      };
+
+      const processLine = (line) => {
+        const ids = line.filter((id) => id != null);
+        const out = [];
+        for (let i = 0; i < ids.length; i++) {
+          const id = ids[i];
+          const nextId = ids[i + 1];
+          const value = getValueAt(nextTiles, id);
+
+          if (
+            nextId != null &&
+            !mergedThisMove.has(id) &&
+            !mergedThisMove.has(nextId) &&
+            value !== 0 &&
+            value === getValueAt(nextTiles, nextId)
+          ) {
+            const newValue = value * 2;
+            nextTiles[id] = {
+              ...nextTiles[id],
+              value: newValue,
+              mergeTick: nextTick,
+            };
+            mergedThisMove.add(id);
+            mergedThisMove.add(nextId);
+            delete nextTiles[nextId];
+            gained += newValue;
+            out.push(id);
+            i++;
+            moved = true;
+            continue;
+          }
+
+          out.push(id);
+        }
+
+        while (out.length < 4) out.push(null);
+        if (!moved) {
+          for (let j = 0; j < 4; j++) {
+            if (line[j] !== out[j]) {
+              moved = true;
+              break;
+            }
+          }
+        }
+        return out;
+      };
+
+      for (let i = 0; i < 4; i++) {
+        const original = readLine(i);
+        const out = processLine(original);
+        writeLine(i, out);
+      }
+
+      return { grid: nextGrid, tiles: nextTiles, gained, moved };
+    },
+    [getValueAt]
+  );
+
+  const resetGame = useCallback(() => {
+    setGame(buildInitialGame);
+  }, [buildInitialGame]);
+
+  const applyMove = useCallback(
+    (dir) => {
+      setGame((prev) => {
+        if (prev.over) return prev;
+        const nextTick = prev.tick + 1;
+        const moved = moveGrid(prev.grid, prev.tiles, dir, nextTick);
+        if (!moved.moved) return { ...prev, shakeTick: prev.shakeTick + 1 };
+
+        let next = {
+          ...prev,
+          grid: moved.grid,
+          tiles: moved.tiles,
+          score: prev.score + moved.gained,
+          tick: nextTick,
+        };
+
+        next = { ...next, ...spawnRandomTile(next) };
+
+        const maxValue = Math.max(
+          0,
+          ...Object.values(next.tiles).map((t) => (typeof t.value === "number" ? t.value : 0))
+        );
+        const won = prev.won || maxValue >= 2048;
+        const over = isGameOver(next.grid, next.tiles);
+        return { ...next, won, over };
+      });
+    },
+    [isGameOver, moveGrid, spawnRandomTile]
+  );
+
   useEffect(() => {
+    if (!active) return;
+    if (reduceMotion) return;
+    if (game.shakeTick === lastShakeTickRef.current) return;
+    lastShakeTickRef.current = game.shakeTick;
+
+    shakeControls.start({
+      x: [0, -10, 10, -7, 7, -4, 4, 0],
+      transition: { duration: 0.32, ease: "easeInOut" },
+    });
+  }, [active, game.shakeTick, reduceMotion, shakeControls]);
+
+  // Hook Konami Code (↑↑↓↓←→←→BA)
+  useEffect(() => {
+    if (active) return undefined;
     const code = [
       "ArrowUp", "ArrowUp", "ArrowDown", "ArrowDown",
       "ArrowLeft", "ArrowRight", "ArrowLeft", "ArrowRight",
@@ -135,9 +374,12 @@ function KonamiGameOverlay() {
     let index = 0;
 
     const handler = (e) => {
-      if (e.key === code[index]) {
+      const key = typeof e.key === "string" ? e.key : "";
+      const normalized = key.length === 1 ? key.toLowerCase() : key;
+      if (normalized === code[index]) {
         index++;
         if (index === code.length) {
+          setGame(buildInitialGame);
           setActive(true);
           index = 0;
         }
@@ -148,23 +390,357 @@ function KonamiGameOverlay() {
 
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
+  }, [active, buildInitialGame]);
+
+  useEffect(() => {
+    try {
+      const stored = Number(window.localStorage.getItem("konami2048_best") ?? "0");
+      if (Number.isFinite(stored)) setBest(stored);
+    } catch {
+      // ignore
+    }
   }, []);
+
+  useEffect(() => {
+    if (game.score <= best) return undefined;
+    setBest(game.score);
+    try {
+      window.localStorage.setItem("konami2048_best", String(game.score));
+    } catch {
+      // ignore
+    }
+    return undefined;
+  }, [best, game.score]);
+
+  useEffect(() => {
+    if (!active) return undefined;
+
+    const handler = (e) => {
+      const key = e.key;
+      const lower = typeof key === "string" ? key.toLowerCase() : "";
+      const dir =
+        key === "ArrowLeft" || lower === "q"
+          ? "left"
+          : key === "ArrowRight" || lower === "d"
+            ? "right"
+            : key === "ArrowUp" || lower === "z"
+              ? "up"
+              : key === "ArrowDown" || lower === "s"
+                ? "down"
+                : null;
+
+      if (dir) {
+        e.preventDefault();
+        applyMove(dir);
+        return;
+      }
+
+      if (lower === "r") {
+        e.preventDefault();
+        resetGame();
+        return;
+      }
+
+      if (key === "Escape") {
+        e.preventDefault();
+        setActive(false);
+      }
+    };
+
+    window.addEventListener("keydown", handler, { passive: false });
+    return () => window.removeEventListener("keydown", handler);
+  }, [active, applyMove, resetGame]);
+
+  const handlePointerDown = (e) => {
+    pointerStartRef.current = { x: e.clientX, y: e.clientY };
+  };
+
+  const handlePointerUp = (e) => {
+    if (!pointerStartRef.current) return;
+    const start = pointerStartRef.current;
+    pointerStartRef.current = null;
+    const dx = e.clientX - start.x;
+    const dy = e.clientY - start.y;
+    const absX = Math.abs(dx);
+    const absY = Math.abs(dy);
+    if (Math.max(absX, absY) < 28) return;
+    applyMove(absX > absY ? (dx > 0 ? "right" : "left") : dy > 0 ? "down" : "up");
+  };
 
   if (!active) return null;
 
   return (
-    <div className="fixed inset-0 z-[60] flex flex-col items-center justify-center bg-slate-950 text-white">
-      <h1 className="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-500 mb-4">
-        MODE KONAMI ACTIVÉ !
-      </h1>
-      <p className="text-slate-300 mb-8">Un mini-jeu caché se lancerait ici...</p>
-      <button
-        onClick={() => setActive(false)}
-        className="px-6 py-2 bg-cyan-600 rounded-full hover:bg-cyan-500 text-white font-bold"
-      >
-        Fermer
-      </button>
-    </div>
+    <motion.div
+      className="fixed inset-0 z-[60] text-white"
+      initial={reduceMotion ? { opacity: 1 } : { opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={reduceMotion ? { opacity: 1 } : { opacity: 0 }}
+    >
+      <div className="absolute inset-0 bg-slate-950" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.14),transparent_45%),radial-gradient(circle_at_80%_15%,rgba(168,85,247,0.14),transparent_46%),radial-gradient(circle_at_60%_85%,rgba(236,72,153,0.10),transparent_48%)]" />
+      <div className="absolute inset-0 bg-gradient-to-b from-white/0 via-white/0 to-black/35" />
+
+      <div className="relative mx-auto flex h-full w-full max-w-6xl flex-col px-4 py-6">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="min-w-[260px]">
+            <div className="inline-flex items-center gap-2">
+              <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-[11px] font-semibold tracking-wide text-cyan-200">
+                Konami
+              </span>
+              <span className="rounded-full border border-slate-700 bg-slate-900/40 px-3 py-1 text-[11px] font-semibold tracking-wide text-slate-200">
+                2048 Dev
+              </span>
+            </div>
+            <h1 className="mt-3 text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-purple-300">
+              Merge ta stack
+            </h1>
+            <p className="mt-1 text-sm text-slate-300">
+              Flèches ou <span className="font-mono">ZQSD</span> · <span className="font-mono">R</span> reset ·{" "}
+              <span className="font-mono">Esc</span> fermer
+            </p>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <div className="rounded-2xl border border-slate-700/70 bg-slate-900/35 px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.40)]">
+              <div className="flex items-center gap-4">
+                <div>
+                  <div className="text-[11px] uppercase tracking-wider text-slate-400">Score</div>
+                  <div className="font-mono text-xl text-slate-100">{game.score}</div>
+                </div>
+                <div className="h-9 w-px bg-slate-700/70" />
+                <div>
+                  <div className="text-[11px] uppercase tracking-wider text-slate-400">Best</div>
+                  <div className="font-mono text-xl text-slate-100">{best}</div>
+                </div>
+              </div>
+            </div>
+
+            <button
+              onClick={() => resetGame()}
+              className="rounded-2xl border border-slate-700/70 bg-slate-900/35 px-4 py-3 text-sm font-semibold text-slate-200 shadow-[0_18px_60px_rgba(0,0,0,0.40)] hover:border-cyan-500/40 hover:text-white"
+            >
+              Rejouer
+            </button>
+            <button
+              onClick={() => setActive(false)}
+              className="rounded-2xl border border-slate-700/70 bg-slate-900/35 p-3 text-slate-300 shadow-[0_18px_60px_rgba(0,0,0,0.40)] hover:border-rose-500/40 hover:text-white"
+              aria-label="Fermer le mini-jeu"
+            >
+              <X size={16} />
+            </button>
+          </div>
+        </div>
+
+        <div className="mt-6 grid flex-1 grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
+          <div className="flex items-center justify-center">
+            <motion.div
+              initial={reduceMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 180, damping: 22 }}
+              className="relative w-[min(92vw,520px)] rounded-3xl border border-slate-700/70 bg-slate-900/30 p-3 shadow-[0_32px_120px_rgba(0,0,0,0.55)]"
+            >
+              <motion.div
+                className="relative select-none rounded-2xl bg-slate-950/35 p-3"
+                style={{ touchAction: "none" }}
+                onPointerDown={handlePointerDown}
+                onPointerUp={handlePointerUp}
+                animate={shakeControls}
+              >
+                <div className={["relative", game.over ? "blur-sm opacity-80" : ""].join(" ")}>
+                  <div className="grid grid-cols-4 gap-2">
+                    {Array.from({ length: 16 }).map((_, i) => (
+                      <div
+                        key={`bg-${i}`}
+                        className="aspect-square rounded-xl border border-slate-800/60 bg-slate-950/30"
+                      />
+                    ))}
+                  </div>
+
+                  <LayoutGroup id="konami-2048">
+                    <div className="absolute inset-0 grid grid-cols-4 grid-rows-4 gap-2">
+                      <AnimatePresence initial={false}>
+                        {game.grid
+                          .map((id, idx) => {
+                            if (id == null) return null;
+                            const tile = game.tiles[id];
+                            if (!tile) return null;
+                            return { idx, tile };
+                          })
+                          .filter(Boolean)
+                          .map(({ idx, tile }) => {
+                            const meta = tileMeta[tile.value];
+                            const shouldSpawn = tile.spawnTick === game.tick;
+                            const shouldMerge = tile.mergeTick === game.tick;
+                            const row = Math.floor(idx / 4) + 1;
+                            const col = (idx % 4) + 1;
+
+                            return (
+                              <motion.div
+                                key={tile.id}
+                                layout
+                                layoutId={`konami-tile-${tile.id}`}
+                                style={{ gridRowStart: row, gridColumnStart: col }}
+                                initial={
+                                  reduceMotion
+                                    ? false
+                                    : {
+                                        opacity: 0,
+                                        scale: shouldSpawn ? 0.35 : 0.95,
+                                      }
+                                }
+                                animate={shouldMerge ? "merge" : shouldSpawn ? "spawn" : "idle"}
+                                exit={reduceMotion ? { opacity: 0 } : { opacity: 0, scale: 0.8 }}
+                                variants={{
+                                  idle: { opacity: 1, scale: 1 },
+                                  spawn: { opacity: 1, scale: [0.35, 1.06, 1] },
+                                  merge: { opacity: 1, scale: [1, 1.12, 1] },
+                                }}
+                                transition={
+                                  reduceMotion
+                                    ? { duration: 0 }
+                                    : {
+                                        layout: { type: "spring", stiffness: 520, damping: 34, mass: 0.72 },
+                                        opacity: { duration: 0.12, ease: "easeOut" },
+                                        scale:
+                                          shouldSpawn || shouldMerge
+                                            ? { duration: 0.22, ease: "easeOut" }
+                                            : { type: "spring", stiffness: 520, damping: 34, mass: 0.72 },
+                                      }
+                                }
+                                className={[
+                                  "aspect-square rounded-xl border bg-gradient-to-br p-2 shadow-[0_18px_55px_rgba(0,0,0,0.35)]",
+                                  meta?.cls ?? "from-slate-700/35 to-slate-900/25 border-slate-500/40",
+                                ].join(" ")}
+                              >
+                                <div className="flex h-full flex-col items-center justify-center gap-1">
+                                  <div className="font-mono text-base font-bold tracking-tight text-slate-100 sm:text-lg">
+                                    {meta?.label ?? tile.value}
+                                  </div>
+                                  <div className="font-mono text-[10px] text-slate-300/90">{tile.value}</div>
+                                </div>
+                              </motion.div>
+                            );
+                          })}
+                      </AnimatePresence>
+                    </div>
+                  </LayoutGroup>
+                </div>
+
+                <AnimatePresence>
+                  {game.over && (
+                    <motion.div
+                      className="absolute inset-0 flex items-center justify-center rounded-2xl"
+                      initial={reduceMotion ? { opacity: 1 } : { opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={reduceMotion ? { opacity: 1 } : { opacity: 0 }}
+                    >
+                      <div className="absolute inset-0 rounded-2xl bg-slate-950/45 backdrop-blur-md" />
+                      <motion.div
+                        className="relative w-[min(92%,340px)] rounded-2xl border border-slate-700/70 bg-slate-900/50 p-5 shadow-[0_30px_120px_rgba(0,0,0,0.65)]"
+                        initial={reduceMotion ? { scale: 1 } : { scale: 0.96, y: 6 }}
+                        animate={{ scale: 1, y: 0 }}
+                        exit={reduceMotion ? { scale: 1 } : { scale: 0.96, y: 6 }}
+                        transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 22 }}
+                      >
+                        <div className="text-sm font-semibold text-slate-100">Game Over</div>
+                        <div className="mt-1 text-sm text-slate-300">Plus de moves possibles.</div>
+                        <div className="mt-4 flex gap-2">
+                          <button
+                            onClick={() => resetGame()}
+                            className="flex-1 rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-200 hover:border-cyan-400/45 hover:bg-cyan-500/15"
+                          >
+                            Rejouer
+                          </button>
+                          <button
+                            onClick={() => setActive(false)}
+                            className="rounded-xl border border-slate-700/70 bg-slate-950/20 px-4 py-2 text-sm font-semibold text-slate-200 hover:border-rose-500/35"
+                          >
+                            Fermer
+                          </button>
+                        </div>
+                        <div className="mt-3 text-xs text-slate-400">
+                          Astuce : utilise <span className="font-mono">ZQSD</span> ou les flèches.
+                        </div>
+                      </motion.div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+
+              <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
+                <span>Swipe (mobile) · ZQSD/Flèches (desktop)</span>
+                <span className="font-mono">Objectif: 2048 (AI)</span>
+              </div>
+            </motion.div>
+          </div>
+
+          <div className="flex flex-col justify-center gap-4">
+            {game.won && (
+              <motion.div
+                initial={reduceMotion ? false : { opacity: 0, y: 6 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-2xl border border-emerald-500/25 bg-emerald-500/10 p-4"
+              >
+                <div className="font-semibold text-emerald-200">GG — AI atteint (2048).</div>
+                <div className="mt-1 text-sm text-emerald-100/80">Continue pour viser 4096 (∞).</div>
+              </motion.div>
+            )}
+
+            {/* Game over handled by overlay on the board */}
+
+            <div className="rounded-2xl border border-slate-700/70 bg-slate-900/25 p-4">
+              <div className="text-sm font-semibold text-slate-100">Contrôles</div>
+              <div className="mt-3 grid grid-cols-3 gap-2">
+                <div />
+                <button
+                  onClick={() => applyMove("up")}
+                  className="rounded-xl border border-slate-700/80 bg-slate-950/30 py-3 text-sm text-slate-200 hover:border-cyan-500/40"
+                >
+                  ↑
+                </button>
+                <div />
+                <button
+                  onClick={() => applyMove("left")}
+                  className="rounded-xl border border-slate-700/80 bg-slate-950/30 py-3 text-sm text-slate-200 hover:border-cyan-500/40"
+                >
+                  ←
+                </button>
+                <button
+                  onClick={() => applyMove("down")}
+                  className="rounded-xl border border-slate-700/80 bg-slate-950/30 py-3 text-sm text-slate-200 hover:border-cyan-500/40"
+                >
+                  ↓
+                </button>
+                <button
+                  onClick={() => applyMove("right")}
+                  className="rounded-xl border border-slate-700/80 bg-slate-950/30 py-3 text-sm text-slate-200 hover:border-cyan-500/40"
+                >
+                  →
+                </button>
+              </div>
+              <div className="mt-4 text-xs text-slate-400">
+                Astuce: fusionne 2 tuiles identiques pour monter (var → let → const → … → AI).
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-slate-700/70 bg-slate-900/25 p-4">
+              <div className="text-sm font-semibold text-slate-100">Légende</div>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {[2, 4, 8, 16, 32, 64, 128, 256].map((v) => (
+                  <span
+                    key={v}
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-950/25 px-3 py-1 text-xs text-slate-200"
+                  >
+                    <span className="font-mono">{tileMeta[v]?.label ?? v}</span>
+                    <span className="font-mono text-slate-400">{v}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.div>
   );
 }
 
@@ -789,7 +1365,11 @@ export default function Home() {
                     <h3 className="text-2xl font-bold text-white mb-1">{activeStudy.headline}</h3>
                     <p className="text-cyan-400 font-medium">{activeStudy.company} — {activeStudy.role}</p>
                   </div>
-                  {activeStudy.link && (
+                  {activeStudy.key === "portfolio" ? (
+                    <span className="inline-flex items-center gap-2 rounded-full border border-sky-400/25 bg-sky-400/10 px-4 py-2 text-sm font-semibold text-sky-200 backdrop-blur">
+                      Vous êtes dessus <MapPin size={14} />
+                    </span>
+                  ) : activeStudy.link ? (
                     <a
                       href={activeStudy.link}
                       target="_blank"
@@ -798,7 +1378,7 @@ export default function Home() {
                     >
                       Voir le projet <ExternalLink size={14} />
                     </a>
-                  )}
+                  ) : null}
                 </div>
 
                 <p className="text-slate-300 leading-relaxed mb-8 text-lg">
