@@ -6,7 +6,6 @@ import {
   motion,
   AnimatePresence,
   useScroll,
-  useSpring,
   useTransform
 } from "framer-motion";
 import {
@@ -56,15 +55,6 @@ const staggerContainer = {
     transition: {
       staggerChildren: 0.1
     }
-  }
-};
-
-const revealSection = {
-  hidden: { opacity: 0, y: 38 },
-  visible: {
-    opacity: 1,
-    y: 0,
-    transition: { duration: 1.05, ease: [0.16, 1, 0.3, 1] }
   }
 };
 
@@ -236,23 +226,22 @@ export default function Home() {
 
   // Scroll Progress
   const { scrollYProgress } = useScroll();
-  const smoothProgress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.2 });
-  const scaleX = useTransform(smoothProgress, [0, 1], [0, 1]);
+  const progressWidth = useTransform(scrollYProgress, (v) => `${v * 100}%`);
 
   return (
     <main className="relative min-h-screen bg-slate-950 text-slate-200 selection:bg-cyan-500/30 selection:text-cyan-100 font-sans overflow-x-hidden">
       {/* Background Elements */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay"></div>
-        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-900/20 rounded-full blur-[120px] bg-blob"></div>
-        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-900/20 rounded-full blur-[120px] bg-blob bg-blob--slow"></div>
+        <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-purple-900/20 rounded-full blur-[120px] animate-pulse-slow"></div>
+        <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-cyan-900/20 rounded-full blur-[120px] animate-pulse-slow" style={{ animationDelay: "2s" }}></div>
       </div>
 
       {/* Progress Bar */}
       <div className="fixed top-20 left-0 right-0 h-[2px] md:h-[3px] z-40 pointer-events-none bg-white/5 ring-1 ring-white/5 overflow-hidden" aria-hidden="true">
         <motion.div
-          className="h-full w-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 shadow-[0_0_12px_rgba(34,211,238,0.28)] origin-left"
-          style={{ scaleX }}
+          className="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 shadow-[0_0_12px_rgba(34,211,238,0.28)]"
+          style={{ width: progressWidth }}
         />
       </div>
 
@@ -332,7 +321,7 @@ export default function Home() {
           whileInView="visible"
           viewport={{ once: true }}
           variants={staggerContainer}
-          className="relative scroll-mt-24 min-h-[calc(100svh-10rem)]"
+          className="relative scroll-mt-24"
         >
           {/* Badge */}
           <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 rounded-full bg-slate-900/50 border border-slate-700/50 px-3 py-1 mb-6 backdrop-blur-md">
@@ -579,14 +568,7 @@ export default function Home() {
         </motion.section>
 
         {/* PROJETS */}
-        <motion.section
-          id="projets"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.35 }}
-          variants={revealSection}
-          className="relative scroll-mt-24"
-        >
+        <section id="projets" className="relative scroll-mt-24">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
@@ -723,7 +705,7 @@ export default function Home() {
               </motion.div>
             </AnimatePresence>
           </div>
-        </motion.section>
+        </section>
 
         {/* COMPÉTENCES */}
         <motion.section
@@ -834,13 +816,7 @@ export default function Home() {
         </motion.section>
 
         {/* TRUSTED BY */}
-        <motion.section
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.35 }}
-          variants={revealSection}
-          className="py-14 md:py-18 border-y border-slate-800/50 bg-black/20 -mx-6 px-6"
-        >
+        <section className="py-14 md:py-18 border-y border-slate-800/50 bg-black/20 -mx-6 px-6">
           <p className="text-center text-slate-300 text-sm md:text-base font-semibold uppercase tracking-[0.3em] mb-10">
             {"Ils m'ont fait confiance"}
           </p>
@@ -857,17 +833,10 @@ export default function Home() {
               </a>
             ))}
           </div>
-        </motion.section>
+        </section>
 
         {/* CONTACT */}
-        <motion.section
-          id="contact"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.35 }}
-          variants={revealSection}
-          className="max-w-2xl mx-auto text-center scroll-mt-24"
-        >
+        <section id="contact" className="max-w-2xl mx-auto text-center scroll-mt-24">
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             whileInView={{ opacity: 1, scale: 1 }}
@@ -909,7 +878,7 @@ export default function Home() {
               © {new Date().getFullYear()} Paul Claus.
             </p>
           </motion.div>
-        </motion.section>
+        </section>
 
       </div>
 
