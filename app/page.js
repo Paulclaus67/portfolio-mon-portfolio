@@ -238,15 +238,15 @@ export default function Home() {
       </div>
 
       {/* Progress Bar */}
-      <div className="fixed top-0 left-0 right-0 h-1 z-50 pointer-events-none" aria-hidden="true">
+      <div className="fixed top-20 left-0 right-0 h-[2px] md:h-[3px] z-40 pointer-events-none bg-white/5 ring-1 ring-white/5 overflow-hidden" aria-hidden="true">
         <motion.div
-          className="h-full bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500"
+          className="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 shadow-[0_0_12px_rgba(34,211,238,0.28)]"
           style={{ width: progressWidth }}
         />
       </div>
 
       {/* Navigation */}
-      <nav className="fixed top-0 w-full z-40 border-b border-white/10 bg-slate-950/70 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.35)] relative">
+      <nav className="fixed inset-x-0 top-0 w-full z-50 border-b border-white/10 bg-slate-950/90 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.35)]">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-500/35 to-transparent pointer-events-none" aria-hidden="true" />
         <div className="max-w-6xl mx-auto px-6 md:px-8 h-20 flex items-center justify-between">
           <motion.div
