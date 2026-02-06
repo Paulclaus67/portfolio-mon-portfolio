@@ -46,7 +46,7 @@ function ScrollTopButton() {
           animate={reduceMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 1, y: 0, scale: 1 }}
           exit={reduceMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 14, scale: 0.95 }}
           transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 460, damping: 34 }}
-          className="fixed z-50 right-[calc(1rem+env(safe-area-inset-right))] sm:right-[calc(1.5rem+env(safe-area-inset-right))] bottom-[calc(1rem+env(safe-area-inset-bottom))] sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))] inline-flex h-12 w-12 items-center justify-center rounded-full shadow-[0_18px_55px_rgba(0,0,0,0.55)] transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/70 group isolate overflow-hidden"
+          className="scroll-top-btn fixed z-50 right-[calc(1rem+env(safe-area-inset-right))] sm:right-[calc(1.5rem+env(safe-area-inset-right))] bottom-[calc(1rem+env(safe-area-inset-bottom))] sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))] inline-flex h-12 w-12 items-center justify-center rounded-full shadow-[0_18px_55px_rgba(0,0,0,0.55)] transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/70 group isolate overflow-hidden"
         >
           <span
             aria-hidden="true"

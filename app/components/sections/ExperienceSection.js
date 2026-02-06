@@ -71,7 +71,9 @@ function ExperienceSection({ recruiterMode, expandedExperienceKey, onToggleExper
                     </div>
                     <div className="min-w-0">
                       <h3 className="font-bold text-lg text-slate-900 leading-snug dark:text-slate-100">{exp.title}</h3>
-                      <p className="text-sm text-cyan-400 font-medium mt-0.5">{study?.company ?? exp.place}</p>
+                      <p className="text-sm text-cyan-700 font-medium mt-0.5 dark:text-cyan-400">
+                        {study?.company ?? exp.place}
+                      </p>
                       <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-slate-500">
                         {study?.location && (
                           <span className="inline-flex items-center gap-1.5">
@@ -94,7 +96,7 @@ function ExperienceSection({ recruiterMode, expandedExperienceKey, onToggleExper
 
                   <div className="flex flex-wrap items-center gap-2">
                     {isExpanded && (
-                      <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/25 bg-cyan-500/10 px-3 py-1.5 text-xs font-bold text-cyan-100">
+                      <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/35 bg-cyan-500/15 px-3 py-1.5 text-xs font-bold text-cyan-950 dark:border-cyan-500/25 dark:bg-cyan-500/10 dark:text-cyan-200">
                         Sélectionnée
                       </span>
                     )}
@@ -254,4 +256,3 @@ function ExperienceSection({ recruiterMode, expandedExperienceKey, onToggleExper
 }
 
 export default memo(ExperienceSection);
-
