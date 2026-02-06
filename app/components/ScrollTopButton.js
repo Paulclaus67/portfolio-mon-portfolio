@@ -46,7 +46,7 @@ function ScrollTopButton() {
           animate={reduceMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 1, y: 0, scale: 1 }}
           exit={reduceMotion ? { opacity: 1, y: 0, scale: 1 } : { opacity: 0, y: 14, scale: 0.95 }}
           transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 460, damping: 34 }}
-          className="scroll-top-btn fixed z-50 right-[calc(1rem+env(safe-area-inset-right))] sm:right-[calc(1.5rem+env(safe-area-inset-right))] bottom-[calc(1rem+env(safe-area-inset-bottom))] sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))] inline-flex h-12 w-12 items-center justify-center rounded-full shadow-[0_18px_55px_rgba(0,0,0,0.55)] transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/70 group isolate overflow-hidden"
+          className="scroll-top-btn fixed z-50 right-[calc(1rem+env(safe-area-inset-right))] sm:right-[calc(1.5rem+env(safe-area-inset-right))] bottom-[calc(1rem+env(safe-area-inset-bottom))] sm:bottom-[calc(1.5rem+env(safe-area-inset-bottom))] inline-flex h-12 w-12 items-center justify-center rounded-full shadow-none sm:shadow-[0_18px_55px_rgba(0,0,0,0.55)] transition-transform hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-cyan-400/70 group isolate overflow-hidden"
         >
           <span
             aria-hidden="true"
@@ -58,7 +58,7 @@ function ScrollTopButton() {
           />
           <span
             aria-hidden="true"
-            className="absolute inset-[1px] rounded-full border border-slate-200/70 bg-white/70 backdrop-blur-xl transition-colors group-hover:bg-white group-hover:border-slate-300 shadow-sm shadow-slate-900/10 dark:border-white/10 dark:bg-slate-950/70 dark:shadow-none dark:group-hover:bg-slate-950/60 dark:group-hover:border-white/15"
+            className="absolute inset-[1px] rounded-full border border-slate-200/70 bg-white/70 backdrop-blur-xl transition-colors group-hover:bg-white group-hover:border-slate-300 shadow-none sm:shadow-sm sm:shadow-slate-900/10 dark:border-white/10 dark:bg-slate-950/70 dark:shadow-none dark:group-hover:bg-slate-950/60 dark:group-hover:border-white/15"
           />
           <span
             aria-hidden="true"

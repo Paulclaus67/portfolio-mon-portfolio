@@ -207,7 +207,19 @@ function ProjectsSection({
                       }`}
                     >
                       {proj.logo ? (
-                        <Image src={proj.logo} alt="" width={28} height={28} className="w-7 h-7 object-contain" />
+                        <Image
+                          src={proj.logo}
+                          alt={
+                            proj.company && proj.company !== "Projet personnel"
+                              ? `Logo ${proj.company}`
+                              : proj.headline
+                                ? `Logo du projet ${proj.headline}`
+                                : "Logo du projet"
+                          }
+                          width={28}
+                          height={28}
+                          className="w-7 h-7 object-contain"
+                        />
                       ) : (
                         <span className="text-lg font-bold text-slate-900">{proj.company[0]}</span>
                       )}

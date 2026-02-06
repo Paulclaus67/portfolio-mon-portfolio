@@ -1,7 +1,12 @@
 import "./globals.css";
+import StructuredData from "./components/StructuredData";
 
 export const metadata = {
-  title: "Portfolio – Paul Claus | Ingénieur Informatique Junior",
+  metadataBase: new URL("https://paul-claus.fr"),
+  title: {
+    default: "Portfolio – Paul Claus | Ingénieur Informatique Junior",
+    template: "%s | Paul Claus",
+  },
   description:
     "Portfolio professionnel de Paul Claus, ingénieur informatique junior spécialisé en développement web, réseau, IA générative et applications métier. Découvrez mes projets, compétences et expériences.",
   keywords: [
@@ -16,20 +21,54 @@ export const metadata = {
     "Next.js",
     "portfolio",
   ],
-  author: "Paul Claus",
+  applicationName: "Portfolio Paul Claus",
+  authors: [{ name: "Paul Claus", url: "https://paul-claus.fr" }],
+  creator: "Paul Claus",
+  publisher: "Paul Claus",
+  alternates: {
+    canonical: "/",
+    languages: {
+      fr: "/",
+      "fr-FR": "/",
+    },
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
+  referrer: "origin-when-cross-origin",
+  formatDetection: { email: false, address: false, telephone: false },
+  manifest: "/manifest.webmanifest",
   openGraph: {
     title: "Portfolio – Paul Claus",
     description:
       "Découvrez le portfolio de Paul Claus, ingénieur informatique junior spécialisé en web, réseau et IA.",
-    url: "https://paul-claus.fr",
+    url: "/",
     type: "website",
     locale: "fr_FR",
+    siteName: "Portfolio Paul Claus",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: "Portfolio de Paul Claus",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "Portfolio – Paul Claus",
     description:
       "Ingénieur informatique junior - Web, Réseau, IA générative",
+    images: ["/twitter-image"],
   },
 };
 
@@ -41,10 +80,9 @@ export default function RootLayout({ children }) {
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta httpEquiv="x-ua-compatible" content="ie=edge" />
-        <link rel="canonical" href="https://paul-claus.fr" />
-        <link rel="icon" href="/favicon.ico" />
         <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
         <meta name="theme-color" content="#030712" media="(prefers-color-scheme: dark)" />
+        <StructuredData />
         <script
           dangerouslySetInnerHTML={{
             __html: `(() => {
