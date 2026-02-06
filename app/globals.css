@@ -50,6 +50,76 @@ html.theme-transition body * {
   cursor: not-allowed;
 }
 
+/* Theme toggle micro-interactions */
+.theme-toggle {
+  position: relative;
+  overflow: hidden;
+  transform: translateZ(0);
+  will-change: transform;
+}
+
+.theme-toggle__fx {
+  position: absolute;
+  inset: -40%;
+  border-radius: 9999px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 30% 30%, rgba(34, 211, 238, 0.35), transparent 42%),
+    radial-gradient(circle at 70% 70%, rgba(168, 85, 247, 0.30), transparent 44%),
+    conic-gradient(
+      from 180deg,
+      rgba(34, 211, 238, 0.0),
+      rgba(34, 211, 238, 0.35),
+      rgba(168, 85, 247, 0.30),
+      rgba(34, 211, 238, 0.0)
+    );
+  opacity: 0;
+  filter: blur(10px);
+  transition: opacity 220ms cubic-bezier(0.2, 0, 0, 1);
+}
+
+.theme-toggle:hover {
+  transform: translateY(-1px);
+}
+
+.theme-toggle:hover .theme-toggle__fx {
+  opacity: 0.9;
+}
+
+.theme-toggle:active {
+  transform: translateY(0);
+}
+
+.theme-toggle__glyph {
+  will-change: transform;
+}
+
+.theme-toggle:hover .theme-toggle__glyph {
+  animation: themeToggleHover 520ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+html.theme-transition .theme-toggle__fx {
+  opacity: 1;
+  animation: themeToggleFlash 420ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+html.theme-transition .theme-toggle__glyph {
+  animation: themeToggleSwitch 420ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+html.theme-transition .theme-toggle__icon {
+  animation: themeToggleSpin 420ms cubic-bezier(0.2, 0, 0, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle:hover .theme-toggle__glyph,
+  html.theme-transition .theme-toggle__glyph,
+  html.theme-transition .theme-toggle__icon,
+  html.theme-transition .theme-toggle__fx {
+    animation: none !important;
+  }
+}
+
 html {
   scroll-behavior: smooth;
   scroll-padding-top: calc(5rem + env(safe-area-inset-top) + 1rem);

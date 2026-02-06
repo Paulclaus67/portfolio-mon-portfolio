@@ -142,18 +142,19 @@ function MainNav({ navItems, theme, onToggleTheme, onProfileClick }) {
           <button
             type="button"
             onClick={onToggleTheme}
-            className="group inline-flex items-center justify-center rounded-full border border-slate-200 bg-white/70 p-2.5 text-slate-700 shadow-sm shadow-slate-900/10 transition-colors hover:bg-white dark:border-white/10 dark:bg-slate-900/40 dark:text-slate-200 dark:shadow-black/40 dark:hover:bg-slate-900/60"
+            className="theme-toggle group inline-flex items-center justify-center rounded-full border border-slate-200 bg-white/70 p-2.5 text-slate-700 shadow-sm shadow-slate-900/10 transition-colors hover:bg-white dark:border-white/10 dark:bg-slate-900/40 dark:text-slate-200 dark:shadow-black/40 dark:hover:bg-slate-900/60"
             aria-label={theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre"}
             title={theme === "dark" ? "Mode clair" : "Mode sombre"}
           >
-            <span className="relative h-[18px] w-[18px]">
+            <span className="theme-toggle__fx" aria-hidden="true" />
+            <span className="relative h-[18px] w-[18px] theme-toggle__glyph" aria-hidden="true">
               <span
                 className={[
                   "absolute inset-0 grid place-items-center transition-all duration-300 ease-out",
                   theme === "dark" ? "opacity-100 rotate-0 scale-100" : "opacity-0 rotate-90 scale-75",
                 ].join(" ")}
               >
-                <Sun size={18} className="drop-shadow-[0_0_10px_rgba(34,211,238,0.18)]" />
+                <Sun size={18} className="theme-toggle__icon drop-shadow-[0_0_10px_rgba(34,211,238,0.18)]" />
               </span>
               <span
                 className={[
@@ -161,7 +162,7 @@ function MainNav({ navItems, theme, onToggleTheme, onProfileClick }) {
                   theme === "dark" ? "opacity-0 -rotate-90 scale-75" : "opacity-100 rotate-0 scale-100",
                 ].join(" ")}
               >
-                <Moon size={18} className="drop-shadow-[0_0_10px_rgba(168,85,247,0.16)]" />
+                <Moon size={18} className="theme-toggle__icon drop-shadow-[0_0_10px_rgba(168,85,247,0.16)]" />
               </span>
             </span>
           </button>

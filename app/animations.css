@@ -216,3 +216,58 @@ textarea:focus-visible {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Theme toggle animations */
+@keyframes themeToggleHover {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  45% {
+    transform: scale(1.08) rotate(8deg);
+  }
+  100% {
+    transform: scale(1.04) rotate(0deg);
+  }
+}
+
+@keyframes themeToggleSwitch {
+  0% {
+    transform: scale(1) rotate(0deg);
+  }
+  35% {
+    transform: scale(0.92) rotate(-8deg);
+  }
+  70% {
+    transform: scale(1.10) rotate(10deg);
+  }
+  100% {
+    transform: scale(1) rotate(0deg);
+  }
+}
+
+@keyframes themeToggleSpin {
+  0% {
+    transform: rotate(0deg);
+  }
+  60% {
+    transform: rotate(22deg);
+  }
+  100% {
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes themeToggleFlash {
+  0% {
+    transform: scale(0.9);
+    opacity: 0.25;
+  }
+  55% {
+    transform: scale(1.1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 0;
+  }
+}
