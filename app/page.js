@@ -166,7 +166,7 @@ export default function Home() {
   const progressWidth = useTransform(smoothProgress, (v) => `${v * 100}%`);
 
   return (
-    <main className="relative min-h-[100dvh] bg-slate-50 text-slate-900 selection:bg-cyan-500/30 selection:text-cyan-950 dark:bg-slate-950 dark:text-slate-200 dark:selection:text-cyan-100 font-sans overflow-x-hidden">
+    <main className="relative min-h-[100dvh] bg-transparent text-slate-900 selection:bg-cyan-500/30 selection:text-cyan-950 dark:text-slate-200 dark:selection:text-cyan-100 font-sans overflow-x-hidden">
       <BackgroundDecor />
       <TopProgressBar progressWidth={progressWidth} />
       <MainNav

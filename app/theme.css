@@ -44,6 +44,18 @@
   --glass-border: 1px solid rgba(15, 23, 42, 0.10);
   --glass-shadow: 0 10px 40px rgba(15, 23, 42, 0.10);
   --backdrop-blur: blur(16px);
+
+  /* Page background (light) */
+  --page-bg-image:
+    radial-gradient(1200px circle at 12% 28%, rgba(34, 211, 238, 0.14), transparent 55%),
+    radial-gradient(1000px circle at 88% 22%, rgba(168, 85, 247, 0.12), transparent 55%),
+    radial-gradient(900px circle at 65% 92%, rgba(52, 211, 153, 0.08), transparent 60%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.40) 0%, rgba(248, 250, 252, 0.92) 100%);
+  --page-vignette:
+    radial-gradient(1400px circle at 50% 15%, rgba(15, 23, 42, 0.06), transparent 62%),
+    radial-gradient(1200px circle at 50% 100%, rgba(15, 23, 42, 0.08), transparent 60%);
+  --page-noise-opacity: 0.035;
+  --page-noise-blend: multiply;
   
   /* Spacing */
   --space-xs: 0.25rem;
@@ -107,14 +119,32 @@ html[data-theme="dark"] {
   /* Glassmorphism */
   --glass-border: 1px solid rgba(255, 255, 255, 0.08);
   --glass-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+
+  /* Page background (dark) */
+  --page-bg-image:
+    radial-gradient(1100px circle at 18% 30%, rgba(34, 211, 238, 0.16), transparent 58%),
+    radial-gradient(1000px circle at 82% 20%, rgba(168, 85, 247, 0.14), transparent 58%),
+    radial-gradient(900px circle at 70% 86%, rgba(236, 72, 153, 0.10), transparent 62%),
+    radial-gradient(1200px circle at 45% 120%, rgba(2, 6, 23, 0.15), rgba(2, 6, 23, 0.92) 62%),
+    linear-gradient(180deg, rgba(2, 6, 23, 0.25) 0%, rgba(2, 6, 23, 0.65) 70%, rgba(2, 6, 23, 0.92) 100%);
+  --page-vignette:
+    radial-gradient(1600px circle at 50% 10%, rgba(0, 0, 0, 0.10), transparent 62%),
+    radial-gradient(1300px circle at 50% 100%, rgba(0, 0, 0, 0.24), transparent 60%);
+  --page-noise-opacity: 0.045;
+  --page-noise-blend: overlay;
 }
 
 /* Base styles override */
 body {
   background-color: var(--color-bg-dark);
   color: var(--color-text-primary);
-  background-image: 
-    radial-gradient(circle at 15% 45%, rgba(34, 211, 238, 0.10), transparent 28%),
-    radial-gradient(circle at 85% 30%, rgba(168, 85, 247, 0.10), transparent 28%);
-  background-attachment: fixed;
+  background-image: var(--page-bg-image);
+  background-repeat: no-repeat;
+  background-attachment: scroll;
+}
+
+@media (min-width: 1024px) {
+  body {
+    background-attachment: fixed;
+  }
 }

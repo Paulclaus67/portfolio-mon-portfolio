@@ -4,7 +4,7 @@ Portfolio professionnel moderne de Paul Claus, ingénieur informatique junior sp
 
 Réalisé avec **Next.js 16**, **React 19**, **Tailwind CSS 4** et des animations (CSS + Framer Motion).
 
-🔗 **[Portfolio en ligne](https://portfolio-mon-portfolio.vercel.app/)** • 🔗 **[LinkedIn](https://www.linkedin.com/in/paul-claus/)** 
+🔗 **[Portfolio en ligne](https://paul-claus.fr/)** (prod) • 🔗 **[Vercel preview](https://portfolio-mon-portfolio.vercel.app/)** • 🔗 **[LinkedIn](https://www.linkedin.com/in/paul-claus/)** 
 
 ---
 
@@ -31,6 +31,7 @@ Réalisé avec **Next.js 16**, **React 19**, **Tailwind CSS 4** et des animation
 - **Case studies** : format “Problème → Actions → Impact” + filtres.
 - **Compétences structurées** : catégories, niveaux, contexte et exemples de code.
 - **UX / micro-interactions** : scrollspy, animations au scroll, “retour en haut”, easter eggs.
+- **Background premium** : fond multi-couches (gradients + vignette + noise) adapté aux thèmes clair/sombre.
 - **Contact** : formulaire `mailto:` + CV téléchargeable (sans backend).
 
 ---
@@ -85,10 +86,16 @@ npm run lint
 portfolio-mon-portfolio/
 ├── app/
 │   ├── layout.js              # Layout + metadata SEO
+│   ├── opengraph-image.js      # Open Graph image (route Next)
+│   ├── twitter-image.js        # Twitter image (route Next)
+│   ├── robots.js               # robots.txt (route Next)
+│   ├── sitemap.js              # sitemap.xml (route Next)
+│   ├── manifest.js             # Web App Manifest (route Next)
 │   ├── page.js                # Page principale (UI + interactions)
 │   ├── data.js                # Données (skills / expériences / case studies…)
 │   ├── components/
 │   │   └── BurgerMenu.js       # Composant menu mobile
+│   │   └── StructuredData.js   # JSON-LD (schema.org)
 │   ├── utils/
 │   │   └── components.js       # Helpers UI
 │   ├── globals.css             # Styles globaux (imports CSS)
@@ -131,7 +138,7 @@ portfolio-mon-portfolio/
 
 ## 📊 Performance <a id="performance"></a>
 
-Objectif : Lighthouse 90+ (Perf) et 95+ (Accessibilité / Best Practices), SEO propre (Open Graph, Twitter Cards).
+Objectif : Lighthouse 90+ (Perf) et 95+ (Accessibilité / Best Practices), SEO propre (Open Graph, Twitter Cards, JSON-LD, sitemap/robots).
 
 ---
 
