@@ -320,6 +320,35 @@ html:not([data-theme="dark"]) :where(
   outline-offset: 3px;
 }
 
+/* Pills (tabs/chips): avoid rectangular focus/tap highlights on mobile, keep a soft rounded ring */
+.pill-tab {
+  -webkit-tap-highlight-color: transparent;
+}
+
+.pill-tab:focus {
+  outline: none;
+}
+
+.pill-tab:focus-visible {
+  outline: none;
+  box-shadow:
+    0 0 0 2px rgba(34, 211, 238, 0.55),
+    0 0 0 6px rgba(34, 211, 238, 0.14);
+}
+
+/* Active pill shadow: use drop-shadow so it stays perfectly rounded (not a rectangle) */
+.pill-tab--active {
+  filter:
+    drop-shadow(0 10px 22px rgba(15, 23, 42, 0.12))
+    drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+}
+
+html[data-theme="dark"] .pill-tab--active {
+  filter:
+    drop-shadow(0 14px 28px rgba(0, 0, 0, 0.45))
+    drop-shadow(0 0 0 rgba(0, 0, 0, 0));
+}
+
 @media (prefers-reduced-motion: reduce) {
   .btn-cta::after {
     transition: none;
