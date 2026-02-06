@@ -31,7 +31,9 @@ import {
   Server,
   Briefcase,
   Cpu,
+  Moon,
   ArrowUp,
+  Sun,
   ChevronDown
 } from "lucide-react";
 
@@ -47,6 +49,7 @@ import {
 } from "./data";
 
 const caseStudyByKey = new Map(caseStudies.map((study) => [study.key, study]));
+
 
 // --- ANIMATION VARIANTS ---
 const fadeInUp = {
@@ -106,11 +109,11 @@ function EasterEggTerminal({ onClose }) {
   }, []);
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4">
-      <div className="w-full max-w-lg rounded-lg border border-slate-700 bg-slate-950 p-4 font-mono text-sm text-green-400 shadow-2xl">
-        <div className="mb-4 flex items-center justify-between border-b border-slate-800 pb-2">
-          <span className="text-slate-200">Terminal Administrateur</span>
-          <button onClick={onClose} className="text-slate-500 hover:text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/20 backdrop-blur-sm p-4 dark:bg-black/80">
+      <div className="w-full max-w-lg rounded-lg border border-slate-200 bg-white p-4 font-mono text-sm text-green-600 shadow-2xl dark:border-slate-700 dark:bg-slate-950 dark:text-green-400">
+        <div className="mb-4 flex items-center justify-between border-b border-slate-200 pb-2 dark:border-slate-800">
+          <span className="text-slate-900 dark:text-slate-200">Terminal Administrateur</span>
+          <button onClick={onClose} className="text-slate-600 hover:text-slate-900 dark:text-slate-500 dark:hover:text-white">
             <X size={16} />
           </button>
         </div>
@@ -130,6 +133,10 @@ function KonamiGameOverlay() {
   const reduceMotion = useReducedMotion();
   const shakeControls = useAnimationControls();
   const [active, setActive] = useState(false);
+  const [currentTheme, setCurrentTheme] = useState(() => {
+    if (typeof document === "undefined") return "dark";
+    return document.documentElement.dataset.theme === "dark" ? "dark" : "light";
+  });
   const [best, setBest] = useState(0);
   const [game, setGame] = useState(() => ({
     grid: Array(16).fill(null),
@@ -147,18 +154,18 @@ function KonamiGameOverlay() {
   const tileMeta = useMemo(() => {
     const mk = (label, cls) => ({ label, cls });
     return {
-      2: mk("var", "from-slate-600/35 to-slate-900/25 border-slate-500/40"),
-      4: mk("let", "from-sky-600/35 to-slate-900/25 border-sky-500/40"),
-      8: mk("const", "from-cyan-600/35 to-slate-900/25 border-cyan-500/40"),
-      16: mk("if", "from-emerald-600/35 to-slate-900/25 border-emerald-500/40"),
-      32: mk("else", "from-lime-600/30 to-slate-900/25 border-lime-500/40"),
-      64: mk("for", "from-amber-600/30 to-slate-900/25 border-amber-500/40"),
-      128: mk("while", "from-orange-600/30 to-slate-900/25 border-orange-500/40"),
-      256: mk("function", "from-rose-600/30 to-slate-900/25 border-rose-500/40"),
-      512: mk("class", "from-fuchsia-600/30 to-slate-900/25 border-fuchsia-500/40"),
-      1024: mk("async", "from-purple-600/30 to-slate-900/25 border-purple-500/40"),
-      2048: mk("AI", "from-cyan-400/35 to-purple-500/25 border-cyan-300/50"),
-      4096: mk("∞", "from-white/20 to-slate-900/25 border-white/30"),
+      2: mk("var", "from-slate-200/90 to-white/70 border-slate-300/80 dark:from-slate-600/35 dark:to-slate-900/25 dark:border-slate-500/40"),
+      4: mk("let", "from-sky-200/90 to-white/70 border-sky-300/80 dark:from-sky-600/35 dark:to-slate-900/25 dark:border-sky-500/40"),
+      8: mk("const", "from-cyan-200/90 to-white/70 border-cyan-300/80 dark:from-cyan-600/35 dark:to-slate-900/25 dark:border-cyan-500/40"),
+      16: mk("if", "from-emerald-200/90 to-white/70 border-emerald-300/80 dark:from-emerald-600/35 dark:to-slate-900/25 dark:border-emerald-500/40"),
+      32: mk("else", "from-lime-200/85 to-white/70 border-lime-300/80 dark:from-lime-600/30 dark:to-slate-900/25 dark:border-lime-500/40"),
+      64: mk("for", "from-amber-200/85 to-white/70 border-amber-300/80 dark:from-amber-600/30 dark:to-slate-900/25 dark:border-amber-500/40"),
+      128: mk("while", "from-orange-200/85 to-white/70 border-orange-300/80 dark:from-orange-600/30 dark:to-slate-900/25 dark:border-orange-500/40"),
+      256: mk("function", "from-rose-200/85 to-white/70 border-rose-300/80 dark:from-rose-600/30 dark:to-slate-900/25 dark:border-rose-500/40"),
+      512: mk("class", "from-fuchsia-200/85 to-white/70 border-fuchsia-300/80 dark:from-fuchsia-600/30 dark:to-slate-900/25 dark:border-fuchsia-500/40"),
+      1024: mk("async", "from-purple-200/85 to-white/70 border-purple-300/80 dark:from-purple-600/30 dark:to-slate-900/25 dark:border-purple-500/40"),
+      2048: mk("AI", "from-cyan-200/90 to-purple-200/70 border-cyan-300/80 dark:from-cyan-400/35 dark:to-purple-500/25 dark:border-cyan-300/50"),
+      4096: mk("∞", "from-white/90 to-slate-200/70 border-slate-300/80 dark:from-white/20 dark:to-slate-900/25 dark:border-white/30"),
     };
   }, []);
 
@@ -395,6 +402,41 @@ function KonamiGameOverlay() {
   }, [active, buildInitialGame]);
 
   useEffect(() => {
+    const root = document.documentElement;
+    const update = () => setCurrentTheme(root.dataset.theme === "dark" ? "dark" : "light");
+    update();
+
+    const observer = new MutationObserver(update);
+    observer.observe(root, { attributes: true, attributeFilter: ["data-theme", "class"] });
+    return () => observer.disconnect();
+  }, []);
+
+  const toggleTheme = useCallback(() => {
+    const root = document.documentElement;
+    const next = root.dataset.theme === "dark" ? "light" : "dark";
+
+    const prefersReducedMotion =
+      window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    if (!prefersReducedMotion) {
+      root.classList.add("theme-transition");
+      window.setTimeout(() => root.classList.remove("theme-transition"), 340);
+    }
+
+    root.dataset.theme = next;
+    root.dataset.themeReady = "true";
+    root.classList.toggle("dark", next === "dark");
+
+    try {
+      window.localStorage.setItem("theme", next);
+    } catch {
+      // ignore
+    }
+
+    setCurrentTheme(next);
+  }, []);
+
+  useEffect(() => {
     try {
       const stored = Number(window.localStorage.getItem("konami2048_best") ?? "0");
       if (Number.isFinite(stored)) setBest(stored);
@@ -472,60 +514,68 @@ function KonamiGameOverlay() {
   if (!active) return null;
 
   return (
-    <motion.div
-      className="fixed inset-0 z-[60] text-white"
+      <motion.div
+        className="fixed inset-0 z-[60] text-slate-900 dark:text-white"
       initial={reduceMotion ? { opacity: 1 } : { opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={reduceMotion ? { opacity: 1 } : { opacity: 0 }}
     >
-      <div className="absolute inset-0 bg-slate-950" />
+      <div className="absolute inset-0 bg-slate-50 dark:bg-slate-950" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.14),transparent_45%),radial-gradient(circle_at_80%_15%,rgba(168,85,247,0.14),transparent_46%),radial-gradient(circle_at_60%_85%,rgba(236,72,153,0.10),transparent_48%)]" />
-      <div className="absolute inset-0 bg-gradient-to-b from-white/0 via-white/0 to-black/35" />
+      <div className="absolute inset-0 bg-gradient-to-b from-white/0 via-white/0 to-slate-900/10 dark:to-black/35" />
 
       <div className="relative mx-auto flex h-full w-full max-w-6xl flex-col px-4 py-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0 flex-1">
             <div className="inline-flex items-center gap-2">
-              <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-[11px] font-semibold tracking-wide text-cyan-200">
-                Konami
-              </span>
-              <span className="rounded-full border border-slate-700 bg-slate-900/40 px-3 py-1 text-[11px] font-semibold tracking-wide text-slate-200">
+            <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-[11px] font-semibold tracking-wide text-cyan-800 dark:text-cyan-200">
+              Konami
+            </span>
+              <span className="rounded-full border border-slate-200/70 bg-white/70 px-3 py-1 text-[11px] font-semibold tracking-wide text-slate-800 shadow-sm shadow-slate-900/5 dark:border-slate-700 dark:bg-slate-900/40 dark:text-slate-200 dark:shadow-none">
                 2048 Dev
               </span>
             </div>
-            <h1 className="mt-3 text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 via-sky-200 to-purple-300">
+            <h1 className="mt-3 text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-700 via-sky-600 to-purple-700 dark:from-cyan-300 dark:via-sky-200 dark:to-purple-300">
               Merge ta stack
             </h1>
-            <p className="mt-1 text-sm text-slate-300">
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
               Flèches ou <span className="font-mono">ZQSD</span> · <span className="font-mono">R</span> reset ·{" "}
               <span className="font-mono">Esc</span> fermer
             </p>
           </div>
 
           <div className="flex flex-wrap items-center justify-end gap-2">
-            <div className="w-full sm:w-auto rounded-2xl border border-slate-700/70 bg-slate-900/35 px-4 py-3 shadow-[0_18px_60px_rgba(0,0,0,0.40)]">
+            <div className="w-full sm:w-auto rounded-2xl border border-slate-200/70 bg-white/70 px-4 py-3 shadow-sm shadow-slate-900/10 dark:border-slate-700/70 dark:bg-slate-900/35 dark:shadow-[0_18px_60px_rgba(0,0,0,0.40)]">
               <div className="flex items-center gap-4">
                 <div>
-                  <div className="text-[11px] uppercase tracking-wider text-slate-400">Score</div>
-                  <div className="font-mono text-xl text-slate-100">{game.score}</div>
+                  <div className="text-[11px] uppercase tracking-wider text-slate-600 dark:text-slate-400">Score</div>
+                  <div className="font-mono text-xl text-slate-900 dark:text-slate-100">{game.score}</div>
                 </div>
-                <div className="h-9 w-px bg-slate-700/70" />
+                <div className="h-9 w-px bg-slate-200/70 dark:bg-slate-700/70" />
                 <div>
-                  <div className="text-[11px] uppercase tracking-wider text-slate-400">Best</div>
-                  <div className="font-mono text-xl text-slate-100">{best}</div>
+                  <div className="text-[11px] uppercase tracking-wider text-slate-600 dark:text-slate-400">Best</div>
+                  <div className="font-mono text-xl text-slate-900 dark:text-slate-100">{best}</div>
                 </div>
               </div>
             </div>
 
             <button
+              onClick={toggleTheme}
+              className="rounded-2xl border border-slate-200/70 bg-white/70 p-3 text-slate-700 shadow-sm shadow-slate-900/10 hover:border-cyan-500/40 hover:text-slate-900 dark:border-slate-700/70 dark:bg-slate-900/35 dark:text-slate-300 dark:shadow-[0_18px_60px_rgba(0,0,0,0.40)] dark:hover:text-white"
+              aria-label="Changer le thème"
+              title="Changer le thème"
+            >
+              {currentTheme === "dark" ? <Sun size={16} /> : <Moon size={16} />}
+            </button>
+            <button
               onClick={() => resetGame()}
-              className="w-full sm:w-auto rounded-2xl border border-slate-700/70 bg-slate-900/35 px-4 py-3 text-sm font-semibold text-slate-200 shadow-[0_18px_60px_rgba(0,0,0,0.40)] hover:border-cyan-500/40 hover:text-white"
+              className="w-full sm:w-auto rounded-2xl border border-slate-200/70 bg-white/70 px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm shadow-slate-900/10 hover:border-cyan-500/40 dark:border-slate-700/70 dark:bg-slate-900/35 dark:text-slate-200 dark:shadow-[0_18px_60px_rgba(0,0,0,0.40)] dark:hover:text-white"
             >
               Rejouer
             </button>
             <button
               onClick={() => setActive(false)}
-              className="rounded-2xl border border-slate-700/70 bg-slate-900/35 p-3 text-slate-300 shadow-[0_18px_60px_rgba(0,0,0,0.40)] hover:border-rose-500/40 hover:text-white"
+              className="rounded-2xl border border-slate-200/70 bg-white/70 p-3 text-slate-700 shadow-sm shadow-slate-900/10 hover:border-rose-500/40 hover:text-slate-900 dark:border-slate-700/70 dark:bg-slate-900/35 dark:text-slate-300 dark:shadow-[0_18px_60px_rgba(0,0,0,0.40)] dark:hover:text-white"
               aria-label="Fermer le mini-jeu"
             >
               <X size={16} />
@@ -539,10 +589,10 @@ function KonamiGameOverlay() {
               initial={reduceMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 180, damping: 22 }}
-              className="relative w-[min(92vw,520px)] rounded-3xl border border-slate-700/70 bg-slate-900/30 p-3 shadow-[0_32px_120px_rgba(0,0,0,0.55)]"
+              className="relative w-[min(92vw,520px)] rounded-3xl border border-slate-200/70 bg-white/70 p-3 shadow-[0_32px_120px_rgba(15,23,42,0.12)] dark:border-slate-700/70 dark:bg-slate-900/30 dark:shadow-[0_32px_120px_rgba(0,0,0,0.55)]"
             >
               <motion.div
-                className="relative select-none rounded-2xl bg-slate-950/35 p-3"
+                className="relative select-none rounded-2xl bg-white/65 p-3 dark:bg-slate-950/35"
                 style={{ touchAction: "none" }}
                 onPointerDown={handlePointerDown}
                 onPointerUp={handlePointerUp}
@@ -553,7 +603,7 @@ function KonamiGameOverlay() {
                     {Array.from({ length: 16 }).map((_, i) => (
                       <div
                         key={`bg-${i}`}
-                        className="aspect-square rounded-xl border border-slate-800/60 bg-slate-950/30"
+                        className="aspect-square rounded-xl border border-slate-200/70 bg-white/60 dark:border-slate-800/60 dark:bg-slate-950/30"
                       />
                     ))}
                   </div>
@@ -611,14 +661,14 @@ function KonamiGameOverlay() {
                                 }
                                 className={[
                                   "aspect-square rounded-xl border bg-gradient-to-br p-2 shadow-[0_18px_55px_rgba(0,0,0,0.35)]",
-                                  meta?.cls ?? "from-slate-700/35 to-slate-900/25 border-slate-500/40",
+                                  meta?.cls ?? "from-slate-200/90 to-white/70 border-slate-300/80 dark:from-slate-700/35 dark:to-slate-900/25 dark:border-slate-500/40",
                                 ].join(" ")}
                               >
                                 <div className="flex h-full flex-col items-center justify-center gap-1">
-                                  <div className="font-mono text-base font-bold tracking-tight text-slate-100 sm:text-lg">
+                                  <div className="font-mono text-base font-bold tracking-tight text-slate-900 sm:text-lg dark:text-slate-100">
                                     {meta?.label ?? tile.value}
                                   </div>
-                                  <div className="font-mono text-[10px] text-slate-300/90">{tile.value}</div>
+                                  <div className="font-mono text-[10px] text-slate-700/90 dark:text-slate-300/90">{tile.value}</div>
                                 </div>
                               </motion.div>
                             );
@@ -636,31 +686,31 @@ function KonamiGameOverlay() {
                       animate={{ opacity: 1 }}
                       exit={reduceMotion ? { opacity: 1 } : { opacity: 0 }}
                     >
-                      <div className="absolute inset-0 rounded-2xl bg-slate-950/45 backdrop-blur-md" />
+                      <div className="absolute inset-0 rounded-2xl bg-white/55 backdrop-blur-md dark:bg-slate-950/45" />
                       <motion.div
-                        className="relative w-[min(92%,340px)] rounded-2xl border border-slate-700/70 bg-slate-900/50 p-5 shadow-[0_30px_120px_rgba(0,0,0,0.65)]"
+                        className="relative w-[min(92%,340px)] rounded-2xl border border-slate-200/70 bg-white/85 p-5 shadow-[0_30px_120px_rgba(15,23,42,0.14)] dark:border-slate-700/70 dark:bg-slate-900/50 dark:shadow-[0_30px_120px_rgba(0,0,0,0.65)]"
                         initial={reduceMotion ? { scale: 1 } : { scale: 0.96, y: 6 }}
                         animate={{ scale: 1, y: 0 }}
                         exit={reduceMotion ? { scale: 1 } : { scale: 0.96, y: 6 }}
                         transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 260, damping: 22 }}
                       >
-                        <div className="text-sm font-semibold text-slate-100">Game Over</div>
-                        <div className="mt-1 text-sm text-slate-300">Plus de moves possibles.</div>
+                        <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Game Over</div>
+                        <div className="mt-1 text-sm text-slate-600 dark:text-slate-300">Plus de moves possibles.</div>
                         <div className="mt-4 flex gap-2">
                           <button
                             onClick={() => resetGame()}
-                            className="flex-1 rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-200 hover:border-cyan-400/45 hover:bg-cyan-500/15"
+                            className="flex-1 rounded-xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-sm font-semibold text-cyan-800 hover:border-cyan-400/45 hover:bg-cyan-500/15 dark:text-cyan-200"
                           >
                             Rejouer
                           </button>
                           <button
                             onClick={() => setActive(false)}
-                            className="rounded-xl border border-slate-700/70 bg-slate-950/20 px-4 py-2 text-sm font-semibold text-slate-200 hover:border-rose-500/35"
+                            className="rounded-xl border border-slate-200/70 bg-white/70 px-4 py-2 text-sm font-semibold text-slate-800 hover:border-rose-500/35 dark:border-slate-700/70 dark:bg-slate-950/20 dark:text-slate-200"
                           >
                             Fermer
                           </button>
                         </div>
-                        <div className="mt-3 text-xs text-slate-400">
+                        <div className="mt-3 text-xs text-slate-600 dark:text-slate-400">
                           Astuce : utilise <span className="font-mono">ZQSD</span> ou les flèches.
                         </div>
                       </motion.div>
@@ -669,7 +719,7 @@ function KonamiGameOverlay() {
                 </AnimatePresence>
               </motion.div>
 
-              <div className="mt-3 flex items-center justify-between text-xs text-slate-400">
+              <div className="mt-3 flex items-center justify-between text-xs text-slate-600 dark:text-slate-400">
                 <span>Swipe (mobile) · ZQSD/Flèches (desktop)</span>
                 <span className="font-mono">Objectif: 2048 (AI)</span>
               </div>
@@ -683,58 +733,58 @@ function KonamiGameOverlay() {
                 animate={{ opacity: 1, y: 0 }}
                 className="rounded-2xl border border-emerald-500/25 bg-emerald-500/10 p-4"
               >
-                <div className="font-semibold text-emerald-200">GG — AI atteint (2048).</div>
-                <div className="mt-1 text-sm text-emerald-100/80">Continue pour viser 4096 (∞).</div>
+                <div className="font-semibold text-emerald-800 dark:text-emerald-200">GG — AI atteint (2048).</div>
+                <div className="mt-1 text-sm text-emerald-700/90 dark:text-emerald-100/80">Continue pour viser 4096 (∞).</div>
               </motion.div>
             )}
 
             {/* Game over handled by overlay on the board */}
 
-            <div className="rounded-2xl border border-slate-700/70 bg-slate-900/25 p-4">
-              <div className="text-sm font-semibold text-slate-100">Contrôles</div>
+            <div className="rounded-2xl border border-slate-200/70 bg-white/70 p-4 shadow-sm shadow-slate-900/5 dark:border-slate-700/70 dark:bg-slate-900/25 dark:shadow-none">
+              <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Contrôles</div>
               <div className="mt-3 grid grid-cols-3 gap-2">
                 <div />
                 <button
                   onClick={() => applyMove("up")}
-                  className="rounded-xl border border-slate-700/80 bg-slate-950/30 py-3 text-sm text-slate-200 hover:border-cyan-500/40"
+                  className="rounded-xl border border-slate-200/70 bg-white/70 py-3 text-sm text-slate-800 hover:border-cyan-500/40 dark:border-slate-700/80 dark:bg-slate-950/30 dark:text-slate-200"
                 >
                   ↑
                 </button>
                 <div />
                 <button
                   onClick={() => applyMove("left")}
-                  className="rounded-xl border border-slate-700/80 bg-slate-950/30 py-3 text-sm text-slate-200 hover:border-cyan-500/40"
+                  className="rounded-xl border border-slate-200/70 bg-white/70 py-3 text-sm text-slate-800 hover:border-cyan-500/40 dark:border-slate-700/80 dark:bg-slate-950/30 dark:text-slate-200"
                 >
                   ←
                 </button>
                 <button
                   onClick={() => applyMove("down")}
-                  className="rounded-xl border border-slate-700/80 bg-slate-950/30 py-3 text-sm text-slate-200 hover:border-cyan-500/40"
+                  className="rounded-xl border border-slate-200/70 bg-white/70 py-3 text-sm text-slate-800 hover:border-cyan-500/40 dark:border-slate-700/80 dark:bg-slate-950/30 dark:text-slate-200"
                 >
                   ↓
                 </button>
                 <button
                   onClick={() => applyMove("right")}
-                  className="rounded-xl border border-slate-700/80 bg-slate-950/30 py-3 text-sm text-slate-200 hover:border-cyan-500/40"
+                  className="rounded-xl border border-slate-200/70 bg-white/70 py-3 text-sm text-slate-800 hover:border-cyan-500/40 dark:border-slate-700/80 dark:bg-slate-950/30 dark:text-slate-200"
                 >
                   →
                 </button>
               </div>
-              <div className="mt-4 text-xs text-slate-400">
+              <div className="mt-4 text-xs text-slate-600 dark:text-slate-400">
                 Astuce: fusionne 2 tuiles identiques pour monter (var → let → const → … → AI).
               </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-700/70 bg-slate-900/25 p-4">
-              <div className="text-sm font-semibold text-slate-100">Légende</div>
+            <div className="rounded-2xl border border-slate-200/70 bg-white/70 p-4 shadow-sm shadow-slate-900/5 dark:border-slate-700/70 dark:bg-slate-900/25 dark:shadow-none">
+              <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Légende</div>
               <div className="mt-3 flex flex-wrap gap-2">
                 {[2, 4, 8, 16, 32, 64, 128, 256].map((v) => (
                   <span
                     key={v}
-                    className="inline-flex items-center gap-2 rounded-full border border-slate-700/70 bg-slate-950/25 px-3 py-1 text-xs text-slate-200"
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-3 py-1 text-xs text-slate-800 shadow-sm shadow-slate-900/5 dark:border-slate-700/70 dark:bg-slate-950/25 dark:text-slate-200 dark:shadow-none"
                   >
                     <span className="font-mono">{tileMeta[v]?.label ?? v}</span>
-                    <span className="font-mono text-slate-400">{v}</span>
+                    <span className="font-mono text-slate-600 dark:text-slate-400">{v}</span>
                   </span>
                 ))}
               </div>
@@ -750,6 +800,7 @@ function KonamiGameOverlay() {
 export default function Home() {
   // States
   const recruiterMode = false;
+  const [theme, setTheme] = useState("light");
   const [activeSection, setActiveSection] = useState("introduction");
   const [activeTab, setActiveTab] = useState("all");
   const [selectedSkillKey, setSelectedSkillKey] = useState("python");
@@ -773,10 +824,10 @@ export default function Home() {
   const filteredSkills = skills.filter((s) => s.category === selectedCategory);
   const levelColor =
     currentSkillDetail.level === "prod"
-      ? "bg-emerald-500/10 text-emerald-300 border-emerald-500/50"
+      ? "bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/50"
       : currentSkillDetail.level === "projet"
-        ? "bg-sky-500/10 text-sky-200 border-sky-500/50"
-        : "bg-slate-700/60 text-slate-100 border-slate-400/50";
+        ? "bg-sky-500/10 text-sky-800 dark:text-sky-200 border-sky-500/50"
+        : "bg-slate-900/5 text-slate-800 border-slate-200/70 dark:bg-slate-700/60 dark:text-slate-100 dark:border-slate-400/50";
 
   // Filter projects
   const activeStudy = caseStudies.find(p => p.key === selectedProjectKey) || caseStudies[0];
@@ -816,6 +867,39 @@ export default function Home() {
       setClicks(0);
     }
   };
+
+  useEffect(() => {
+    const root = document.documentElement;
+    const update = () => setTheme(root.dataset.theme === "dark" ? "dark" : "light");
+    update();
+
+    const observer = new MutationObserver(update);
+    observer.observe(root, { attributes: true, attributeFilter: ["data-theme", "class"] });
+    return () => observer.disconnect();
+  }, []);
+
+  const applyTheme = useCallback((nextTheme, { persist = true } = {}) => {
+    const normalized = nextTheme === "dark" ? "dark" : "light";
+    setTheme(normalized);
+
+    const root = document.documentElement;
+    const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!reduceMotion) {
+      root.classList.add("theme-transition");
+      window.setTimeout(() => root.classList.remove("theme-transition"), 340);
+    }
+    root.dataset.theme = normalized;
+    root.dataset.themeReady = "true";
+    root.classList.toggle("dark", normalized === "dark");
+
+    if (persist) {
+      try {
+        localStorage.setItem("theme", normalized);
+      } catch {
+        // ignore
+      }
+    }
+  }, []);
 
   useEffect(() => {
     const getNavOffset = () => {
@@ -860,30 +944,38 @@ export default function Home() {
       elements.forEach((el) => observer.observe(el));
     };
 
-    const handleScroll = () => {
-      const scrollBottom = window.scrollY + window.innerHeight;
-      const docHeight = document.documentElement.scrollHeight;
-      if (docHeight - scrollBottom < 80) setActiveSection("contact");
-    };
-
     setupObserver();
-    handleScroll();
 
     window.addEventListener("resize", setupObserver);
-    window.addEventListener("scroll", handleScroll, { passive: true });
 
     return () => {
       observer?.disconnect();
       window.removeEventListener("resize", setupObserver);
-      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
   useEffect(() => {
-    const onScroll = () => setShowScrollTop(window.scrollY > 700);
+    let rafId = 0;
+
+    const onScroll = () => {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(() => {
+        rafId = 0;
+        const y = window.scrollY || 0;
+        setShowScrollTop(y > 700);
+
+        const scrollBottom = y + window.innerHeight;
+        const docHeight = document.documentElement.scrollHeight;
+        if (docHeight - scrollBottom < 80) setActiveSection("contact");
+      });
+    };
+
     onScroll();
     window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      if (rafId) window.cancelAnimationFrame(rafId);
+    };
   }, []);
 
   const scrollToTop = useCallback(() => {
@@ -896,7 +988,7 @@ export default function Home() {
   const progressWidth = useTransform(smoothProgress, (v) => `${v * 100}%`);
 
   return (
-    <main className="relative min-h-[100dvh] bg-slate-950 text-slate-200 selection:bg-cyan-500/30 selection:text-cyan-100 font-sans overflow-x-hidden">
+    <main className="relative min-h-[100dvh] bg-slate-50 text-slate-900 selection:bg-cyan-500/30 selection:text-cyan-950 dark:bg-slate-950 dark:text-slate-200 dark:selection:text-cyan-100 font-sans overflow-x-hidden">
       {/* Background Elements */}
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute inset-0 bg-noise opacity-[0.03] mix-blend-overlay"></div>
@@ -905,7 +997,7 @@ export default function Home() {
       </div>
 
       {/* Progress Bar */}
-      <div className="fixed top-[calc(5rem+env(safe-area-inset-top))] left-0 right-0 h-[2px] md:h-[3px] z-40 pointer-events-none bg-white/5 ring-1 ring-white/5 overflow-hidden" aria-hidden="true">
+      <div className="fixed top-[calc(5rem+env(safe-area-inset-top))] left-0 right-0 h-[2px] md:h-[3px] z-40 pointer-events-none bg-slate-900/5 ring-1 ring-slate-900/10 dark:bg-white/5 dark:ring-white/5 overflow-hidden" aria-hidden="true">
         <motion.div
           className="h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 shadow-[0_0_12px_rgba(34,211,238,0.28)]"
           style={{ width: progressWidth }}
@@ -913,7 +1005,7 @@ export default function Home() {
       </div>
 
       {/* Navigation */}
-      <nav data-nav="main" className="fixed inset-x-0 top-0 w-full z-50 border-b border-white/10 bg-slate-950/90 backdrop-blur-xl shadow-[0_10px_30px_rgba(0,0,0,0.35)] pt-[env(safe-area-inset-top)]">
+      <nav data-nav="main" className="fixed inset-x-0 top-0 w-full z-50 border-b border-slate-200/70 bg-white/70 backdrop-blur-xl shadow-[0_10px_30px_rgba(15,23,42,0.08)] dark:border-white/10 dark:bg-slate-950/90 dark:shadow-[0_10px_30px_rgba(0,0,0,0.35)] pt-[env(safe-area-inset-top)]">
         <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-cyan-500/35 to-transparent pointer-events-none" aria-hidden="true" />
         <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-8 h-20 flex items-center justify-between">
           <motion.div
@@ -921,17 +1013,17 @@ export default function Home() {
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3"
           >
-            <div className="relative w-10 h-10 rounded-full overflow-hidden border border-slate-600/70 cursor-pointer shadow-sm shadow-black/40" onClick={handleProfileClick}>
+            <div className="relative w-10 h-10 rounded-full overflow-hidden border border-slate-300 cursor-pointer shadow-sm shadow-slate-900/10 dark:border-slate-600/70 dark:shadow-black/40" onClick={handleProfileClick}>
               <Image src="/Paul_PDP.jpg" alt="Paul Claus" fill sizes="40px" className="object-cover" />
             </div>
             <div className="leading-none">
-              <span className="block font-semibold text-slate-100 tracking-tight text-[15px]">Paul Claus</span>
-              <span className="hidden sm:block text-[11px] text-slate-400/90 mt-1">Développeur Fullstack</span>
+              <span className="block font-semibold text-slate-900 tracking-tight text-[15px] dark:text-slate-100">Paul Claus</span>
+              <span className="hidden sm:block text-[11px] text-slate-600 mt-1 dark:text-slate-400/90">Développeur Fullstack</span>
             </div>
           </motion.div>
 
           {/* Desktop Menu */}
-          <div className="hidden md:flex items-center gap-10 text-[13px] font-semibold text-slate-300">
+          <div className="hidden md:flex items-center gap-10 text-[13px] font-semibold text-slate-600 dark:text-slate-300">
             {NAV_ITEMS.map((item) => (
               <motion.a
                 key={item.id}
@@ -953,14 +1045,43 @@ export default function Home() {
             ))}
           </div>
 
-          {/* Mobile Menu Toggle */}
-          <button
-            className="md:hidden inline-flex items-center justify-center rounded-full border border-white/10 bg-slate-900/40 p-2.5 text-slate-200 hover:bg-slate-900/60 transition-colors"
-            onClick={() => setMenuOpen(!menuOpen)}
-            aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
-          >
-            {menuOpen ? <X /> : <Menu />}
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => applyTheme(theme === "dark" ? "light" : "dark")}
+              className="group inline-flex items-center justify-center rounded-full border border-slate-200 bg-white/70 p-2.5 text-slate-700 shadow-sm shadow-slate-900/10 transition-colors hover:bg-white dark:border-white/10 dark:bg-slate-900/40 dark:text-slate-200 dark:shadow-black/40 dark:hover:bg-slate-900/60"
+              aria-label={theme === "dark" ? "Passer en mode clair" : "Passer en mode sombre"}
+              title={theme === "dark" ? "Mode clair" : "Mode sombre"}
+            >
+              <span className="relative h-[18px] w-[18px]">
+                <span
+                  className={[
+                    "absolute inset-0 grid place-items-center transition-all duration-300 ease-out",
+                    theme === "dark" ? "opacity-100 rotate-0 scale-100" : "opacity-0 rotate-90 scale-75",
+                  ].join(" ")}
+                >
+                  <Sun size={18} className="drop-shadow-[0_0_10px_rgba(34,211,238,0.18)]" />
+                </span>
+                <span
+                  className={[
+                    "absolute inset-0 grid place-items-center transition-all duration-300 ease-out",
+                    theme === "dark" ? "opacity-0 -rotate-90 scale-75" : "opacity-100 rotate-0 scale-100",
+                  ].join(" ")}
+                >
+                  <Moon size={18} className="drop-shadow-[0_0_10px_rgba(168,85,247,0.16)]" />
+                </span>
+              </span>
+            </button>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              className="md:hidden inline-flex items-center justify-center rounded-full border border-slate-200 bg-white/70 p-2.5 text-slate-700 shadow-sm shadow-slate-900/10 transition-colors hover:bg-white dark:border-white/10 dark:bg-slate-900/40 dark:text-slate-200 dark:shadow-black/40 dark:hover:bg-slate-900/60"
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label={menuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+            >
+              {menuOpen ? <X /> : <Menu />}
+            </button>
+          </div>
         </div>
 
         {/* Mobile Menu */}
@@ -970,9 +1091,9 @@ export default function Home() {
               initial={{ height: 0, opacity: 0 }}
               animate={{ height: "auto", opacity: 1 }}
               exit={{ height: 0, opacity: 0 }}
-              className="md:hidden border-t border-white/10 bg-slate-950/80 backdrop-blur-xl overflow-hidden max-h-[calc(100dvh-5rem-env(safe-area-inset-top))] overflow-y-auto overscroll-contain"
+              className="md:hidden border-t border-slate-200/70 bg-white/85 backdrop-blur-xl overflow-hidden max-h-[calc(100dvh-5rem-env(safe-area-inset-top))] overflow-y-auto overscroll-contain dark:border-white/10 dark:bg-slate-950/80"
             >
-              <div className="flex flex-col p-4 sm:p-6 space-y-3 text-slate-200">
+              <div className="flex flex-col p-4 sm:p-6 space-y-3 text-slate-800 dark:text-slate-200">
                 {NAV_ITEMS.map((item) => (
                   <a
                     key={item.id}
@@ -982,8 +1103,8 @@ export default function Home() {
                       setMenuOpen(false);
                     }}
                     className={`rounded-xl px-4 py-3 transition-colors text-base font-semibold border ${activeSection === item.id
-                        ? "bg-white/6 border-cyan-400/30 text-cyan-100"
-                        : "bg-white/0 hover:bg-white/5 border-white/0 hover:border-white/10"
+                        ? "bg-cyan-500/10 border-cyan-400/30 text-cyan-950 dark:bg-white/6 dark:text-cyan-100"
+                        : "bg-white/0 hover:bg-slate-900/5 border-slate-200/0 hover:border-slate-200/70 dark:hover:bg-white/5 dark:hover:border-white/10"
                       }`}
                   >
                     {item.label}
@@ -1007,12 +1128,12 @@ export default function Home() {
           className="relative scroll-mt-24"
         >
           {/* Badge */}
-          <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 rounded-full bg-slate-900/50 border border-slate-700/50 px-3 py-1 mb-6 backdrop-blur-md">
+          <motion.div variants={fadeInUp} className="inline-flex items-center gap-2 rounded-full bg-slate-900/5 border border-slate-200/70 px-3 py-1 mb-6 backdrop-blur-md dark:bg-slate-900/50 dark:border-slate-700/50">
             <span className="relative flex h-2 w-2">
               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
             </span>
-            <span className="text-xs font-medium text-emerald-300">Disponible dès maintenant</span>
+            <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">Disponible dès maintenant</span>
           </motion.div>
 
           <motion.h1
@@ -1023,9 +1144,9 @@ export default function Home() {
             et Créatif.
           </motion.h1>
 
-          <motion.p variants={fadeInUp} className="text-base sm:text-lg text-slate-300 max-w-2xl mb-8 leading-relaxed">
-            Je suis <strong className="text-slate-200">Paul Claus</strong>. Ingénieur informatique (CESI), je conçois des solutions web, logicielles et IA concrètes.
-            Mon but : <span className="text-slate-200">transformer la complexité technique en outils simples et performants.</span>
+          <motion.p variants={fadeInUp} className="text-base sm:text-lg text-slate-600 max-w-2xl mb-8 leading-relaxed dark:text-slate-300">
+            Je suis <strong className="text-slate-900 dark:text-slate-200">Paul Claus</strong>. Ingénieur informatique (CESI), je conçois des solutions web, logicielles et IA concrètes.
+            Mon but : <span className="text-slate-900 dark:text-slate-200">transformer la complexité technique en outils simples et performants.</span>
           </motion.p>
 
           <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
@@ -1045,7 +1166,7 @@ export default function Home() {
               whileHover={{ y: -2, scale: 1.01 }}
               whileTap={{ y: 0, scale: 0.99 }}
               transition={{ type: "spring", stiffness: 500, damping: 32 }}
-              className="btn-cta inline-flex w-full sm:w-auto items-center justify-center gap-2 glass-panel hover:bg-white/10 text-white font-medium px-6 py-3 rounded-full transition-all border border-white/10 hover:border-white/20"
+              className="btn-cta inline-flex w-full sm:w-auto items-center justify-center gap-2 glass-panel hover:bg-slate-900/5 text-slate-900 font-medium px-6 py-3 rounded-full transition-all border border-slate-200/70 hover:border-slate-300 dark:hover:bg-white/10 dark:text-white dark:border-white/10 dark:hover:border-white/20"
             >
               <Download size={18} /> Télécharger CV
             </motion.a>
@@ -1059,7 +1180,7 @@ export default function Home() {
               aria-label="GitHub"
               className="group inline-flex items-center justify-center rounded-full p-2 hover:bg-sky-400/10 transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/70"
             >
-              <Github className="text-sky-400 group-hover:text-sky-300 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
+              <Github className="text-sky-600 group-hover:text-sky-700 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.12)] dark:text-sky-400 dark:group-hover:text-sky-300 dark:drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
             </a>
             <a
               href="https://www.linkedin.com/in/paul-claus/"
@@ -1068,21 +1189,21 @@ export default function Home() {
               aria-label="LinkedIn"
               className="group inline-flex items-center justify-center rounded-full p-2 hover:bg-sky-400/10 transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/70"
             >
-              <Linkedin className="text-sky-400 group-hover:text-sky-300 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
+              <Linkedin className="text-sky-600 group-hover:text-sky-700 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.12)] dark:text-sky-400 dark:group-hover:text-sky-300 dark:drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
             </a>
             <a
               href="mailto:paul.claus@viacesi.fr"
               aria-label="Email"
               className="group inline-flex items-center justify-center rounded-full p-2 hover:bg-sky-400/10 transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/70"
             >
-              <Mail className="text-sky-400 group-hover:text-sky-300 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
+              <Mail className="text-sky-600 group-hover:text-sky-700 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.12)] dark:text-sky-400 dark:group-hover:text-sky-300 dark:drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
             </a>
             <a
               href="#contact"
               aria-label="Localisation"
               className="group inline-flex items-center justify-center rounded-full p-2 hover:bg-sky-400/10 transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/70"
             >
-              <MapPin className="text-sky-400 group-hover:text-sky-300 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
+              <MapPin className="text-sky-600 group-hover:text-sky-700 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.12)] dark:text-sky-400 dark:group-hover:text-sky-300 dark:drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
             </a>
           </motion.div>
         </motion.section>
@@ -1100,23 +1221,23 @@ export default function Home() {
             <div className="flex items-center gap-4">
               <div className="h-px w-12 bg-cyan-500/50" />
               <div>
-                <h2 className="text-2xl font-bold text-slate-100">Expériences</h2>
-                <p className="text-sm text-slate-300 mt-1">
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Expériences</h2>
+                <p className="text-sm text-slate-600 mt-1 dark:text-slate-300">
                   Résultats concrets, missions variées (réseau, web, IA) — cliquez pour voir les détails.
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <span className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-950/40 px-3 py-1">
+            <div className="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-500">
+              <span className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-3 py-1 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-950/40 dark:shadow-none">
                 <Briefcase size={14} className="text-cyan-400" /> {experiences.length} expériences
               </span>
-              <span className="hidden sm:inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-950/40 px-3 py-1">
+              <span className="hidden sm:inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-3 py-1 shadow-sm shadow-slate-900/5 dark:border-slate-800 dark:bg-slate-950/40 dark:shadow-none">
                 <CheckCircle2 size={14} className="text-emerald-400" /> Études de cas détaillées
               </span>
             </div>
           </div>
 
-          <ol className="relative border-l border-slate-800/60 pl-6 lg:pl-10 space-y-6">
+          <ol className="relative border-l border-slate-200/70 pl-6 lg:pl-10 space-y-6 dark:border-slate-800/60">
             {experiences.map((exp) => {
               const study = caseStudyByKey.get(exp.key);
               const isExpanded = expandedExperienceKey === exp.key;
@@ -1126,7 +1247,7 @@ export default function Home() {
               return (
                 <motion.li key={exp.key} variants={fadeInUp} className="relative">
                   <span
-                    className="experience-dot absolute -left-[9px] top-7 h-4 w-4 rounded-full bg-slate-950 border border-cyan-500/40"
+                    className="experience-dot absolute -left-[9px] top-7 h-4 w-4 rounded-full bg-white border border-cyan-500/40 dark:bg-slate-950"
                     data-expanded={isExpanded ? "true" : undefined}
                     aria-hidden="true"
                   />
@@ -1141,24 +1262,24 @@ export default function Home() {
                           <Image src={exp.logo} alt={exp.alt} width={40} height={40} className="object-contain w-full h-full" />
                         </div>
                         <div className="min-w-0">
-                          <h3 className="font-bold text-lg text-slate-100 leading-snug">{exp.title}</h3>
+                          <h3 className="font-bold text-lg text-slate-900 leading-snug dark:text-slate-100">{exp.title}</h3>
                           <p className="text-sm text-cyan-400 font-medium mt-0.5">
                             {study?.company ?? exp.place}
                           </p>
-                          <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-500">
+                          <div className="mt-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-600 dark:text-slate-500">
                             {study?.location && (
                               <span className="inline-flex items-center gap-1.5">
-                                <MapPin size={14} className="text-slate-600" /> {study.location}
+                              <MapPin size={14} className="text-slate-700 dark:text-slate-600" /> {study.location}
                               </span>
                             )}
                             {study?.year && (
                               <span className="inline-flex items-center gap-1.5">
-                                <Calendar size={14} className="text-slate-600" /> {study.year}
+                              <Calendar size={14} className="text-slate-700 dark:text-slate-600" /> {study.year}
                               </span>
                             )}
                             {study?.contractLabel && (
                               <span className="inline-flex items-center gap-1.5">
-                                <Briefcase size={14} className="text-slate-600" /> {study.contractLabel}
+                              <Briefcase size={14} className="text-slate-700 dark:text-slate-600" /> {study.contractLabel}
                               </span>
                             )}
                           </div>
@@ -1177,7 +1298,7 @@ export default function Home() {
                             href={exp.url}
                             target="_blank"
                             rel="noreferrer noopener"
-                            className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-950/40 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:border-slate-700 hover:bg-slate-900/60 transition-colors"
+                            className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-3 py-1.5 text-xs font-semibold text-slate-700 shadow-sm shadow-slate-900/5 transition-colors hover:border-slate-300 hover:bg-white dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-300 dark:shadow-none dark:hover:border-slate-700 dark:hover:bg-slate-900/60"
                           >
                             Site <ExternalLink size={14} />
                           </a>
@@ -1187,7 +1308,7 @@ export default function Home() {
                           <button
                             type="button"
                             onClick={() => handleViewCaseStudy(exp.key)}
-                            className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1.5 text-xs font-bold text-cyan-200 hover:bg-cyan-500/15 transition-colors"
+                            className="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1.5 text-xs font-bold text-cyan-900 hover:bg-cyan-500/15 transition-colors dark:text-cyan-200"
                           >
                             Étude de cas <ArrowRight size={14} />
                           </button>
@@ -1197,7 +1318,7 @@ export default function Home() {
                           <button
                             type="button"
                             onClick={() => setExpandedExperienceKey((prev) => (prev === exp.key ? null : exp.key))}
-                            className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-950/40 px-3 py-1.5 text-xs font-semibold text-slate-200 hover:border-slate-700 hover:bg-slate-900/60 transition-colors"
+                            className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-3 py-1.5 text-xs font-semibold text-slate-800 shadow-sm shadow-slate-900/5 transition-colors hover:border-slate-300 hover:bg-white dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-200 dark:shadow-none dark:hover:border-slate-700 dark:hover:bg-slate-900/60"
                             aria-expanded={isExpanded}
                             aria-controls={`exp-${exp.key}-details`}
                           >
@@ -1212,7 +1333,7 @@ export default function Home() {
                       </div>
                     </header>
 
-                    <p className="text-sm text-slate-300 mt-4 leading-relaxed">
+                    <p className="text-sm text-slate-600 mt-4 leading-relaxed dark:text-slate-300">
                       {recruiterMode ? exp.shortDesc : exp.desc}
                     </p>
 
@@ -1231,10 +1352,10 @@ export default function Home() {
 
                     {primaryBullets?.length ? (
                       <div className="mt-4">
-                        <p className="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">
+                        <p className="text-xs font-bold uppercase tracking-wider text-slate-700 mb-2 dark:text-slate-500">
                           {recruiterMode ? "Impact" : "Actions"}
                         </p>
-                        <ul className="space-y-2 text-sm text-slate-300">
+                        <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-300">
                           {primaryBullets.slice(0, 2).map((b, i) => (
                             <li key={i} className="flex gap-2">
                               <span className={`mt-1.5 h-1.5 w-1.5 rounded-full ${recruiterMode ? "bg-emerald-400/70" : "bg-sky-400/70"}`} />
@@ -1256,25 +1377,25 @@ export default function Home() {
                           className="overflow-hidden"
                         >
                           <div className="grid md:grid-cols-3 gap-3 mt-5">
-                            <div className="bg-slate-950/50 p-4 rounded-xl border border-slate-800/50">
-                              <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Contexte</h4>
-                              <ul className="text-sm text-slate-300 space-y-2">
+                            <div className="bg-white/70 p-4 rounded-xl border border-slate-200/70 shadow-sm shadow-slate-900/5 dark:bg-slate-950/50 dark:border-slate-800/50 dark:shadow-none">
+                              <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 dark:text-slate-500">Contexte</h4>
+                              <ul className="text-sm text-slate-600 space-y-2 dark:text-slate-300">
                                 {study.contextBullets?.slice(0, 3).map((b, i) => (
                                   <li key={i} className="flex gap-2"><span className="text-slate-600">•</span>{b}</li>
                                 ))}
                               </ul>
                             </div>
-                            <div className="bg-slate-950/50 p-4 rounded-xl border border-slate-800/50">
+                            <div className="bg-white/70 p-4 rounded-xl border border-slate-200/70 shadow-sm shadow-slate-900/5 dark:bg-slate-950/50 dark:border-slate-800/50 dark:shadow-none">
                               <h4 className="text-xs font-bold text-sky-500 uppercase tracking-wider mb-3">Action</h4>
-                              <ul className="text-sm text-slate-300 space-y-2">
+                              <ul className="text-sm text-slate-600 space-y-2 dark:text-slate-300">
                                 {study.actionsBullets?.slice(0, 3).map((b, i) => (
                                   <li key={i} className="flex gap-2"><span className="text-sky-800">•</span>{b}</li>
                                 ))}
                               </ul>
                             </div>
-                            <div className="bg-slate-950/50 p-4 rounded-xl border border-slate-800/50">
+                            <div className="bg-white/70 p-4 rounded-xl border border-slate-200/70 shadow-sm shadow-slate-900/5 dark:bg-slate-950/50 dark:border-slate-800/50 dark:shadow-none">
                               <h4 className="text-xs font-bold text-emerald-500 uppercase tracking-wider mb-3">Impact</h4>
-                              <ul className="text-sm text-slate-300 space-y-2">
+                              <ul className="text-sm text-slate-600 space-y-2 dark:text-slate-300">
                                 {study.impactBullets?.slice(0, 3).map((b, i) => (
                                   <li key={i} className="flex gap-2"><span className="text-emerald-800">•</span>{b}</li>
                                 ))}
@@ -1299,7 +1420,7 @@ export default function Home() {
                       {exp.tags.map(tag => (
                         <span
                           key={tag.label}
-                          className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-800/50 text-slate-300 border border-slate-700/50"
+                          className="px-2.5 py-1 rounded-full text-[11px] font-medium bg-slate-900/5 text-slate-700 border border-slate-200/70 dark:bg-slate-800/50 dark:text-slate-300 dark:border-slate-700/50"
                         >
                           {tag.label}
                         </span>
@@ -1322,7 +1443,7 @@ export default function Home() {
           >
             <div className="flex items-center gap-4">
               <div className="h-px w-12 bg-cyan-500/50" />
-              <h2 className="text-2xl font-bold text-slate-100">Projets Sélectionnés</h2>
+              <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Projets Sélectionnés</h2>
             </div>
 
             <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
@@ -1337,8 +1458,8 @@ export default function Home() {
                   key={cat.key}
                   onClick={() => setActiveTab(cat.key)}
                   className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all whitespace-nowrap backdrop-blur ${activeTab === cat.key
-                      ? "bg-gradient-to-r from-cyan-500/30 to-purple-500/20 text-cyan-100 border-cyan-400/40 shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_30px_rgba(0,0,0,0.35)]"
-                      : "bg-slate-950/40 text-slate-300 border-slate-800/70 hover:border-slate-700 hover:bg-slate-900/50"
+                      ? "bg-gradient-to-r from-cyan-500/30 to-purple-500/20 text-cyan-950 dark:text-cyan-100 border-cyan-400/40 shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_30px_rgba(0,0,0,0.10)] dark:shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_30px_rgba(0,0,0,0.35)]"
+                      : "bg-white/70 text-slate-700 border-slate-200/70 shadow-sm shadow-slate-900/5 hover:border-slate-300 hover:bg-white dark:bg-slate-950/40 dark:text-slate-300 dark:border-slate-800/70 dark:shadow-none dark:hover:border-slate-700 dark:hover:bg-slate-900/50"
                     }`}
                 >
                   {cat.label}
@@ -1381,13 +1502,13 @@ export default function Home() {
                       )}
                     </div>
                     <div className="min-w-0">
-                      <h4 className={`text-sm font-semibold leading-snug line-clamp-2 break-words ${isSelected ? "text-cyan-100" : "text-slate-100"}`}>
+                      <h4 className={`text-sm font-semibold leading-snug line-clamp-2 break-words ${isSelected ? "text-cyan-950 dark:text-cyan-100" : "text-slate-900 dark:text-slate-100"}`}>
                         {proj.headline}
                       </h4>
-                      <p className="text-xs text-slate-300/90">{proj.company}</p>
+                      <p className="text-xs text-slate-600/90 dark:text-slate-300/90">{proj.company}</p>
                       {proj.stackLabel ? (
                         <div className="mt-1 flex items-center gap-2">
-                          <span className="inline-flex items-center rounded-full border border-sky-400/30 bg-sky-400/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-sky-200">
+                          <span className="inline-flex items-center rounded-full border border-sky-400/30 bg-sky-400/10 px-2 py-0.5 text-[10px] font-semibold tracking-wide text-sky-900 dark:text-sky-200">
                             {proj.stackLabel}
                           </span>
                         </div>
@@ -1419,11 +1540,11 @@ export default function Home() {
               >
                 <div className="flex flex-wrap justify-between items-start gap-4 mb-6">
                   <div>
-                    <h3 className="text-2xl font-bold text-white mb-1">{activeStudy.headline}</h3>
-                    <p className="text-cyan-400 font-medium">{activeStudy.company} — {activeStudy.role}</p>
+                    <h3 className="text-2xl font-bold text-slate-900 mb-1 dark:text-white">{activeStudy.headline}</h3>
+                    <p className="text-cyan-700 font-medium dark:text-cyan-400">{activeStudy.company} — {activeStudy.role}</p>
                   </div>
                   {activeStudy.key === "portfolio" ? (
-                    <span className="inline-flex items-center gap-2 rounded-full border border-sky-400/25 bg-sky-400/10 px-4 py-2 text-sm font-semibold text-sky-200 backdrop-blur">
+                    <span className="inline-flex items-center gap-2 rounded-full border border-sky-400/25 bg-sky-400/10 px-4 py-2 text-sm font-semibold text-sky-900 backdrop-blur dark:text-sky-200">
                       Vous êtes dessus <MapPin size={14} />
                     </span>
                   ) : activeStudy.link ? (
@@ -1431,21 +1552,21 @@ export default function Home() {
                       href={activeStudy.link}
                       target="_blank"
                       rel="noreferrer noopener"
-                      className="inline-flex items-center gap-2 rounded-full bg-slate-950/40 hover:bg-slate-900/60 text-slate-200 px-4 py-2 text-sm font-semibold transition-colors border border-slate-800/80 hover:border-slate-700 backdrop-blur"
+                      className="inline-flex items-center gap-2 rounded-full bg-white/70 hover:bg-white text-slate-800 px-4 py-2 text-sm font-semibold transition-colors border border-slate-200/70 hover:border-slate-300 backdrop-blur shadow-sm shadow-slate-900/5 dark:bg-slate-950/40 dark:hover:bg-slate-900/60 dark:text-slate-200 dark:border-slate-800/80 dark:hover:border-slate-700 dark:shadow-none"
                     >
                       Voir le projet <ExternalLink size={14} />
                     </a>
                   ) : null}
                 </div>
 
-                <p className="text-slate-300 leading-relaxed mb-8 text-lg">
+                <p className="text-slate-600 leading-relaxed mb-8 text-lg dark:text-slate-300">
                   {activeStudy.summary}
                 </p>
 
                 <div className="grid md:grid-cols-3 gap-4 mb-8">
                   <div className="premium-subcard p-4 rounded-2xl">
-                    <h4 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3">Contexte</h4>
-                    <ul className="text-sm text-slate-300 space-y-2">
+                    <h4 className="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3 dark:text-slate-500">Contexte</h4>
+                    <ul className="text-sm text-slate-600 space-y-2 dark:text-slate-300">
                       {activeStudy.contextBullets.map((b, i) => <li key={i} className="flex gap-2"><span className="text-slate-600">•</span>{b}</li>)}
                     </ul>
                   </div>
@@ -1458,7 +1579,7 @@ export default function Home() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -6 }}
                         transition={{ duration: 0.18, ease: "easeOut" }}
-                        className="text-sm text-slate-300 space-y-2"
+                        className="text-sm text-slate-600 space-y-2 dark:text-slate-300"
                       >
                         {(showAllProjectActions ? projectActionBullets : projectActionBullets.slice(0, 3)).map((b, i) => (
                           <li key={i} className="flex gap-2">
@@ -1473,7 +1594,7 @@ export default function Home() {
                       <button
                         type="button"
                         onClick={() => setShowAllProjectActions((v) => !v)}
-                        className="mt-3 inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-950/30 px-3 py-1.5 text-[11px] font-semibold text-slate-200 hover:bg-slate-900/40 hover:border-white/15 transition-colors"
+                        className="mt-3 inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-3 py-1.5 text-[11px] font-semibold text-slate-800 shadow-sm shadow-slate-900/5 hover:bg-white hover:border-slate-300 transition-colors dark:border-white/10 dark:bg-slate-950/30 dark:text-slate-200 dark:shadow-none dark:hover:bg-slate-900/40 dark:hover:border-white/15"
                       >
                         {showAllProjectActions ? "Voir moins" : `Voir plus (${projectActionBullets.length - 3})`}
                         <ArrowRight size={14} className={`transition-transform ${showAllProjectActions ? "-rotate-90" : "rotate-90"}`} />
@@ -1482,7 +1603,7 @@ export default function Home() {
                   </div>
                   <div className="premium-subcard p-4 rounded-2xl">
                     <h4 className="text-xs font-bold text-emerald-500 uppercase tracking-wider mb-3">Impact</h4>
-                    <ul className="text-sm text-slate-300 space-y-2">
+                    <ul className="text-sm text-slate-600 space-y-2 dark:text-slate-300">
                       {activeStudy.impactBullets.map((b, i) => <li key={i} className="flex gap-2"><span className="text-emerald-800">•</span>{b}</li>)}
                     </ul>
                   </div>
@@ -1511,19 +1632,19 @@ export default function Home() {
         >
           <div className="flex items-center gap-4 mb-8">
             <div className="h-px w-12 bg-cyan-500/50" />
-            <h2 className="text-2xl font-bold text-slate-100">Compétences Techniques</h2>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Compétences Techniques</h2>
           </div>
 
           <div className="premium-card rounded-3xl p-6 md:p-8">
             {/* Category Tabs */}
-            <div className="flex gap-2 mb-8 border-b border-white/5 pb-4 overflow-x-auto scrollbar-none pr-2 md:flex-wrap md:overflow-visible md:pb-5 md:pr-0">
+            <div className="flex gap-2 mb-8 border-b border-slate-200/70 pb-4 overflow-x-auto scrollbar-none pr-2 md:flex-wrap md:overflow-visible md:pb-5 md:pr-0 dark:border-white/5">
               {skillCategories.map(cat => (
                 <button
                   key={cat.key}
                   onClick={() => setSelectedCategory(cat.key)}
                   className={`shrink-0 whitespace-nowrap px-3 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all border backdrop-blur md:px-4 ${selectedCategory === cat.key
-                      ? "bg-gradient-to-r from-cyan-500/25 to-purple-500/15 text-cyan-100 border-cyan-400/35 shadow-[0_0_0_1px_rgba(34,211,238,0.08)]"
-                      : "bg-slate-950/30 text-slate-300 border-slate-800/70 hover:border-slate-700 hover:bg-slate-900/50"
+                      ? "bg-gradient-to-r from-cyan-500/25 to-purple-500/15 text-cyan-950 dark:text-cyan-100 border-cyan-400/35 shadow-[0_0_0_1px_rgba(34,211,238,0.08),0_10px_22px_rgba(15,23,42,0.08)] dark:shadow-[0_0_0_1px_rgba(34,211,238,0.08)]"
+                      : "bg-white/70 text-slate-700 border-slate-200/70 shadow-sm shadow-slate-900/5 hover:border-slate-300 hover:bg-white dark:bg-slate-950/30 dark:text-slate-300 dark:border-slate-800/70 dark:shadow-none dark:hover:border-slate-700 dark:hover:bg-slate-900/50"
                     }`}
                 >
                   {cat.label}
@@ -1538,8 +1659,8 @@ export default function Home() {
                   key={skill.key}
                   onClick={() => setSelectedSkillKey(skill.key)}
                   className={`shrink-0 whitespace-nowrap px-3 py-2 rounded-full border text-xs sm:text-sm font-semibold transition-all backdrop-blur md:px-4 ${selectedSkillKey === skill.key
-                      ? "bg-cyan-500/10 border-cyan-400/50 text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_25px_rgba(0,0,0,0.35)]"
-                      : "bg-slate-950/30 border-slate-800/70 text-slate-300 hover:border-slate-700 hover:bg-slate-900/40"
+                      ? "bg-cyan-500/10 border-cyan-400/50 text-cyan-950 dark:text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_25px_rgba(15,23,42,0.10)] dark:shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_25px_rgba(0,0,0,0.35)]"
+                      : "bg-white/70 border-slate-200/70 text-slate-700 shadow-sm shadow-slate-900/5 hover:border-slate-300 hover:bg-white dark:bg-slate-950/30 dark:border-slate-800/70 dark:text-slate-300 dark:shadow-none dark:hover:border-slate-700 dark:hover:bg-slate-900/40"
                     }`}
                 >
                   {skill.label}
@@ -1551,13 +1672,13 @@ export default function Home() {
             <div className="grid md:grid-cols-2 gap-8 items-start min-w-0">
               <div className="min-w-0 space-y-6">
                 <div>
-                  <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2 break-words">{currentSkillDetail.title}</h3>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 break-words dark:text-white">{currentSkillDetail.title}</h3>
                   <div className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold uppercase tracking-wider ${levelColor}`}>
                     {currentSkillDetail.level === "prod" ? "Production" : "Projet / Expérimentation"}
                   </div>
                 </div>
 
-                <p className="text-slate-300 text-base sm:text-lg leading-relaxed break-words">
+                <p className="text-slate-600 text-base sm:text-lg leading-relaxed break-words dark:text-slate-300">
                   {currentSkillDetail.desc}
                 </p>
 
@@ -1565,14 +1686,14 @@ export default function Home() {
                   <div className="flex items-center gap-2 mb-2 text-cyan-400 text-sm font-semibold">
                     <Briefcase size={16} /> {"Contexte d'utilisation"}
                   </div>
-                  <p className="text-sm text-slate-300 break-words">{currentSkillDetail.context}</p>
+                  <p className="text-sm text-slate-600 break-words dark:text-slate-300">{currentSkillDetail.context}</p>
                 </div>
 
                 <div className="premium-subcard p-5 rounded-2xl">
                   <div className="flex items-center gap-2 mb-2 text-emerald-400 text-sm font-semibold">
                     <CheckCircle2 size={16} /> Valeur pour vous
                   </div>
-                  <p className="text-sm text-slate-300 break-words">{currentSkillDetail.employerValue}</p>
+                  <p className="text-sm text-slate-600 break-words dark:text-slate-300">{currentSkillDetail.employerValue}</p>
                 </div>
               </div>
 
@@ -1581,12 +1702,12 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-3xl blur opacity-15 group-hover:opacity-25 transition-opacity" />
                 <div className="premium-card relative rounded-3xl p-6 md:p-7 font-mono text-sm overflow-hidden">
                   <div className="flex flex-wrap items-center justify-between gap-3 md:flex-nowrap md:gap-2 mb-4 border-b border-white/5 pb-3">
-                    <span className="text-slate-500 text-xs shrink-0">Exemple de code</span>
+                    <span className="text-slate-700 text-xs shrink-0 dark:text-slate-500">Exemple de code</span>
                     <div className="flex flex-wrap items-center justify-end gap-2 md:flex-nowrap">
                       <button
                         type="button"
                         onClick={handleCopyExample}
-                        className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-950/40 px-3 py-1.5 text-[11px] font-semibold text-slate-200 hover:bg-slate-900/50 hover:border-white/20 transition-colors"
+                        className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-3 py-1.5 text-[11px] font-semibold text-slate-800 shadow-sm shadow-slate-900/5 hover:bg-white hover:border-slate-300 transition-colors dark:border-white/10 dark:bg-slate-950/40 dark:text-slate-200 dark:shadow-none dark:hover:bg-slate-900/50 dark:hover:border-white/20"
                         aria-label="Copier l'exemple de code"
                       >
                         <Copy size={14} />
@@ -1597,8 +1718,8 @@ export default function Home() {
                       <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/20" />
                     </div>
                   </div>
-                  <div className="code-scroll-hint rounded-2xl border border-white/5 bg-slate-950/35 p-4 overflow-hidden">
-                    <pre className="overflow-x-auto max-w-full text-[13px] leading-6 text-slate-200">
+                  <div className="code-scroll-hint rounded-2xl border border-slate-200/70 bg-white/70 p-4 overflow-hidden shadow-sm shadow-slate-900/5 dark:border-white/5 dark:bg-slate-950/35 dark:shadow-none">
+                    <pre className="overflow-x-auto max-w-full text-[13px] leading-6 text-slate-900 dark:text-slate-200">
                       <code className="block whitespace-pre">{exampleText}</code>
                     </pre>
                   </div>
@@ -1609,8 +1730,8 @@ export default function Home() {
         </motion.section>
 
         {/* TRUSTED BY */}
-        <section className="py-14 md:py-16 border-y border-slate-800/50 bg-black/20 -mx-4 sm:-mx-6 px-4 sm:px-6">
-          <p className="text-center text-slate-300 text-sm md:text-base font-semibold uppercase tracking-[0.25em] md:tracking-[0.3em] mb-8 md:mb-10">
+        <section className="py-14 md:py-16 border-y border-slate-200/70 bg-slate-900/3 -mx-4 sm:-mx-6 px-4 sm:px-6 dark:border-slate-800/50 dark:bg-black/20">
+          <p className="text-center text-slate-600 text-sm md:text-base font-semibold uppercase tracking-[0.25em] md:tracking-[0.3em] mb-8 md:mb-10 dark:text-slate-300">
             {"Ils m'ont fait confiance"}
           </p>
           <div className="grid grid-cols-2 sm:grid-cols-3 place-items-center gap-x-8 gap-y-8 opacity-90 transition-all duration-500 md:opacity-80 md:grayscale md:hover:grayscale-0 md:flex md:flex-wrap md:justify-center md:items-center md:gap-10">
@@ -1646,8 +1767,8 @@ export default function Home() {
           >
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-500 via-purple-500 to-pink-500" />
 
-            <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">Prêt à collaborer ?</h2>
-            <p className="text-slate-300 mb-8">
+            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-4 dark:text-white">Prêt à collaborer ?</h2>
+            <p className="text-slate-600 mb-8 dark:text-slate-300">
               {"Je suis actuellement à l'écoute d'opportunités pour des postes de développeur Fullstack ou Python/C#."}
             </p>
 
@@ -1657,7 +1778,7 @@ export default function Home() {
                 whileHover={{ y: -3, scale: 1.02 }}
                 whileTap={{ y: 0, scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 500, damping: 32 }}
-                className="btn-cta btn-text-dark inline-flex items-center justify-center gap-2 bg-white font-bold px-6 py-3 rounded-full transition-all border border-white/10 hover:border-cyan-400/35 shadow-[0_12px_35px_rgba(0,0,0,0.45)]"
+                className="btn-cta btn-text-dark inline-flex items-center justify-center gap-2 bg-white font-bold px-6 py-3 rounded-full transition-all border border-slate-200/70 hover:border-cyan-400/35 shadow-[0_12px_35px_rgba(0,0,0,0.12)] dark:border-white/10 dark:shadow-[0_12px_35px_rgba(0,0,0,0.45)]"
               >
                 <Mail size={18} className="icon-cyan" /> paul.claus@viacesi.fr
               </motion.a>
@@ -1668,13 +1789,13 @@ export default function Home() {
                 whileHover={{ y: -3, scale: 1.02 }}
                 whileTap={{ y: 0, scale: 0.98 }}
                 transition={{ type: "spring", stiffness: 500, damping: 32 }}
-                className="btn-cta inline-flex items-center justify-center gap-2 bg-[#0A66C2] hover:bg-[#0958A8] text-white font-bold px-6 py-3 rounded-full transition-all shadow-[0_12px_35px_rgba(0,0,0,0.45),0_0_30px_rgba(10,102,194,0.25)]"
+                className="btn-cta inline-flex items-center justify-center gap-2 bg-[#0A66C2] hover:bg-[#0958A8] !text-white hover:!text-white font-bold px-6 py-3 rounded-full transition-all shadow-[0_12px_35px_rgba(0,0,0,0.45),0_0_30px_rgba(10,102,194,0.25)]"
               >
                 <Linkedin size={18} /> LinkedIn
               </motion.a>
             </div>
 
-            <p className="mt-8 text-xs text-slate-500 border-t border-slate-800/50 pt-6">
+            <p className="mt-8 text-xs text-slate-500 border-t border-slate-200/70 pt-6 dark:border-slate-800/50">
               Réalisé avec Next.js, Tailwind CSS & Framer Motion.<br />
               © {new Date().getFullYear()} Paul Claus.
             </p>
@@ -1705,13 +1826,13 @@ export default function Home() {
             />
             <span
               aria-hidden="true"
-              className="absolute inset-[1px] rounded-full border border-white/10 bg-slate-950/70 backdrop-blur-xl transition-colors group-hover:bg-slate-950/60 group-hover:border-white/15"
+              className="absolute inset-[1px] rounded-full border border-slate-200/70 bg-white/70 backdrop-blur-xl transition-colors group-hover:bg-white group-hover:border-slate-300 shadow-sm shadow-slate-900/10 dark:border-white/10 dark:bg-slate-950/70 dark:shadow-none dark:group-hover:bg-slate-950/60 dark:group-hover:border-white/15"
             />
             <span
               aria-hidden="true"
               className="absolute -left-10 top-0 h-full w-12 rotate-12 bg-white/10 blur-sm opacity-0 transition-all duration-700 group-hover:left-[120%] group-hover:opacity-100"
             />
-            <ArrowUp size={18} className="relative z-10 text-slate-100 drop-shadow-[0_0_12px_rgba(34,211,238,0.18)]" />
+            <ArrowUp size={18} className="relative z-10 text-slate-900 drop-shadow-[0_0_12px_rgba(34,211,238,0.18)] dark:text-slate-100" />
           </motion.button>
         ) : null}
       </AnimatePresence>
