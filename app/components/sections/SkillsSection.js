@@ -177,7 +177,7 @@ function SkillsSection() {
         <p className="text-center text-slate-600 text-sm md:text-base font-semibold uppercase tracking-[0.25em] md:tracking-[0.3em] mb-8 md:mb-10 dark:text-slate-300">
           {"Ils m'ont fait confiance"}
         </p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 place-items-center gap-x-8 gap-y-8 opacity-90 transition-all duration-500 md:opacity-80 md:grayscale md:hover:grayscale-0 md:flex md:flex-wrap md:justify-center md:items-center md:gap-10">
+        <div className="grid grid-cols-2 sm:grid-cols-3 place-items-center gap-x-8 gap-y-8 opacity-90 transition-all duration-500 md:opacity-80 md:flex md:flex-wrap md:justify-center md:items-center md:gap-10">
           {trustedLogos.map((brand) => (
             <a
               key={brand.name}
