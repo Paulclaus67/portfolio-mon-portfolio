@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { motion, useAnimationControls, useReducedMotion } from "framer-motion";
-import { Moon, Sun, X } from "lucide-react";
+import { Moon, RotateCcw, Sun, X } from "lucide-react";
 
 export default function KonamiGameOverlay({ onClose }) {
   const reduceMotion = useReducedMotion();
@@ -385,10 +385,10 @@ export default function KonamiGameOverlay({ onClose }) {
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_20%,rgba(34,211,238,0.14),transparent_45%),radial-gradient(circle_at_80%_15%,rgba(168,85,247,0.14),transparent_46%),radial-gradient(circle_at_60%_85%,rgba(236,72,153,0.10),transparent_48%)]" />
       <div className="absolute inset-0 bg-gradient-to-b from-white/0 via-white/0 to-slate-900/10 dark:to-black/35" />
 
-      <div className="relative mx-auto flex h-full w-full max-w-6xl flex-col px-4 py-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <div className="min-w-0 flex-1">
-            <div className="inline-flex items-center gap-2">
+      <div className="relative mx-auto flex h-full w-full max-w-6xl flex-col px-4 py-4 sm:py-6 overflow-y-auto overscroll-contain">
+        <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
+          <div className="min-w-0">
+            <div className="inline-flex items-center gap-2 flex-wrap">
               <span className="rounded-full border border-cyan-500/30 bg-cyan-500/10 px-3 py-1 text-[11px] font-semibold tracking-wide text-cyan-800 dark:text-cyan-200">
                 Konami
               </span>
@@ -396,7 +396,7 @@ export default function KonamiGameOverlay({ onClose }) {
                 2048 Dev
               </span>
             </div>
-            <h1 className="mt-3 text-2xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-700 via-sky-600 to-purple-700 dark:from-cyan-300 dark:via-sky-200 dark:to-purple-300">
+            <h1 className="mt-2 text-xl sm:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-700 via-sky-600 to-purple-700 dark:from-cyan-300 dark:via-sky-200 dark:to-purple-300">
               Merge ta stack
             </h1>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">
@@ -405,21 +405,21 @@ export default function KonamiGameOverlay({ onClose }) {
             </p>
           </div>
 
-          <div className="flex flex-wrap items-center justify-end gap-2">
-            <div className="w-full sm:w-auto rounded-2xl border border-slate-200/70 bg-white/70 px-4 py-3 shadow-sm shadow-slate-900/10 dark:border-slate-700/70 dark:bg-slate-900/35 dark:shadow-[0_18px_60px_rgba(0,0,0,0.40)]">
-              <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center justify-start gap-2 lg:justify-end">
+            <div className="rounded-2xl border border-slate-200/70 bg-white/70 px-3 py-2 shadow-sm shadow-slate-900/10 dark:border-slate-700/70 dark:bg-slate-900/35 dark:shadow-[0_18px_60px_rgba(0,0,0,0.40)]">
+              <div className="flex items-center gap-3">
                 <div>
-                  <div className="text-[11px] uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                  <div className="text-[10px] uppercase tracking-wider text-slate-600 dark:text-slate-400">
                     Score
                   </div>
-                  <div className="font-mono text-xl text-slate-900 dark:text-slate-100">{game.score}</div>
+                  <div className="font-mono text-lg sm:text-xl text-slate-900 dark:text-slate-100">{game.score}</div>
                 </div>
-                <div className="h-9 w-px bg-slate-200/70 dark:bg-slate-700/70" />
+                <div className="h-8 w-px bg-slate-200/70 dark:bg-slate-700/70" />
                 <div>
-                  <div className="text-[11px] uppercase tracking-wider text-slate-600 dark:text-slate-400">
+                  <div className="text-[10px] uppercase tracking-wider text-slate-600 dark:text-slate-400">
                     Best
                   </div>
-                  <div className="font-mono text-xl text-slate-900 dark:text-slate-100">{game.best ?? 0}</div>
+                  <div className="font-mono text-lg sm:text-xl text-slate-900 dark:text-slate-100">{game.best ?? 0}</div>
                 </div>
               </div>
             </div>
@@ -434,9 +434,12 @@ export default function KonamiGameOverlay({ onClose }) {
             </button>
             <button
               onClick={() => resetGame()}
-              className="w-full sm:w-auto rounded-2xl border border-slate-200/70 bg-white/70 px-4 py-3 text-sm font-semibold text-slate-900 shadow-sm shadow-slate-900/10 hover:border-cyan-500/40 dark:border-slate-700/70 dark:bg-slate-900/35 dark:text-slate-200 dark:shadow-[0_18px_60px_rgba(0,0,0,0.40)] dark:hover:text-white"
+              className="inline-flex items-center gap-2 rounded-2xl border border-slate-200/70 bg-white/70 p-3 text-slate-900 shadow-sm shadow-slate-900/10 hover:border-cyan-500/40 dark:border-slate-700/70 dark:bg-slate-900/35 dark:text-slate-200 dark:shadow-[0_18px_60px_rgba(0,0,0,0.40)] dark:hover:text-white sm:px-4 sm:py-3"
+              aria-label="Rejouer"
+              title="Rejouer"
             >
-              Rejouer
+              <RotateCcw size={16} />
+              <span className="hidden sm:inline text-sm font-semibold">Rejouer</span>
             </button>
             <button
               onClick={() => onClose?.()}
@@ -448,13 +451,13 @@ export default function KonamiGameOverlay({ onClose }) {
           </div>
         </div>
 
-        <div className="mt-6 grid flex-1 grid-cols-1 gap-6 lg:grid-cols-[1fr_360px]">
-          <div className="flex items-center justify-center">
+        <div className="mt-4 grid flex-1 grid-cols-1 gap-4 sm:mt-6 sm:gap-6 lg:grid-cols-[1fr_360px]">
+          <div className="flex items-start justify-center lg:items-center">
             <motion.div
               initial={reduceMotion ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={reduceMotion ? { duration: 0 } : { type: "spring", stiffness: 180, damping: 22 }}
-              className="relative w-[min(92vw,520px)] rounded-3xl border border-slate-200/70 bg-white/70 p-3 shadow-[0_32px_120px_rgba(15,23,42,0.12)] dark:border-slate-700/70 dark:bg-slate-900/30 dark:shadow-[0_32px_120px_rgba(0,0,0,0.55)]"
+              className="relative w-[min(92vw,420px)] sm:w-[min(92vw,520px)] rounded-2xl border border-slate-200/70 bg-white/70 p-2 shadow-[0_32px_120px_rgba(15,23,42,0.12)] dark:border-slate-700/70 dark:bg-slate-900/30 dark:shadow-[0_32px_120px_rgba(0,0,0,0.55)] sm:rounded-3xl sm:p-3"
             >
               <motion.div
                 className="relative select-none rounded-2xl bg-white/65 p-3 dark:bg-slate-950/35"
@@ -547,43 +550,66 @@ export default function KonamiGameOverlay({ onClose }) {
             </motion.div>
           </div>
 
-          <div className="flex flex-col gap-4">
-            <div className="rounded-2xl border border-slate-200/70 bg-white/70 p-4 shadow-sm shadow-slate-900/5 dark:border-slate-700/70 dark:bg-slate-900/25 dark:shadow-none">
-              <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Contrôles</div>
-              <div className="mt-3 grid grid-cols-3 gap-2">
+          <div className="flex flex-col gap-3 sm:gap-4">
+            {/* Mobile-first controls: big targets + short hint */}
+            <div className="rounded-2xl border border-slate-200/70 bg-white/70 p-3 sm:p-4 shadow-sm shadow-slate-900/5 dark:border-slate-700/70 dark:bg-slate-900/25 dark:shadow-none">
+              <div className="flex items-center justify-between gap-3">
+                <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Contrôles</div>
+                <div className="text-xs text-slate-600 dark:text-slate-400 lg:hidden">Swipe ou boutons</div>
+              </div>
+              <div className="mt-2 grid grid-cols-3 gap-2">
                 <div />
                 <button
                   onClick={() => applyMove("up")}
-                  className="rounded-xl border border-slate-200/70 bg-white/70 py-3 text-sm text-slate-800 hover:border-cyan-500/40 dark:border-slate-700/80 dark:bg-slate-950/30 dark:text-slate-200"
+                  className="rounded-xl border border-slate-200/70 bg-white/70 py-3 text-lg leading-none text-slate-800 hover:border-cyan-500/40 active:scale-[0.99] dark:border-slate-700/80 dark:bg-slate-950/30 dark:text-slate-200 lg:py-3 lg:text-sm"
                 >
                   ↑
                 </button>
                 <div />
                 <button
                   onClick={() => applyMove("left")}
-                  className="rounded-xl border border-slate-200/70 bg-white/70 py-3 text-sm text-slate-800 hover:border-cyan-500/40 dark:border-slate-700/80 dark:bg-slate-950/30 dark:text-slate-200"
+                  className="rounded-xl border border-slate-200/70 bg-white/70 py-3 text-lg leading-none text-slate-800 hover:border-cyan-500/40 active:scale-[0.99] dark:border-slate-700/80 dark:bg-slate-950/30 dark:text-slate-200 lg:py-3 lg:text-sm"
                 >
                   ←
                 </button>
                 <button
                   onClick={() => applyMove("down")}
-                  className="rounded-xl border border-slate-200/70 bg-white/70 py-3 text-sm text-slate-800 hover:border-cyan-500/40 dark:border-slate-700/80 dark:bg-slate-950/30 dark:text-slate-200"
+                  className="rounded-xl border border-slate-200/70 bg-white/70 py-3 text-lg leading-none text-slate-800 hover:border-cyan-500/40 active:scale-[0.99] dark:border-slate-700/80 dark:bg-slate-950/30 dark:text-slate-200 lg:py-3 lg:text-sm"
                 >
                   ↓
                 </button>
                 <button
                   onClick={() => applyMove("right")}
-                  className="rounded-xl border border-slate-200/70 bg-white/70 py-3 text-sm text-slate-800 hover:border-cyan-500/40 dark:border-slate-700/80 dark:bg-slate-950/30 dark:text-slate-200"
+                  className="rounded-xl border border-slate-200/70 bg-white/70 py-3 text-lg leading-none text-slate-800 hover:border-cyan-500/40 active:scale-[0.99] dark:border-slate-700/80 dark:bg-slate-950/30 dark:text-slate-200 lg:py-3 lg:text-sm"
                 >
                   →
                 </button>
               </div>
-              <div className="mt-4 text-xs text-slate-600 dark:text-slate-400">
+              <div className="mt-4 text-xs text-slate-600 dark:text-slate-400 hidden lg:block">
                 Astuce: fusionne 2 tuiles identiques pour monter (var → let → const → … → AI).
               </div>
             </div>
 
-            <div className="rounded-2xl border border-slate-200/70 bg-white/70 p-4 shadow-sm shadow-slate-900/5 dark:border-slate-700/70 dark:bg-slate-900/25 dark:shadow-none">
+            {/* Mobile: collapsible legend to keep the screen focused on the board */}
+            <details className="rounded-2xl border border-slate-200/70 bg-white/70 p-3 sm:p-4 shadow-sm shadow-slate-900/5 dark:border-slate-700/70 dark:bg-slate-900/25 dark:shadow-none lg:hidden">
+              <summary className="cursor-pointer select-none text-sm font-semibold text-slate-900 dark:text-slate-100">
+                Légende
+              </summary>
+              <div className="mt-3 flex flex-wrap gap-2">
+                {[2, 4, 8, 16, 32, 64, 128, 256].map((v) => (
+                  <span
+                    key={v}
+                    className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-3 py-1 text-xs text-slate-800 shadow-sm shadow-slate-900/5 dark:border-slate-700/70 dark:bg-slate-950/25 dark:text-slate-200 dark:shadow-none"
+                  >
+                    <span className="font-mono">{tileMeta[v]?.label ?? v}</span>
+                    <span className="font-mono text-slate-600 dark:text-slate-400">{v}</span>
+                  </span>
+                ))}
+              </div>
+            </details>
+
+            {/* Desktop: always-visible legend */}
+            <div className="hidden lg:block rounded-2xl border border-slate-200/70 bg-white/70 p-4 shadow-sm shadow-slate-900/5 dark:border-slate-700/70 dark:bg-slate-900/25 dark:shadow-none">
               <div className="text-sm font-semibold text-slate-900 dark:text-slate-100">Légende</div>
               <div className="mt-3 flex flex-wrap gap-2">
                 {[2, 4, 8, 16, 32, 64, 128, 256].map((v) => (

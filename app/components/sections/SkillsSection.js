@@ -128,14 +128,14 @@ function SkillsSection() {
               </p>
 
               <div className="premium-subcard p-5 rounded-2xl">
-                <div className="flex items-center gap-2 mb-2 text-cyan-400 text-sm font-semibold">
+                <div className="flex items-center gap-2 mb-2 text-cyan-700 dark:text-cyan-300 text-sm font-semibold">
                   <Briefcase size={16} /> {"Contexte d'utilisation"}
                 </div>
                 <p className="text-sm text-slate-600 break-words dark:text-slate-300">{currentSkillDetail.context}</p>
               </div>
 
               <div className="premium-subcard p-5 rounded-2xl">
-                <div className="flex items-center gap-2 mb-2 text-emerald-400 text-sm font-semibold">
+                <div className="flex items-center gap-2 mb-2 text-emerald-700 dark:text-emerald-300 text-sm font-semibold">
                   <CheckCircle2 size={16} /> Valeur pour vous
                 </div>
                 <p className="text-sm text-slate-600 break-words dark:text-slate-300">{currentSkillDetail.employerValue}</p>

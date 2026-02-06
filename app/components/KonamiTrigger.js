@@ -41,6 +41,7 @@ export default function KonamiTrigger() {
   const armedRef = useRef(false);
   const lastActionAtRef = useRef(0);
   const pointerStartRef = useRef(null);
+  const holdTimerRef = useRef(0);
 
   useEffect(() => {
     if (open) return undefined;
@@ -70,15 +71,21 @@ export default function KonamiTrigger() {
     // Mobile-only activation:
     // 1) Touch the profile picture in the navbar (arms the trigger).
     // 2) Perform Konami as swipes + 2 taps (B,A).
+    // Also supported: long-press the profile picture (~650ms) to open directly (mobile only).
     const armTimeoutMs = 8000;
     const swipeMinPx = 44;
     const swipeAxisRatio = 1.25;
+    const longPressMs = 650;
 
     const reset = () => {
       indexRef.current = 0;
       armedRef.current = false;
       lastActionAtRef.current = 0;
       pointerStartRef.current = null;
+      if (holdTimerRef.current) {
+        window.clearTimeout(holdTimerRef.current);
+        holdTimerRef.current = 0;
+      }
     };
 
     const feed = (token) => {
@@ -103,6 +110,13 @@ export default function KonamiTrigger() {
         armedRef.current = true;
         indexRef.current = 0;
         lastActionAtRef.current = Date.now();
+
+        if (!holdTimerRef.current) {
+          holdTimerRef.current = window.setTimeout(() => {
+            setOpen(true);
+            reset();
+          }, longPressMs);
+        }
       }
 
       if (!armedRef.current) return;
@@ -112,6 +126,11 @@ export default function KonamiTrigger() {
     const onPointerUp = (e) => {
       if (!isMobileViewport()) return;
       if (!armedRef.current) return;
+
+      if (holdTimerRef.current) {
+        window.clearTimeout(holdTimerRef.current);
+        holdTimerRef.current = 0;
+      }
 
       const now = Date.now();
       if (now - (lastActionAtRef.current || 0) > armTimeoutMs) {
@@ -145,6 +164,13 @@ export default function KonamiTrigger() {
       }
     };
 
+    const onPointerCancel = () => {
+      if (holdTimerRef.current) {
+        window.clearTimeout(holdTimerRef.current);
+        holdTimerRef.current = 0;
+      }
+    };
+
     const onScroll = () => {
       if (!armedRef.current) return;
       const now = Date.now();
@@ -153,11 +179,13 @@ export default function KonamiTrigger() {
 
     window.addEventListener("pointerdown", onPointerDown, { passive: true });
     window.addEventListener("pointerup", onPointerUp, { passive: true });
+    window.addEventListener("pointercancel", onPointerCancel, { passive: true });
     window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
       window.removeEventListener("pointerdown", onPointerDown);
       window.removeEventListener("pointerup", onPointerUp);
+      window.removeEventListener("pointercancel", onPointerCancel);
       window.removeEventListener("scroll", onScroll);
     };
   }, [open]);
@@ -165,4 +193,3 @@ export default function KonamiTrigger() {
   if (!open) return null;
   return <KonamiGameOverlay onClose={() => setOpen(false)} />;
 }
-
