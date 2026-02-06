@@ -61,6 +61,60 @@ video {
   box-shadow: var(--shadow-glow);
 }
 
+/* Experience cards: clearer “selected/expanded” state while staying premium */
+.experience-card {
+  position: relative;
+  overflow: hidden;
+}
+
+.experience-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: linear-gradient(
+    135deg,
+    rgba(34, 211, 238, 0.12),
+    rgba(168, 85, 247, 0.10),
+    rgba(236, 72, 153, 0.06),
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity var(--transition-smooth);
+  pointer-events: none;
+}
+
+.experience-card:hover::before {
+  opacity: 0.35;
+}
+
+.experience-card[data-expanded="true"] {
+  border-color: rgba(34, 211, 238, 0.38);
+  background: rgba(2, 6, 23, 0.62);
+  box-shadow:
+    0 26px 75px rgba(0, 0, 0, 0.58),
+    0 0 0 1px rgba(34, 211, 238, 0.14),
+    0 0 55px rgba(34, 211, 238, 0.14),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+  transform: translateY(-2px);
+}
+
+.experience-card[data-expanded="true"]::before {
+  opacity: 0.7;
+}
+
+.experience-dot {
+  box-shadow: 0 0 0 6px rgba(6, 182, 212, 0.08);
+  transition: box-shadow var(--transition-smooth), border-color var(--transition-smooth);
+}
+
+.experience-dot[data-expanded="true"] {
+  border-color: rgba(34, 211, 238, 0.65);
+  box-shadow:
+    0 0 0 7px rgba(34, 211, 238, 0.14),
+    0 0 28px rgba(34, 211, 238, 0.16);
+}
+
 /* Premium surfaces (less "carré", more depth) */
 .premium-card {
   position: relative;
@@ -129,6 +183,35 @@ video {
     0 24px 70px rgba(0, 0, 0, 0.55),
     0 0 0 1px rgba(34, 211, 238, 0.08),
     inset 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.premium-card--interactive:focus-visible {
+  outline: none;
+  border-color: rgba(34, 211, 238, 0.35);
+  box-shadow:
+    0 24px 70px rgba(0, 0, 0, 0.55),
+    0 0 0 1px rgba(34, 211, 238, 0.22),
+    0 0 40px rgba(34, 211, 238, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+/* Stronger visual for selected items (ex: selected project card) */
+.premium-card--selected {
+  border-color: rgba(34, 211, 238, 0.55);
+  transform: translateY(-2px);
+  box-shadow:
+    0 28px 85px rgba(0, 0, 0, 0.62),
+    0 0 0 1px rgba(34, 211, 238, 0.22),
+    0 0 55px rgba(34, 211, 238, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.premium-card--selected::before {
+  opacity: 0.9;
+}
+
+.premium-card--selected::after {
+  opacity: 1;
 }
 
 .premium-subcard {

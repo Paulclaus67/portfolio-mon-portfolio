@@ -31,7 +31,8 @@ import {
   Server,
   Briefcase,
   Cpu,
-  ArrowUp
+  ArrowUp,
+  ChevronDown
 } from "lucide-react";
 
 import {
@@ -1120,12 +1121,20 @@ export default function Home() {
               const study = caseStudyByKey.get(exp.key);
               const isExpanded = expandedExperienceKey === exp.key;
               const primaryBullets = recruiterMode ? study?.impactBullets : study?.actionsBullets;
+              const topTechs = study?.techs?.slice(0, 4) ?? [];
 
               return (
                 <motion.li key={exp.key} variants={fadeInUp} className="relative">
-                  <span className="absolute -left-[9px] top-7 h-4 w-4 rounded-full bg-slate-950 border border-cyan-500/40 shadow-[0_0_0_6px_rgba(6,182,212,0.08)]" />
+                  <span
+                    className="experience-dot absolute -left-[9px] top-7 h-4 w-4 rounded-full bg-slate-950 border border-cyan-500/40"
+                    data-expanded={isExpanded ? "true" : undefined}
+                    aria-hidden="true"
+                  />
 
-                  <article className="glass-card experience-card rounded-2xl p-5 md:p-6">
+                  <article
+                    className="glass-card experience-card rounded-2xl p-5 md:p-6"
+                    data-expanded={isExpanded ? "true" : undefined}
+                  >
                     <header className="flex flex-col lg:flex-row lg:items-start justify-between gap-4">
                       <div className="flex gap-4">
                         <div className="w-12 h-12 rounded-xl bg-white p-2 flex items-center justify-center shrink-0 ring-1 ring-white/10">
@@ -1157,6 +1166,12 @@ export default function Home() {
                       </div>
 
                       <div className="flex flex-wrap items-center gap-2">
+                        {isExpanded && (
+                          <span className="inline-flex items-center gap-2 rounded-full border border-cyan-500/25 bg-cyan-500/10 px-3 py-1.5 text-xs font-bold text-cyan-100">
+                            Sélectionnée
+                          </span>
+                        )}
+
                         {exp.url && (
                           <a
                             href={exp.url}
@@ -1178,21 +1193,41 @@ export default function Home() {
                           </button>
                         )}
 
-                        <button
-                          type="button"
-                          onClick={() => setExpandedExperienceKey((prev) => (prev === exp.key ? null : exp.key))}
-                          className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-950/40 px-3 py-1.5 text-xs font-semibold text-slate-300 hover:border-slate-700 hover:bg-slate-900/60 transition-colors"
-                          aria-expanded={isExpanded}
-                          aria-controls={`exp-${exp.key}-details`}
-                        >
-                          {isExpanded ? "Réduire" : "Détails"}
-                        </button>
+                        {study ? (
+                          <button
+                            type="button"
+                            onClick={() => setExpandedExperienceKey((prev) => (prev === exp.key ? null : exp.key))}
+                            className="inline-flex items-center gap-2 rounded-full border border-slate-800 bg-slate-950/40 px-3 py-1.5 text-xs font-semibold text-slate-200 hover:border-slate-700 hover:bg-slate-900/60 transition-colors"
+                            aria-expanded={isExpanded}
+                            aria-controls={`exp-${exp.key}-details`}
+                          >
+                            <span>{isExpanded ? "Masquer" : "Voir détails"}</span>
+                            <ChevronDown
+                              size={14}
+                              className={`transition-transform ${isExpanded ? "rotate-180" : "rotate-0"}`}
+                              aria-hidden="true"
+                            />
+                          </button>
+                        ) : null}
                       </div>
                     </header>
 
                     <p className="text-sm text-slate-300 mt-4 leading-relaxed">
                       {recruiterMode ? exp.shortDesc : exp.desc}
                     </p>
+
+                    {!isExpanded && topTechs.length ? (
+                      <div className="mt-4 flex flex-wrap gap-2">
+                        {topTechs.map((tech) => (
+                          <span
+                            key={tech}
+                            className="premium-chip px-2.5 py-1 rounded-full text-[11px] text-slate-200 font-mono"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                      </div>
+                    ) : null}
 
                     {primaryBullets?.length ? (
                       <div className="mt-4">
@@ -1316,19 +1351,25 @@ export default function Home() {
             {/* Project List */}
             <div className="space-y-3">
               {filteredProjectsList.map((proj) => (
+                (() => {
+                  const isSelected = selectedProjectKey === proj.key;
+
+                  return (
                 <motion.button
                   key={proj.key}
                   onClick={() => {
                     setSelectedProjectKey(proj.key);
                     setShowAllProjectActions(false);
                   }}
+                  aria-pressed={isSelected}
+                  data-selected={isSelected ? "true" : undefined}
                   layout
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
-                  className={`premium-card premium-card--interactive w-full text-left p-4 md:p-5 rounded-2xl relative overflow-hidden group ${selectedProjectKey === proj.key ? "border-cyan-400/35" : ""}`}
+                  className={`premium-card premium-card--interactive w-full text-left p-4 md:p-5 rounded-2xl relative overflow-hidden group ${isSelected ? "premium-card--selected" : ""}`}
                 >
                   <span
-                    className={`absolute left-0 top-0 h-full w-[3px] bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-400 transition-opacity ${selectedProjectKey === proj.key ? "opacity-100" : "opacity-0 group-hover:opacity-40"}`}
+                    className={`absolute left-0 top-0 h-full bg-gradient-to-b from-cyan-400 via-purple-400 to-pink-400 transition-all ${isSelected ? "opacity-100 w-[5px]" : "opacity-0 w-[3px] group-hover:opacity-40"}`}
                     aria-hidden="true"
                   />
                   <div className="flex items-center gap-3 relative z-10">
@@ -1340,7 +1381,7 @@ export default function Home() {
                       )}
                     </div>
                     <div className="min-w-0">
-                      <h4 className={`text-sm font-semibold leading-snug line-clamp-2 break-words ${selectedProjectKey === proj.key ? "text-cyan-200" : "text-slate-100"}`}>
+                      <h4 className={`text-sm font-semibold leading-snug line-clamp-2 break-words ${isSelected ? "text-cyan-100" : "text-slate-100"}`}>
                         {proj.headline}
                       </h4>
                       <p className="text-xs text-slate-300/90">{proj.company}</p>
@@ -1354,13 +1395,15 @@ export default function Home() {
                     </div>
                   </div>
                   {/* Active Indicator */}
-                  {selectedProjectKey === proj.key && (
+                  {isSelected && (
                     <motion.div
                       layoutId="active-project-glow"
-                      className="absolute inset-0 bg-gradient-to-br from-cyan-500/14 via-purple-500/10 to-transparent pointer-events-none"
+                      className="absolute inset-0 bg-gradient-to-br from-cyan-500/22 via-purple-500/14 to-transparent pointer-events-none"
                     />
                   )}
                 </motion.button>
+                  );
+                })()
               ))}
             </div>
 
