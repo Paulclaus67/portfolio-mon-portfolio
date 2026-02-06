@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, useTransition } from "react";
+import dynamic from "next/dynamic";
 import Image from "next/image";
 import {
   motion,
@@ -48,7 +49,14 @@ import {
   trustedLogos,
 } from "./data";
 
+import KonamiTrigger from "./components/KonamiTrigger";
+
 const caseStudyByKey = new Map(caseStudies.map((study) => [study.key, study]));
+
+const EasterEggTerminal = dynamic(() => import("./components/EasterEggTerminal"), {
+  ssr: false,
+  loading: () => null,
+});
 
 
 // --- ANIMATION VARIANTS ---
@@ -83,7 +91,7 @@ const NAV_ITEMS = [
 // --- COMPONENTS ---
 
 // 1. TERMINAL EASTER EGG
-function EasterEggTerminal({ onClose }) {
+function EasterEggTerminalInline({ onClose }) {
   const [lines, setLines] = useState([
     "> Initialisation du système...",
     "> Chargement du profil caché...",
@@ -129,7 +137,7 @@ function EasterEggTerminal({ onClose }) {
 }
 
 // 2. KONAMI GAME OVERLAY
-function KonamiGameOverlay() {
+function KonamiGameOverlayInline() {
   const reduceMotion = useReducedMotion();
   const shakeControls = useAnimationControls();
   const [active, setActive] = useState(false);
@@ -800,6 +808,7 @@ function KonamiGameOverlay() {
 export default function Home() {
   // States
   const recruiterMode = false;
+  const [, startTransition] = useTransition();
   const [theme, setTheme] = useState("light");
   const [activeSection, setActiveSection] = useState("introduction");
   const [activeTab, setActiveTab] = useState("all");
@@ -814,35 +823,70 @@ export default function Home() {
   const reduceMotion = useReducedMotion();
 
   // Easter Egg states
-  const [clicks, setClicks] = useState(0);
+  const [, setClicks] = useState(0);
   const [showTerminal, setShowTerminal] = useState(false);
 
+  const setActiveSectionSafe = useCallback((id) => {
+    setActiveSection((prev) => (prev === id ? prev : id));
+  }, []);
+
+  const setShowScrollTopSafe = useCallback((next) => {
+    setShowScrollTop((prev) => (prev === next ? prev : next));
+  }, []);
+
   // Derived state
-  const currentSkillDetail = skillDetails[selectedSkillKey] || skillDetails.python;
-  const currentSkillLabel = skills.find((s) => s.key === selectedSkillKey)?.label || "Python";
-  const example = skillExamples[selectedSkillKey] || skillExamples.default;
-  const filteredSkills = skills.filter((s) => s.category === selectedCategory);
-  const levelColor =
-    currentSkillDetail.level === "prod"
-      ? "bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/50"
-      : currentSkillDetail.level === "projet"
-        ? "bg-sky-500/10 text-sky-800 dark:text-sky-200 border-sky-500/50"
-        : "bg-slate-900/5 text-slate-800 border-slate-200/70 dark:bg-slate-700/60 dark:text-slate-100 dark:border-slate-400/50";
+  const currentSkillDetail = useMemo(
+    () => skillDetails[selectedSkillKey] || skillDetails.python,
+    [selectedSkillKey]
+  );
+  const currentSkillLabel = useMemo(
+    () => skills.find((s) => s.key === selectedSkillKey)?.label || "Python",
+    [selectedSkillKey]
+  );
+  const example = useMemo(
+    () => skillExamples[selectedSkillKey] || skillExamples.default,
+    [selectedSkillKey]
+  );
+  const filteredSkills = useMemo(
+    () => skills.filter((s) => s.category === selectedCategory),
+    [selectedCategory]
+  );
+  const levelColor = useMemo(() => {
+    if (currentSkillDetail.level === "prod") {
+      return "bg-emerald-500/10 text-emerald-800 dark:text-emerald-300 border-emerald-500/50";
+    }
+    if (currentSkillDetail.level === "projet") {
+      return "bg-sky-500/10 text-sky-800 dark:text-sky-200 border-sky-500/50";
+    }
+    return "bg-slate-900/5 text-slate-800 border-slate-200/70 dark:bg-slate-700/60 dark:text-slate-100 dark:border-slate-400/50";
+  }, [currentSkillDetail.level]);
 
   // Filter projects
-  const activeStudy = caseStudies.find(p => p.key === selectedProjectKey) || caseStudies[0];
-  const projectActionBullets = activeStudy.actionsBullets ?? [];
-  const displayedProjects = recruiterMode
-    ? caseStudies.filter(p => p.prioRecruiter)
-    : caseStudies;
+  const displayedProjects = useMemo(() => {
+    return recruiterMode ? caseStudies.filter((p) => p.prioRecruiter) : caseStudies;
+  }, [recruiterMode]);
 
-  const filteredProjectsList = activeTab === "all"
-    ? displayedProjects
-    : displayedProjects.filter(p => p.category === activeTab);
+  const filteredProjectsList = useMemo(() => {
+    return activeTab === "all"
+      ? displayedProjects
+      : displayedProjects.filter((p) => p.category === activeTab);
+  }, [activeTab, displayedProjects]);
 
-  const exampleText = ["// " + example.title, ...example.lines].join("\n");
+  const activeStudy = useMemo(() => {
+    return caseStudyByKey.get(selectedProjectKey) ?? caseStudies[0];
+  }, [selectedProjectKey]);
 
-  const handleCopyExample = async () => {
+  const projectActionBullets = useMemo(
+    () => activeStudy.actionsBullets ?? [],
+    [activeStudy.actionsBullets]
+  );
+
+  const exampleText = useMemo(
+    () => ["// " + example.title, ...example.lines].join("\n"),
+    [example.lines, example.title]
+  );
+
+  const handleCopyExample = useCallback(async () => {
     try {
       await navigator.clipboard.writeText(exampleText);
       setCopied(true);
@@ -850,23 +894,100 @@ export default function Home() {
     } catch {
       // ignore
     }
-  };
+  }, [exampleText]);
 
-  const handleViewCaseStudy = (key) => {
-    setSelectedProjectKey(key);
-    setShowAllProjectActions(false);
-    setExpandedExperienceKey(null);
-    document.getElementById("projets")?.scrollIntoView({ behavior: "smooth", block: "start" });
-  };
+  const handleViewCaseStudy = useCallback(
+    (key) => {
+      startTransition(() => {
+        setSelectedProjectKey(key);
+        setShowAllProjectActions(false);
+        setExpandedExperienceKey(null);
+      });
+      document.getElementById("projets")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    },
+    [startTransition]
+  );
 
   // Easter Egg Handler
-  const handleProfileClick = () => {
-    setClicks(c => c + 1);
-    if (clicks + 1 === 5) {
-      setShowTerminal(true);
-      setClicks(0);
-    }
-  };
+  const handleProfileClick = useCallback(() => {
+    setClicks((prev) => {
+      const next = prev + 1;
+      if (next === 5) {
+        setShowTerminal(true);
+        return 0;
+      }
+      return next;
+    });
+  }, []);
+
+  // Mobile browsers (notably iOS Safari) can land slightly scrolled on first load.
+  // Keep layout unchanged; just snap to top on initial navigation (not hash/back/forward).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (window.location.hash) return;
+
+    const navEntry = performance.getEntriesByType?.("navigation")?.[0];
+    const navType = navEntry?.type;
+    if (navType && navType !== "navigate") return;
+
+    const isMobile = window.matchMedia?.("(max-width: 768px)")?.matches;
+    if (!isMobile) return;
+
+    const snapTop = () => {
+      if ((window.scrollY || 0) > 0) window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+    };
+
+    window.requestAnimationFrame(() => {
+      snapTop();
+      window.setTimeout(snapTop, 80);
+    });
+  }, []);
+
+  const handleToggleExperience = useCallback(
+    (key) => {
+      startTransition(() => {
+        setExpandedExperienceKey((prev) => (prev === key ? null : key));
+      });
+    },
+    [startTransition]
+  );
+
+  const handleSelectTab = useCallback(
+    (key) => {
+      startTransition(() => {
+        setActiveTab(key);
+      });
+    },
+    [startTransition]
+  );
+
+  const handleSelectProjectKey = useCallback(
+    (key) => {
+      startTransition(() => {
+        setSelectedProjectKey(key);
+        setShowAllProjectActions(false);
+      });
+    },
+    [startTransition]
+  );
+
+  const handleSelectCategory = useCallback(
+    (key) => {
+      startTransition(() => {
+        setSelectedCategory(key);
+      });
+    },
+    [startTransition]
+  );
+
+  const handleSelectSkill = useCallback(
+    (key) => {
+      startTransition(() => {
+        setSelectedSkillKey(key);
+      });
+    },
+    [startTransition]
+  );
 
   useEffect(() => {
     const root = document.documentElement;
@@ -927,7 +1048,7 @@ export default function Home() {
         return aDist - bDist;
       });
 
-      setActiveSection(visible[0].target.id);
+      setActiveSectionSafe(visible[0].target.id);
     };
 
     const setupObserver = () => {
@@ -952,7 +1073,7 @@ export default function Home() {
       observer?.disconnect();
       window.removeEventListener("resize", setupObserver);
     };
-  }, []);
+  }, [setActiveSectionSafe]);
 
   useEffect(() => {
     let rafId = 0;
@@ -962,11 +1083,11 @@ export default function Home() {
       rafId = window.requestAnimationFrame(() => {
         rafId = 0;
         const y = window.scrollY || 0;
-        setShowScrollTop(y > 700);
+        setShowScrollTopSafe(y > 700);
 
         const scrollBottom = y + window.innerHeight;
         const docHeight = document.documentElement.scrollHeight;
-        if (docHeight - scrollBottom < 80) setActiveSection("contact");
+        if (docHeight - scrollBottom < 80) setActiveSectionSafe("contact");
       });
     };
 
@@ -976,7 +1097,7 @@ export default function Home() {
       window.removeEventListener("scroll", onScroll);
       if (rafId) window.cancelAnimationFrame(rafId);
     };
-  }, []);
+  }, [setActiveSectionSafe, setShowScrollTopSafe]);
 
   const scrollToTop = useCallback(() => {
     window.scrollTo({ top: 0, behavior: reduceMotion ? "auto" : "smooth" });
@@ -1031,7 +1152,7 @@ export default function Home() {
                 className="nav-link"
                 data-active={activeSection === item.id ? "true" : undefined}
                 aria-current={activeSection === item.id ? "location" : undefined}
-                onClick={() => setActiveSection(item.id)}
+                onClick={() => setActiveSectionSafe(item.id)}
               >
                 <span className="relative z-[1]">{item.label}</span>
                 {activeSection === item.id ? (
@@ -1099,7 +1220,7 @@ export default function Home() {
                     key={item.id}
                     href={`#${item.id}`}
                     onClick={() => {
-                      setActiveSection(item.id);
+                      setActiveSectionSafe(item.id);
                       setMenuOpen(false);
                     }}
                     className={`rounded-xl px-4 py-3 transition-colors text-base font-semibold border ${activeSection === item.id
@@ -1317,7 +1438,7 @@ export default function Home() {
                         {study ? (
                           <button
                             type="button"
-                            onClick={() => setExpandedExperienceKey((prev) => (prev === exp.key ? null : exp.key))}
+                            onClick={() => handleToggleExperience(exp.key)}
                             className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-3 py-1.5 text-xs font-semibold text-slate-800 shadow-sm shadow-slate-900/5 transition-colors hover:border-slate-300 hover:bg-white dark:border-slate-800 dark:bg-slate-950/40 dark:text-slate-200 dark:shadow-none dark:hover:border-slate-700 dark:hover:bg-slate-900/60"
                             aria-expanded={isExpanded}
                             aria-controls={`exp-${exp.key}-details`}
@@ -1456,7 +1577,7 @@ export default function Home() {
               ].map(cat => (
                 <button
                   key={cat.key}
-                  onClick={() => setActiveTab(cat.key)}
+                  onClick={() => handleSelectTab(cat.key)}
                   className={`px-4 py-2 rounded-full text-xs font-semibold border transition-all whitespace-nowrap backdrop-blur ${activeTab === cat.key
                       ? "bg-gradient-to-r from-cyan-500/30 to-purple-500/20 text-cyan-950 dark:text-cyan-100 border-cyan-400/40 shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_30px_rgba(0,0,0,0.10)] dark:shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_30px_rgba(0,0,0,0.35)]"
                       : "bg-white/70 text-slate-700 border-slate-200/70 shadow-sm shadow-slate-900/5 hover:border-slate-300 hover:bg-white dark:bg-slate-950/40 dark:text-slate-300 dark:border-slate-800/70 dark:shadow-none dark:hover:border-slate-700 dark:hover:bg-slate-900/50"
@@ -1479,8 +1600,7 @@ export default function Home() {
                 <motion.button
                   key={proj.key}
                   onClick={() => {
-                    setSelectedProjectKey(proj.key);
-                    setShowAllProjectActions(false);
+                    handleSelectProjectKey(proj.key);
                   }}
                   aria-pressed={isSelected}
                   data-selected={isSelected ? "true" : undefined}
@@ -1641,7 +1761,7 @@ export default function Home() {
               {skillCategories.map(cat => (
                 <button
                   key={cat.key}
-                  onClick={() => setSelectedCategory(cat.key)}
+                  onClick={() => handleSelectCategory(cat.key)}
                   className={`shrink-0 whitespace-nowrap px-3 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all border backdrop-blur md:px-4 ${selectedCategory === cat.key
                       ? "bg-gradient-to-r from-cyan-500/25 to-purple-500/15 text-cyan-950 dark:text-cyan-100 border-cyan-400/35 shadow-[0_0_0_1px_rgba(34,211,238,0.08),0_10px_22px_rgba(15,23,42,0.08)] dark:shadow-[0_0_0_1px_rgba(34,211,238,0.08)]"
                       : "bg-white/70 text-slate-700 border-slate-200/70 shadow-sm shadow-slate-900/5 hover:border-slate-300 hover:bg-white dark:bg-slate-950/30 dark:text-slate-300 dark:border-slate-800/70 dark:shadow-none dark:hover:border-slate-700 dark:hover:bg-slate-900/50"
@@ -1657,7 +1777,7 @@ export default function Home() {
               {filteredSkills.map(skill => (
                 <button
                   key={skill.key}
-                  onClick={() => setSelectedSkillKey(skill.key)}
+                  onClick={() => handleSelectSkill(skill.key)}
                   className={`shrink-0 whitespace-nowrap px-3 py-2 rounded-full border text-xs sm:text-sm font-semibold transition-all backdrop-blur md:px-4 ${selectedSkillKey === skill.key
                       ? "bg-cyan-500/10 border-cyan-400/50 text-cyan-950 dark:text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_25px_rgba(15,23,42,0.10)] dark:shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_25px_rgba(0,0,0,0.35)]"
                       : "bg-white/70 border-slate-200/70 text-slate-700 shadow-sm shadow-slate-900/5 hover:border-slate-300 hover:bg-white dark:bg-slate-950/30 dark:border-slate-800/70 dark:text-slate-300 dark:shadow-none dark:hover:border-slate-700 dark:hover:bg-slate-900/40"
@@ -1838,7 +1958,7 @@ export default function Home() {
       </AnimatePresence>
 
       {showTerminal && <EasterEggTerminal onClose={() => setShowTerminal(false)} />}
-      <KonamiGameOverlay />
+      <KonamiTrigger />
     </main>
   );
 }

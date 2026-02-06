@@ -239,6 +239,17 @@ video {
     inset 0 1px 0 rgba(255, 255, 255, 0.08);
 }
 
+/* Light mode readability: make "slate" text utilities closer to black */
+html:not([data-theme="dark"]) :where(
+  .text-slate-500,
+  .text-slate-600,
+  .text-slate-700,
+  .text-slate-600\/90,
+  .text-slate-700\/90
+) {
+  color: var(--color-text-primary);
+}
+
 .premium-card--selected::before {
   opacity: 0.9;
 }
