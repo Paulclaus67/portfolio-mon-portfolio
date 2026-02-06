@@ -473,7 +473,7 @@ export default function KonamiGameOverlay({ onClose }) {
                     ))}
                   </div>
 
-                  <div className="pointer-events-none absolute inset-3 grid grid-cols-4 gap-2">
+                  <div className="pointer-events-none absolute inset-0 grid grid-cols-4 gap-2">
                     {Array.from({ length: 16 }).map((_, i) => {
                       const id = game.grid[i];
                       if (!id) return <div key={`empty-${i}`} className="aspect-square" />;
@@ -504,7 +504,9 @@ export default function KonamiGameOverlay({ onClose }) {
                           transition={
                             reduceMotion
                               ? { duration: 0 }
-                              : { type: "spring", stiffness: 420, damping: 28 }
+                              : isMerged
+                                ? { type: "tween", duration: 0.18, ease: "easeOut", times: [0, 0.5, 1] }
+                                : { type: "spring", stiffness: 420, damping: 28 }
                           }
                           className={[
                             "aspect-square rounded-xl border bg-gradient-to-br shadow-sm shadow-slate-900/10 dark:shadow-none",

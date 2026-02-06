@@ -102,6 +102,7 @@ function MainNav({ navItems, theme, onToggleTheme, onProfileClick }) {
           <div
             className="relative w-10 h-10 rounded-full overflow-hidden border border-slate-300 cursor-pointer shadow-sm shadow-slate-900/10 dark:border-slate-600/70 dark:shadow-black/40"
             onClick={onProfileClick}
+            data-konami-anchor="profile"
           >
             <Image src="/Paul_PDP.jpg" alt="Paul Claus" fill sizes="40px" className="object-cover" />
           </div>
@@ -210,4 +211,3 @@ function MainNav({ navItems, theme, onToggleTheme, onProfileClick }) {
 }
 
 export default memo(MainNav);
-
