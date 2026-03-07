@@ -104,14 +104,14 @@ function MainNav({ navItems, theme, onToggleTheme, onProfileClick }) {
             onClick={onProfileClick}
             data-konami-anchor="profile"
           >
-            <Image src="/Paul_PDP.jpg" alt="Paul Claus" fill sizes="40px" className="object-cover" />
+            <Image src="/Paul_PDP_New.jpg" alt="Paul Claus" fill sizes="40px" className="object-cover" />
           </div>
           <div className="leading-none">
             <span className="block font-semibold text-slate-900 tracking-tight text-[15px] dark:text-slate-100">
               Paul Claus
             </span>
             <span className="hidden sm:block text-[11px] text-slate-600 mt-1 dark:text-slate-400/90">
-              Développeur Fullstack
+              Ingénieur Développeur C#
             </span>
           </div>
         </motion.div>

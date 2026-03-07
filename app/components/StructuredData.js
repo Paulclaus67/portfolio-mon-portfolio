@@ -13,7 +13,7 @@ export default function StructuredData() {
         "@id": `${SITE_URL}/#paul-claus`,
         name: PERSON_NAME,
         url: `${SITE_URL}/`,
-        image: `${SITE_URL}/Paul_PDP.jpg`,
+        image: `${SITE_URL}/Paul_PDP_New.jpg`,
         jobTitle: "Ingénieur informatique junior",
         email: "mailto:paul.claus@viacesi.fr",
         sameAs: ["https://github.com/Paulclaus67", "https://www.linkedin.com/in/paul-claus/"],

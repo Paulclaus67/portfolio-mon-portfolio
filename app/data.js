@@ -104,6 +104,11 @@ export const skillDetails = {
     tags: [
       { label: "JavaScript", skillKey: "javascript" },
       { type: "company", companyKey: "es", label: "Électricité de Strasbourg" },
+      {
+        type: "project",
+        href: "https://paulclaus67.github.io/DevPaulClaus/#contenu",
+        label: "Paul Dev Web",
+      },
       { type: "context", label: "Back-office web" },
       { type: "context", label: "jQuery / Vanilla" },
       { type: "context", label: "Portfolio" },
@@ -145,6 +150,11 @@ export const skillDetails = {
     tags: [
       { type: "company", companyKey: "es", label: "Électricité de Strasbourg" },
       { type: "company", companyKey: "milla", label: "Milla & Partner" },
+      {
+        type: "project",
+        href: "https://paulclaus67.github.io/DevPaulClaus/#contenu",
+        label: "Paul Dev Web",
+      },
       { type: "context", label: "Portfolio" },
       { type: "context", label: "Back-office web" },
       { type: "context", label: "Interfaces pour assistant IA" },
@@ -736,6 +746,39 @@ export const caseStudies = [
     techs: ["WordPress", "HTML/CSS", "SEO", "Plugins WordPress"],
     skillTags: ["wordpress", "frontend"],
     prioRecruiter: false,
+  },
+  {
+    key: "paul-dev-web",
+    company: "Paul Dev Web",
+    logo: "/logos/logo_DevWebPaul.png",
+    role: "Developpeur web freelance - Site vitrine commercial",
+    year: "2025-aujourd'hui",
+    location: "France",
+    category: "web",
+    contractLabel: "Projet freelance",
+    headline: "Site vitrine freelance pour vendre des prestations web",
+    summary:
+      "Conception et developpement d'un site vitrine commercial pour presenter et vendre mes prestations freelance de creation de sites web pour artisans, TPE et PME.",
+    link: "https://paulclaus67.github.io/DevPaulClaus/#contenu",
+    contextBullets: [
+      "Besoin : definir un positionnement clair et orienter le site vers la prise de contact.",
+      "Cible : artisans, TPE et PME a la recherche d'un site vitrine moderne, credible et efficace.",
+    ],
+    actionsBullets: [
+      "Definition d'une promesse forte, d'offres packagees et d'un parcours pense pour la conversion.",
+      "Integration d'une interface responsive mettant en avant services, realisations, preuves de serieux, tarifs et formulaire de contact.",
+      "Travail sur l'experience utilisateur, la hierarchisation des contenus et la credibilite visuelle.",
+      "Mise en place d'un tunnel de conversion complet avec CTA, FAQ, process client clair et elements de reassurance.",
+      "Optimisation des performances, du SEO de base et de la maintenabilite du site.",
+    ],
+    impactBullets: [
+      "Positionnement freelance plus lisible, plus professionnel et plus commercial.",
+      "Parcours utilisateur pense pour faciliter le passage a l'action et les demandes de contact.",
+      "Demonstration concrete de ma capacite a concevoir un site vitrine centre sur la vente et la conversion.",
+    ],
+    techs: ["HTML5", "Tailwind CSS", "JavaScript", "UX/UI", "SEO", "Responsive"],
+    skillTags: ["javascript", "frontend", "git"],
+    prioRecruiter: true,
   },
 ];
 

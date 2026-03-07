@@ -3,7 +3,7 @@
 import { memo, useCallback, useMemo, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Briefcase, CheckCircle2, Copy } from "lucide-react";
+import { Briefcase, CheckCircle2, Copy, ExternalLink, Link2 } from "lucide-react";
 
 import { skills, skillCategories, skillDetails, skillExamples, trustedLogos } from "../../data";
 import { staggerContainer } from "../../utils/motionVariants";
@@ -140,6 +140,37 @@ function SkillsSection() {
                 </div>
                 <p className="text-sm text-slate-600 break-words dark:text-slate-300">{currentSkillDetail.employerValue}</p>
               </div>
+
+              {currentSkillDetail.tags?.length ? (
+                <div className="premium-subcard p-5 rounded-2xl">
+                  <div className="flex items-center gap-2 mb-3 text-sky-700 dark:text-sky-300 text-sm font-semibold">
+                    <Link2 size={16} /> References
+                  </div>
+                  <div className="flex flex-wrap gap-2">
+                    {currentSkillDetail.tags.map((tag) =>
+                      tag.href ? (
+                        <a
+                          key={`${selectedSkillKey}-${tag.label}`}
+                          href={tag.href}
+                          target="_blank"
+                          rel="noreferrer noopener"
+                          className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/25 bg-sky-400/10 px-3 py-1.5 text-xs font-semibold text-sky-900 transition-colors hover:bg-sky-400/15 dark:text-sky-200"
+                        >
+                          {tag.label}
+                          <ExternalLink size={12} />
+                        </a>
+                      ) : (
+                        <span
+                          key={`${selectedSkillKey}-${tag.label}`}
+                          className="inline-flex items-center rounded-full border border-slate-200/70 bg-white/70 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:border-white/10 dark:bg-slate-950/30 dark:text-slate-200"
+                        >
+                          {tag.label}
+                        </span>
+                      )
+                    )}
+                  </div>
+                </div>
+              ) : null}
             </div>
 
             <div className="relative group min-w-0">

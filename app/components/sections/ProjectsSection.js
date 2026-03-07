@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, useMemo, useState } from "react";
+import { memo, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, ExternalLink, MapPin } from "lucide-react";
@@ -123,6 +123,8 @@ function ProjectsSection({
   selectedProjectKey,
   onSelectProjectKey,
 }) {
+  const detailRef = useRef(null);
+
   const displayedProjects = useMemo(() => {
     return recruiterMode ? caseStudies.filter((p) => p.prioRecruiter) : caseStudies;
   }, [recruiterMode]);
@@ -136,6 +138,25 @@ function ProjectsSection({
   }, [selectedProjectKey]);
 
   const projectActionBullets = useMemo(() => activeStudy.actionsBullets ?? [], [activeStudy.actionsBullets]);
+
+  const scrollToProjectDetailOnMobile = () => {
+    if (typeof window === "undefined" || !window.matchMedia("(max-width: 767px)").matches) return;
+
+    const nav = document.querySelector("[data-nav='main']");
+    const navOffset = Math.round((nav?.getBoundingClientRect().height ?? 80) + 16);
+
+    window.requestAnimationFrame(() => {
+      window.requestAnimationFrame(() => {
+        const detailTop = detailRef.current?.getBoundingClientRect().top;
+        if (typeof detailTop !== "number") return;
+
+        window.scrollTo({
+          top: Math.max(0, window.scrollY + detailTop - navOffset),
+          behavior: "smooth",
+        });
+      });
+    });
+  };
 
   return (
     <section id="projets" className="relative scroll-mt-24">
@@ -184,6 +205,7 @@ function ProjectsSection({
                   key={proj.key}
                   onClick={() => {
                     onSelectProjectKey(proj.key);
+                    scrollToProjectDetailOnMobile();
                   }}
                   aria-pressed={isSelected}
                   data-selected={isSelected ? "true" : undefined}
@@ -256,7 +278,9 @@ function ProjectsSection({
         </div>
 
         <AnimatePresence mode="wait">
-          <ProjectDetail activeStudy={activeStudy} projectActionBullets={projectActionBullets} />
+          <div ref={detailRef}>
+            <ProjectDetail activeStudy={activeStudy} projectActionBullets={projectActionBullets} />
+          </div>
         </AnimatePresence>
       </div>
     </section>
