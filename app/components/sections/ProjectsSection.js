@@ -3,7 +3,7 @@
 import { memo, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowRight, ExternalLink, MapPin } from "lucide-react";
+import { ArrowRight, ChevronDown, ExternalLink, MapPin } from "lucide-react";
 
 import { caseStudies } from "../../data";
 
@@ -116,13 +116,114 @@ function ProjectDetail({ activeStudy, projectActionBullets }) {
   );
 }
 
-function ProjectsSection({
-  recruiterMode,
-  activeTab,
-  onSelectTab,
-  selectedProjectKey,
-  onSelectProjectKey,
-}) {
+function MobileProjectCard({ project, isSelected, onSelect }) {
+  return (
+    <article
+      className={`relative overflow-hidden rounded-[28px] border transition-colors ${
+        isSelected
+          ? "mobile-surface mobile-surface--strong border-cyan-400/35 bg-white/88 shadow-[0_18px_50px_rgba(15,23,42,0.10)] dark:border-cyan-400/25 dark:bg-slate-950/50 dark:shadow-[0_18px_50px_rgba(0,0,0,0.35)]"
+          : "mobile-surface border-slate-200/70 bg-white/72 dark:border-white/10 dark:bg-slate-950/26"
+      }`}
+    >
+      <span
+        className={`absolute left-0 top-0 h-full w-1.5 rounded-r-full bg-gradient-to-b from-cyan-400 via-sky-400 to-pink-400 transition-opacity ${
+          isSelected ? "opacity-100" : "opacity-35"
+        }`}
+        aria-hidden="true"
+      />
+      <button
+        type="button"
+        onClick={onSelect}
+        aria-expanded={isSelected}
+        className="flex w-full items-start gap-3 px-4 py-4 text-left"
+      >
+        <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-2xl ring-1 ring-white/10 ${project.key === "muscu-pwa" ? "bg-cyan-600" : "bg-white"}`}>
+          {project.logo ? (
+            <Image src={project.logo} alt={project.company || project.headline} width={30} height={30} className="h-7 w-7 object-contain" />
+          ) : (
+            <span className="text-lg font-bold text-slate-900">{project.company[0]}</span>
+          )}
+        </div>
+
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <span className="mobile-chip inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600 dark:text-slate-300">
+                {project.category}
+              </span>
+              <h3 className="mt-1 text-base font-semibold leading-snug text-slate-900 dark:text-slate-100">{project.headline}</h3>
+              <p className="mt-1 text-sm text-slate-600 dark:text-slate-300">{project.company}</p>
+            </div>
+            <ChevronDown size={18} className={`mt-1 shrink-0 text-slate-500 transition-transform dark:text-slate-400 ${isSelected ? "rotate-180" : ""}`} />
+          </div>
+
+          <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{project.summary}</p>
+
+          <div className="mt-3 flex flex-wrap gap-2">
+            {project.techs.slice(0, 3).map((tech) => (
+              <span key={tech} className="mobile-chip rounded-full px-2.5 py-1 text-[11px] font-medium text-slate-700 dark:text-slate-200">
+                {tech}
+              </span>
+            ))}
+          </div>
+        </div>
+      </button>
+
+      <AnimatePresence initial={false}>
+        {isSelected ? (
+          <motion.div
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: "auto", opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.24 }}
+            className="overflow-hidden"
+          >
+            <div className="border-t border-slate-200/70 px-4 pb-4 pt-4 dark:border-white/10">
+              <div className="grid gap-3">
+                <div className="mobile-chip rounded-2xl p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Contexte</p>
+                  <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-200">
+                    {project.contextBullets.slice(0, 2).map((bullet, index) => (
+                      <li key={index} className="flex gap-2">
+                        <span className="text-slate-400">•</span>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="mobile-chip rounded-2xl p-4">
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-600 dark:text-sky-300">Impact</p>
+                  <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-200">
+                    {project.impactBullets.slice(0, 2).map((bullet, index) => (
+                      <li key={index} className="flex gap-2">
+                        <span className="text-sky-400">•</span>
+                        <span>{bullet}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              {project.link ? (
+                <a
+                  href={project.link}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="mt-4 inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white dark:bg-white dark:text-slate-950"
+                >
+                  Voir le projet <ExternalLink size={14} />
+                </a>
+              ) : null}
+            </div>
+          </motion.div>
+        ) : null}
+      </AnimatePresence>
+    </article>
+  );
+}
+
+function ProjectsSection({ recruiterMode, activeTab, onSelectTab, selectedProjectKey, onSelectProjectKey }) {
   const detailRef = useRef(null);
 
   const displayedProjects = useMemo(() => {
@@ -194,7 +295,18 @@ function ProjectsSection({
         </div>
       </motion.div>
 
-      <div className="grid lg:grid-cols-[350px_1fr] gap-6">
+      <div className="grid gap-4 md:hidden">
+        {filteredProjectsList.map((project) => (
+          <MobileProjectCard
+            key={project.key}
+            project={project}
+            isSelected={selectedProjectKey === project.key}
+            onSelect={() => onSelectProjectKey(project.key)}
+          />
+        ))}
+      </div>
+
+      <div className="hidden md:grid lg:grid-cols-[350px_1fr] gap-6">
         <div className="space-y-3">
           {filteredProjectsList.map((proj) =>
             (() => {

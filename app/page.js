@@ -39,7 +39,6 @@ export default function Home() {
   const [activeTab, setActiveTab] = useState("all");
   const [selectedProjectKey, setSelectedProjectKey] = useState("thales");
   const [expandedExperienceKey, setExpandedExperienceKey] = useState(null);
-
   const [, setClicks] = useState(0);
   const [showTerminal, setShowTerminal] = useState(false);
 
@@ -59,10 +58,12 @@ export default function Home() {
 
     const root = document.documentElement;
     const reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     if (!reduceMotion) {
       root.classList.add("theme-transition");
       window.setTimeout(() => root.classList.remove("theme-transition"), 340);
     }
+
     root.dataset.theme = normalized;
     root.dataset.themeReady = "true";
     root.classList.toggle("dark", normalized === "dark");
@@ -99,7 +100,7 @@ export default function Home() {
   const handleViewCaseStudy = useCallback(
     (key) => {
       startTransition(() => {
-        const project = caseStudies.find((p) => p.key === key);
+        const project = caseStudies.find((item) => item.key === key);
         if (project && activeTab !== "all" && project.category !== activeTab) {
           setActiveTab("all");
         }
@@ -116,13 +117,10 @@ export default function Home() {
       startTransition(() => {
         setActiveTab(key);
 
-        const displayedProjects = recruiterMode
-          ? caseStudies.filter((p) => p.prioRecruiter)
-          : caseStudies;
-        const nextList =
-          key === "all" ? displayedProjects : displayedProjects.filter((p) => p.category === key);
+        const displayedProjects = recruiterMode ? caseStudies.filter((item) => item.prioRecruiter) : caseStudies;
+        const nextList = key === "all" ? displayedProjects : displayedProjects.filter((item) => item.category === key);
 
-        const stillVisible = nextList.some((p) => p.key === selectedProjectKey);
+        const stillVisible = nextList.some((item) => item.key === selectedProjectKey);
         if (!stillVisible && nextList.length) {
           setSelectedProjectKey(nextList[0].key);
         }
@@ -163,10 +161,10 @@ export default function Home() {
 
   const { scrollYProgress } = useScroll();
   const smoothProgress = useSpring(scrollYProgress, { stiffness: 120, damping: 30, mass: 0.2 });
-  const progressWidth = useTransform(smoothProgress, (v) => `${v * 100}%`);
+  const progressWidth = useTransform(smoothProgress, (value) => `${value * 100}%`);
 
   return (
-    <main className="relative min-h-[100dvh] bg-transparent text-slate-900 selection:bg-cyan-500/30 selection:text-cyan-950 dark:text-slate-200 dark:selection:text-cyan-100 font-sans overflow-x-hidden">
+    <main className="relative min-h-[100dvh] overflow-x-hidden bg-transparent font-sans text-slate-900 selection:bg-cyan-500/30 selection:text-cyan-950 dark:text-slate-200 dark:selection:text-cyan-100">
       <BackgroundDecor />
       <TopProgressBar progressWidth={progressWidth} />
       <MainNav
@@ -176,7 +174,7 @@ export default function Home() {
         onProfileClick={handleProfileClick}
       />
 
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-28 sm:pt-32 pb-16 sm:pb-20 space-y-16 md:space-y-32 relative z-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 pt-24 sm:pt-32 pb-16 sm:pb-20 space-y-12 sm:space-y-16 md:space-y-32 relative z-10">
         <HeroSection />
         <ExperienceSection
           recruiterMode={recruiterMode}
@@ -197,7 +195,7 @@ export default function Home() {
 
       <ScrollTopButton />
 
-      {showTerminal && <EasterEggTerminal onClose={() => setShowTerminal(false)} />}
+      {showTerminal ? <EasterEggTerminal onClose={() => setShowTerminal(false)} /> : null}
       <KonamiTrigger />
     </main>
   );

@@ -3,7 +3,7 @@
 import { memo, useCallback, useMemo, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Briefcase, CheckCircle2, Copy, ExternalLink, Link2 } from "lucide-react";
+import { Briefcase, CheckCircle2, ChevronDown, Copy, ExternalLink, Link2 } from "lucide-react";
 
 import { skills, skillCategories, skillDetails, skillExamples, trustedLogos } from "../../data";
 import { staggerContainer } from "../../utils/motionVariants";
@@ -12,6 +12,7 @@ function SkillsSection() {
   const [selectedSkillKey, setSelectedSkillKey] = useState("python");
   const [selectedCategory, setSelectedCategory] = useState("languages");
   const [copied, setCopied] = useState(false);
+  const [showMobileExample, setShowMobileExample] = useState(false);
 
   const pickFirstSkillKey = useCallback((categoryKey) => {
     return skills.find((s) => s.category === categoryKey)?.key ?? "python";
@@ -74,35 +75,40 @@ function SkillsSection() {
       >
         <div className="flex items-center gap-4 mb-8">
           <div className="h-px w-12 bg-cyan-500/50" />
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Compétences Techniques</h2>
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Compétences Techniques</h2>
+            <p className="mt-1 text-sm text-slate-600 dark:text-slate-300 md:hidden">
+              Une lecture mobile plus simple : choisir une famille, puis une compétence.
+            </p>
+          </div>
         </div>
 
-        <div className="premium-card rounded-3xl p-6 md:p-8">
-          <div className="flex gap-2 mb-8 border-b border-slate-200/70 pb-4 overflow-x-auto scrollbar-none pr-2 md:flex-wrap md:overflow-visible md:pb-5 md:pr-0 dark:border-white/5">
-            {skillCategories.map((cat) => (
+        <div className="grid gap-5 md:hidden">
+          <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
+            {skillCategories.map((category) => (
               <button
-                key={cat.key}
-                onClick={() => handleSelectCategory(cat.key)}
-                className={`pill-tab shrink-0 whitespace-nowrap px-3 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all border backdrop-blur md:px-4 ${
-                  selectedCategory === cat.key
-                    ? "bg-gradient-to-r from-cyan-500/25 to-purple-500/15 text-cyan-950 dark:text-cyan-100 border-cyan-400/35 shadow-[0_0_0_1px_rgba(34,211,238,0.08),0_10px_22px_rgba(15,23,42,0.08)] dark:shadow-[0_0_0_1px_rgba(34,211,238,0.08)]"
-                    : "bg-white/70 text-slate-700 border-slate-200/70 shadow-sm shadow-slate-900/5 hover:border-slate-300 hover:bg-white dark:bg-slate-950/30 dark:text-slate-300 dark:border-slate-800/70 dark:shadow-none dark:hover:border-slate-700 dark:hover:bg-slate-900/50"
+                key={category.key}
+                onClick={() => handleSelectCategory(category.key)}
+                className={`shrink-0 rounded-full px-4 py-2 text-xs font-semibold transition-colors ${
+                  selectedCategory === category.key
+                    ? "mobile-surface mobile-surface--strong text-cyan-950 dark:text-cyan-100"
+                    : "mobile-chip text-slate-700 dark:text-slate-300"
                 }`}
               >
-                {cat.label}
+                {category.label}
               </button>
             ))}
           </div>
 
-          <div className="flex gap-2 mb-10 overflow-x-auto scrollbar-none pr-2 pb-2 md:flex-wrap md:overflow-visible md:pr-0 md:pb-0 md:gap-3">
+          <div className="grid grid-cols-2 gap-2">
             {filteredSkills.map((skill) => (
               <button
                 key={skill.key}
                 onClick={() => setSelectedSkillKey(skill.key)}
-                className={`pill-tab shrink-0 whitespace-nowrap px-3 py-2 rounded-full border text-xs sm:text-sm font-semibold transition-all backdrop-blur md:px-4 ${
+                className={`rounded-2xl px-3 py-3 text-left text-sm font-semibold transition-colors ${
                   selectedSkillKey === skill.key
-                    ? "bg-cyan-500/10 border-cyan-400/50 text-cyan-950 dark:text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_25px_rgba(15,23,42,0.10)] dark:shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_25px_rgba(0,0,0,0.35)]"
-                    : "bg-white/70 border-slate-200/70 text-slate-700 shadow-sm shadow-slate-900/5 hover:border-slate-300 hover:bg-white dark:bg-slate-950/30 dark:border-slate-800/70 dark:text-slate-300 dark:shadow-none dark:hover:border-slate-700 dark:hover:bg-slate-900/40"
+                    ? "mobile-surface mobile-surface--strong text-cyan-950 dark:text-cyan-100"
+                    : "mobile-chip text-slate-700 dark:text-slate-200"
                 }`}
               >
                 {skill.label}
@@ -110,93 +116,211 @@ function SkillsSection() {
             ))}
           </div>
 
-          <div className="grid md:grid-cols-2 gap-8 items-start min-w-0">
-            <div className="min-w-0 space-y-6">
+          <div className="mobile-surface mobile-surface--strong rounded-[28px] p-5">
+            <div className="flex items-start justify-between gap-3">
               <div>
-                <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 break-words dark:text-white">
-                  {currentSkillDetail.title}
-                </h3>
-                <div
-                  className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold uppercase tracking-wider ${levelColor}`}
-                >
+                <h3 className="text-xl font-bold text-slate-900 dark:text-white">{currentSkillDetail.title}</h3>
+                <div className={`mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full border text-[11px] font-semibold uppercase tracking-wider ${levelColor}`}>
                   {currentSkillDetail.level === "prod" ? "Production" : "Projet / Expérimentation"}
                 </div>
               </div>
-
-              <p className="text-slate-600 text-base sm:text-lg leading-relaxed break-words dark:text-slate-300">
-                {currentSkillDetail.desc}
-              </p>
-
-              <div className="premium-subcard p-5 rounded-2xl">
-                <div className="flex items-center gap-2 mb-2 text-cyan-700 dark:text-cyan-300 text-sm font-semibold">
-                  <Briefcase size={16} /> {"Contexte d'utilisation"}
-                </div>
-                <p className="text-sm text-slate-600 break-words dark:text-slate-300">{currentSkillDetail.context}</p>
-              </div>
-
-              <div className="premium-subcard p-5 rounded-2xl">
-                <div className="flex items-center gap-2 mb-2 text-emerald-700 dark:text-emerald-300 text-sm font-semibold">
-                  <CheckCircle2 size={16} /> Valeur pour vous
-                </div>
-                <p className="text-sm text-slate-600 break-words dark:text-slate-300">{currentSkillDetail.employerValue}</p>
-              </div>
-
-              {currentSkillDetail.tags?.length ? (
-                <div className="premium-subcard p-5 rounded-2xl">
-                  <div className="flex items-center gap-2 mb-3 text-sky-700 dark:text-sky-300 text-sm font-semibold">
-                    <Link2 size={16} /> References
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {currentSkillDetail.tags.map((tag) =>
-                      tag.href ? (
-                        <a
-                          key={`${selectedSkillKey}-${tag.label}`}
-                          href={tag.href}
-                          target="_blank"
-                          rel="noreferrer noopener"
-                          className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/25 bg-sky-400/10 px-3 py-1.5 text-xs font-semibold text-sky-900 transition-colors hover:bg-sky-400/15 dark:text-sky-200"
-                        >
-                          {tag.label}
-                          <ExternalLink size={12} />
-                        </a>
-                      ) : (
-                        <span
-                          key={`${selectedSkillKey}-${tag.label}`}
-                          className="inline-flex items-center rounded-full border border-slate-200/70 bg-white/70 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:border-white/10 dark:bg-slate-950/30 dark:text-slate-200"
-                        >
-                          {tag.label}
-                        </span>
-                      )
-                    )}
-                  </div>
-                </div>
-              ) : null}
+              <button
+                type="button"
+                onClick={() => setShowMobileExample((v) => !v)}
+                className="mobile-chip inline-flex items-center gap-1 rounded-full px-3 py-2 text-[11px] font-semibold text-slate-700 dark:text-slate-200"
+              >
+                Exemple
+                <ChevronDown size={14} className={`transition-transform ${showMobileExample ? "rotate-180" : ""}`} />
+              </button>
             </div>
 
-            <div className="relative group min-w-0">
-              <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-3xl blur opacity-15 group-hover:opacity-25 transition-opacity" />
-              <div className="premium-card relative rounded-3xl p-6 md:p-7 font-mono text-sm overflow-hidden">
-                <div className="flex flex-wrap items-center justify-between gap-3 md:flex-nowrap md:gap-2 mb-4 border-b border-white/5 pb-3">
-                  <span className="text-slate-700 text-xs shrink-0 dark:text-slate-500">Exemple de code</span>
-                  <div className="flex flex-wrap items-center justify-end gap-2 md:flex-nowrap">
-                    <button
-                      type="button"
-                      onClick={handleCopyExample}
-                      className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-3 py-1.5 text-[11px] font-semibold text-slate-800 shadow-sm shadow-slate-900/5 hover:bg-white hover:border-slate-300 transition-colors dark:border-white/10 dark:bg-slate-950/40 dark:text-slate-200 dark:shadow-none dark:hover:bg-slate-900/50 dark:hover:border-white/20"
-                      aria-label="Copier l'exemple de code"
+            <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300">{currentSkillDetail.desc}</p>
+
+            <div className="mt-4 grid gap-3">
+              <div className="mobile-chip rounded-2xl p-4">
+                <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-cyan-700 dark:text-cyan-300">
+                  <Briefcase size={16} /> Contexte d&apos;utilisation
+                </div>
+                <p className="text-sm text-slate-600 dark:text-slate-300">{currentSkillDetail.context}</p>
+              </div>
+
+              <div className="mobile-chip rounded-2xl p-4">
+                <div className="mb-2 flex items-center gap-2 text-sm font-semibold text-emerald-700 dark:text-emerald-300">
+                  <CheckCircle2 size={16} /> Valeur pour vous
+                </div>
+                <p className="text-sm text-slate-600 dark:text-slate-300">{currentSkillDetail.employerValue}</p>
+              </div>
+            </div>
+
+            {currentSkillDetail.tags?.length ? (
+              <div className="mt-4 flex flex-wrap gap-2">
+                {currentSkillDetail.tags.slice(0, 6).map((tag) =>
+                  tag.href ? (
+                    <a
+                      key={`${selectedSkillKey}-${tag.label}`}
+                      href={tag.href}
+                      target="_blank"
+                      rel="noreferrer noopener"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/25 bg-sky-400/10 px-3 py-1.5 text-xs font-semibold text-sky-900 shadow-sm shadow-sky-400/10 dark:text-sky-200"
                     >
-                      <Copy size={14} />
-                      {copied ? "Copié" : "Copier"}
-                    </button>
-                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/20" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-amber-500/20" />
-                    <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/20" />
+                      {tag.label}
+                      <ExternalLink size={12} />
+                    </a>
+                  ) : (
+                    <span
+                      key={`${selectedSkillKey}-${tag.label}`}
+                      className="mobile-chip inline-flex items-center rounded-full px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200"
+                    >
+                      {tag.label}
+                    </span>
+                  )
+                )}
+              </div>
+            ) : null}
+
+            {showMobileExample ? (
+              <div className="mt-4 rounded-2xl border border-slate-200/70 bg-slate-950 p-4 text-slate-100 dark:border-white/8">
+                <div className="mb-3 flex items-center justify-between gap-3">
+                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Exemple</span>
+                  <button
+                    type="button"
+                    onClick={handleCopyExample}
+                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-semibold text-slate-100"
+                  >
+                    <Copy size={14} />
+                    {copied ? "Copié" : "Copier"}
+                  </button>
+                </div>
+                <pre className="overflow-x-auto text-[12px] leading-6 text-slate-100">
+                  <code className="block whitespace-pre">{exampleText}</code>
+                </pre>
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        <div className="hidden md:block">
+          <div className="premium-card rounded-3xl p-6 md:p-8">
+            <div className="flex gap-2 mb-8 border-b border-slate-200/70 pb-4 overflow-x-auto scrollbar-none pr-2 md:flex-wrap md:overflow-visible md:pb-5 md:pr-0 dark:border-white/5">
+              {skillCategories.map((cat) => (
+                <button
+                  key={cat.key}
+                  onClick={() => handleSelectCategory(cat.key)}
+                  className={`pill-tab shrink-0 whitespace-nowrap px-3 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all border backdrop-blur md:px-4 ${
+                    selectedCategory === cat.key
+                      ? "bg-gradient-to-r from-cyan-500/25 to-purple-500/15 text-cyan-950 dark:text-cyan-100 border-cyan-400/35 shadow-[0_0_0_1px_rgba(34,211,238,0.08),0_10px_22px_rgba(15,23,42,0.08)] dark:shadow-[0_0_0_1px_rgba(34,211,238,0.08)]"
+                      : "bg-white/70 text-slate-700 border-slate-200/70 shadow-sm shadow-slate-900/5 hover:border-slate-300 hover:bg-white dark:bg-slate-950/30 dark:text-slate-300 dark:border-slate-800/70 dark:shadow-none dark:hover:border-slate-700 dark:hover:bg-slate-900/50"
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="flex gap-2 mb-10 overflow-x-auto scrollbar-none pr-2 pb-2 md:flex-wrap md:overflow-visible md:pr-0 md:pb-0 md:gap-3">
+              {filteredSkills.map((skill) => (
+                <button
+                  key={skill.key}
+                  onClick={() => setSelectedSkillKey(skill.key)}
+                  className={`pill-tab shrink-0 whitespace-nowrap px-3 py-2 rounded-full border text-xs sm:text-sm font-semibold transition-all backdrop-blur md:px-4 ${
+                    selectedSkillKey === skill.key
+                      ? "bg-cyan-500/10 border-cyan-400/50 text-cyan-950 dark:text-cyan-200 shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_25px_rgba(15,23,42,0.10)] dark:shadow-[0_0_0_1px_rgba(34,211,238,0.10),0_12px_25px_rgba(0,0,0,0.35)]"
+                      : "bg-white/70 border-slate-200/70 text-slate-700 shadow-sm shadow-slate-900/5 hover:border-slate-300 hover:bg-white dark:bg-slate-950/30 dark:border-slate-800/70 dark:text-slate-300 dark:shadow-none dark:hover:border-slate-700 dark:hover:bg-slate-900/40"
+                  }`}
+                >
+                  {skill.label}
+                </button>
+              ))}
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8 items-start min-w-0">
+              <div className="min-w-0 space-y-6">
+                <div>
+                  <h3 className="text-2xl sm:text-3xl font-bold text-slate-900 mb-2 break-words dark:text-white">
+                    {currentSkillDetail.title}
+                  </h3>
+                  <div
+                    className={`inline-flex items-center gap-2 px-3 py-1 rounded-full border text-xs font-semibold uppercase tracking-wider ${levelColor}`}
+                  >
+                    {currentSkillDetail.level === "prod" ? "Production" : "Projet / Expérimentation"}
                   </div>
                 </div>
-                <div className="code-scroll-hint rounded-2xl border border-slate-200/70 bg-white/70 p-4 overflow-hidden shadow-sm shadow-slate-900/5 dark:border-white/5 dark:bg-slate-950/35 dark:shadow-none">
-                  <pre className="overflow-x-auto max-w-full text-[13px] leading-6 text-slate-900 dark:text-slate-200">
-                    <code className="block whitespace-pre">{exampleText}</code>
-                  </pre>
+
+                <p className="text-slate-600 text-base sm:text-lg leading-relaxed break-words dark:text-slate-300">
+                  {currentSkillDetail.desc}
+                </p>
+
+                <div className="premium-subcard p-5 rounded-2xl">
+                  <div className="flex items-center gap-2 mb-2 text-cyan-700 dark:text-cyan-300 text-sm font-semibold">
+                    <Briefcase size={16} /> {"Contexte d'utilisation"}
+                  </div>
+                  <p className="text-sm text-slate-600 break-words dark:text-slate-300">{currentSkillDetail.context}</p>
+                </div>
+
+                <div className="premium-subcard p-5 rounded-2xl">
+                  <div className="flex items-center gap-2 mb-2 text-emerald-700 dark:text-emerald-300 text-sm font-semibold">
+                    <CheckCircle2 size={16} /> Valeur pour vous
+                  </div>
+                  <p className="text-sm text-slate-600 break-words dark:text-slate-300">{currentSkillDetail.employerValue}</p>
+                </div>
+
+                {currentSkillDetail.tags?.length ? (
+                  <div className="premium-subcard p-5 rounded-2xl">
+                    <div className="flex items-center gap-2 mb-3 text-sky-700 dark:text-sky-300 text-sm font-semibold">
+                      <Link2 size={16} /> References
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                      {currentSkillDetail.tags.map((tag) =>
+                        tag.href ? (
+                          <a
+                            key={`${selectedSkillKey}-${tag.label}`}
+                            href={tag.href}
+                            target="_blank"
+                            rel="noreferrer noopener"
+                            className="inline-flex items-center gap-1.5 rounded-full border border-sky-400/25 bg-sky-400/10 px-3 py-1.5 text-xs font-semibold text-sky-900 transition-colors hover:bg-sky-400/15 dark:text-sky-200"
+                          >
+                            {tag.label}
+                            <ExternalLink size={12} />
+                          </a>
+                        ) : (
+                          <span
+                            key={`${selectedSkillKey}-${tag.label}`}
+                            className="inline-flex items-center rounded-full border border-slate-200/70 bg-white/70 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:border-white/10 dark:bg-slate-950/30 dark:text-slate-200"
+                          >
+                            {tag.label}
+                          </span>
+                        )
+                      )}
+                    </div>
+                  </div>
+                ) : null}
+              </div>
+
+              <div className="relative group min-w-0">
+                <div className="absolute inset-0 bg-gradient-to-r from-cyan-500 to-purple-500 rounded-3xl blur opacity-15 group-hover:opacity-25 transition-opacity" />
+                <div className="premium-card relative rounded-3xl p-6 md:p-7 font-mono text-sm overflow-hidden">
+                  <div className="flex flex-wrap items-center justify-between gap-3 md:flex-nowrap md:gap-2 mb-4 border-b border-white/5 pb-3">
+                    <span className="text-slate-700 text-xs shrink-0 dark:text-slate-500">Exemple de code</span>
+                    <div className="flex flex-wrap items-center justify-end gap-2 md:flex-nowrap">
+                      <button
+                        type="button"
+                        onClick={handleCopyExample}
+                        className="inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-3 py-1.5 text-[11px] font-semibold text-slate-800 shadow-sm shadow-slate-900/5 hover:bg-white hover:border-slate-300 transition-colors dark:border-white/10 dark:bg-slate-950/40 dark:text-slate-200 dark:shadow-none dark:hover:bg-slate-900/50 dark:hover:border-white/20"
+                        aria-label="Copier l'exemple de code"
+                      >
+                        <Copy size={14} />
+                        {copied ? "Copié" : "Copier"}
+                      </button>
+                      <div className="w-2.5 h-2.5 rounded-full bg-red-500/20" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-amber-500/20" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-500/20" />
+                    </div>
+                  </div>
+                  <div className="code-scroll-hint rounded-2xl border border-slate-200/70 bg-white/70 p-4 overflow-hidden shadow-sm shadow-slate-900/5 dark:border-white/5 dark:bg-slate-950/35 dark:shadow-none">
+                    <pre className="overflow-x-auto max-w-full text-[13px] leading-6 text-slate-900 dark:text-slate-200">
+                      <code className="block whitespace-pre">{exampleText}</code>
+                    </pre>
+                  </div>
                 </div>
               </div>
             </div>
