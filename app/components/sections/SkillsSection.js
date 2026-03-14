@@ -325,23 +325,23 @@ function SkillsSection() {
         <p className="text-center text-slate-600 text-sm md:text-base font-semibold uppercase tracking-[0.25em] md:tracking-[0.3em] mb-8 md:mb-10 dark:text-slate-300">
           {"Ils m'ont fait confiance"}
         </p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 place-items-center gap-x-8 gap-y-8 opacity-90 transition-all duration-500 md:opacity-80 md:flex md:flex-wrap md:justify-center md:items-center md:gap-10">
+        <div className="grid grid-cols-2 gap-x-8 gap-y-8 opacity-90 transition-all duration-500 sm:grid-cols-3 md:flex md:flex-wrap md:justify-center md:items-center md:gap-x-10 md:gap-y-8 md:opacity-80">
           {trustedLogos.map((brand) => (
             <a
               key={brand.name}
               href={brand.url}
               target="_blank"
               rel="noreferrer noopener"
-              className="group inline-flex items-center justify-center p-1.5 md:p-2 transition-transform md:hover:scale-105 focus-visible:scale-105 focus-visible:outline-none"
+              className="group inline-flex w-full items-center justify-center transition-transform focus-visible:outline-none md:w-[168px] md:hover:scale-[1.03] lg:w-[190px]"
               aria-label={`Ouvrir ${brand.name}`}
             >
-              <div className="relative h-10 w-[140px] sm:h-11 sm:w-[160px] md:h-12 md:w-[168px] lg:h-14 lg:w-[190px]">
+              <div className="relative h-10 w-[140px] sm:h-11 sm:w-[150px] md:h-12 md:w-[168px] lg:h-14 lg:w-[190px]">
                 <Image
                   src={brand.src}
                   alt={brand.name}
                   fill
-                  sizes="(min-width: 1024px) 190px, (min-width: 768px) 168px, (min-width: 640px) 160px, 140px"
-                  className="object-contain transition-all duration-500 ease-out md:grayscale md:opacity-70 md:group-hover:grayscale-0 md:group-hover:opacity-100 md:group-hover:saturate-125 md:group-hover:brightness-110 md:group-hover:drop-shadow-[0_10px_30px_rgba(34,211,238,0.12)] md:group-hover:scale-[1.02] md:group-focus-visible:grayscale-0 md:group-focus-visible:opacity-100 md:group-focus-visible:saturate-125 md:group-focus-visible:brightness-110 md:group-focus-visible:drop-shadow-[0_10px_30px_rgba(34,211,238,0.12)] md:group-focus-visible:scale-[1.02]"
+                  sizes="(min-width: 1024px) 190px, (min-width: 768px) 168px, (min-width: 640px) 150px, 140px"
+                  className="object-contain object-center transition-all duration-500 ease-out md:grayscale md:opacity-70 md:group-hover:grayscale-0 md:group-hover:opacity-100 md:group-hover:saturate-125 md:group-hover:brightness-110 md:group-hover:drop-shadow-[0_10px_30px_rgba(34,211,238,0.12)] md:group-hover:scale-[1.02] md:group-focus-visible:grayscale-0 md:group-focus-visible:opacity-100 md:group-focus-visible:saturate-125 md:group-focus-visible:brightness-110 md:group-focus-visible:drop-shadow-[0_10px_30px_rgba(34,211,238,0.12)] md:group-focus-visible:scale-[1.02]"
                 />
               </div>
             </a>

@@ -24,16 +24,11 @@ export default function OpenGraphImage() {
         }}
       >
         <div style={{ fontSize: 68, fontWeight: 800, letterSpacing: -1 }}>Paul Claus</div>
-        <div style={{ marginTop: 18, fontSize: 34, fontWeight: 650, color: "#0369a1" }}>
-          Ingénieur informatique junior
-        </div>
-        <div style={{ marginTop: 22, fontSize: 28, color: "#334155" }}>
-          Web • Réseau • IA générative
-        </div>
+        <div style={{ marginTop: 18, fontSize: 34, fontWeight: 650, color: "#0369a1" }}>Consultant .NET</div>
+        <div style={{ marginTop: 22, fontSize: 28, color: "#334155" }}>C# - ASP.NET Core - applications web</div>
         <div style={{ marginTop: 50, fontSize: 22, color: "#0f172a", opacity: 0.7 }}>paul-claus.fr</div>
       </div>
     ),
     size
   );
 }
-

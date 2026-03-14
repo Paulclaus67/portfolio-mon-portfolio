@@ -413,6 +413,26 @@ export const skillDetails = {
 
 export const experiences = [
   {
+    key: "actimage-ei",
+    title: "Consultant en informatique - CDI",
+    place: "Actimage chez Euro Information · depuis mars 2026",
+    desc: "Intervention sur des applications web metier en environnement .NET : developpement C# / ASP.NET Core, evolutions fonctionnelles, maintenance applicative et collaboration avec les equipes projet sur site.",
+    shortDesc:
+      "Consultant en informatique en CDI chez Actimage pour Euro Information (.NET, C#, ASP.NET Core, applications web metier).",
+    logo: "/logos/actimage.png",
+    alt: "Logo Actimage",
+    url: "https://www.actimage.com/",
+    tags: [
+      { label: "ASP.NET Core", skillKey: "csharp" },
+      { label: "C#", skillKey: "csharp" },
+      { label: "Applications web", skillKey: "frontend" },
+      { label: "Developpement full-stack" },
+      { label: "UX" },
+      { label: "Gestion de projet", skillKey: "agile" },
+      { label: "Git", skillKey: "git" },
+    ],
+  },
+  {
     key: "thales",
     title: "Ingénieur réseau – Stage de fin d'études",
     place: "Thales · 2025",
@@ -491,6 +511,7 @@ export const experiences = [
 ];
 
 export const companyLogos = {
+  "actimage-ei": { src: "/logos/actimage.png", alt: "Actimage" },
   thales: { src: "/logos/thales.png", alt: "Thales" },
   es: { src: "/logos/es.png", alt: "Électricité de Strasbourg" },
   milla: { src: "/logos/milla-partner.png", alt: "Milla & Partner" },
@@ -498,6 +519,11 @@ export const companyLogos = {
 };
 
 export const trustedLogos = [
+  {
+    name: "Actimage",
+    src: "/logos/actimage.png",
+    url: "https://www.actimage.com/",
+  },
   {
     name: "Thales",
     src: "/logos/thales.png",

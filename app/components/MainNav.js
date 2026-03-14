@@ -128,17 +128,19 @@ function MainNav({ navItems, theme, onToggleTheme, onProfileClick }) {
 
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 md:h-20 md:px-8">
         <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex min-w-0 items-center gap-3">
-          <div
-            className="relative h-9 w-9 cursor-pointer overflow-hidden rounded-full border border-slate-300 shadow-sm shadow-slate-900/10 dark:border-slate-600/70 dark:shadow-black/40 md:h-10 md:w-10"
+          <button
+            type="button"
+            className="relative h-9 w-9 cursor-pointer overflow-hidden rounded-full border border-slate-300 shadow-sm shadow-slate-900/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400/70 dark:border-slate-600/70 dark:shadow-black/40 md:h-10 md:w-10"
             onClick={onProfileClick}
+            aria-label="Afficher l'easter egg"
             data-konami-anchor="profile"
           >
             <Image src="/Paul_PDP_New.jpg" alt="Paul Claus" fill sizes="(max-width: 767px) 36px, 40px" className="object-cover" />
-          </div>
+          </button>
           <div className="min-w-0 leading-none">
             <span className="block text-[15px] font-semibold tracking-tight text-slate-900 dark:text-slate-100">Paul Claus</span>
-            <span className="mt-1 block truncate text-[11px] text-slate-600 dark:text-slate-400/90 sm:hidden">Développeur web, logiciel et IA</span>
-            <span className="mt-1 hidden text-[11px] text-slate-600 dark:text-slate-400/90 sm:block">Ingénieur Développeur C#</span>
+            <span className="mt-1 block truncate text-[11px] text-slate-600 dark:text-slate-400/90 sm:hidden">Consultant .NET, C# et applications web</span>
+            <span className="mt-1 hidden text-[11px] text-slate-600 dark:text-slate-400/90 sm:block">Consultant .NET chez Actimage</span>
           </div>
         </motion.div>
 
@@ -173,11 +175,11 @@ function MainNav({ navItems, theme, onToggleTheme, onProfileClick }) {
             title={theme === "dark" ? "Mode clair" : "Mode sombre"}
           >
             <span className="theme-toggle__fx" aria-hidden="true" />
-            <span className="relative h-[18px] w-[18px] theme-toggle__glyph" aria-hidden="true">
+            <span className="theme-toggle__glyph relative h-[18px] w-[18px]" aria-hidden="true">
               <span
                 className={[
                   "absolute inset-0 grid place-items-center transition-all duration-300 ease-out",
-                  theme === "dark" ? "opacity-100 rotate-0 scale-100" : "opacity-0 rotate-90 scale-75",
+                  theme === "dark" ? "rotate-0 scale-100 opacity-100" : "rotate-90 scale-75 opacity-0",
                 ].join(" ")}
               >
                 <Sun size={18} className="theme-toggle__icon drop-shadow-[0_0_10px_rgba(34,211,238,0.18)]" />
@@ -185,7 +187,7 @@ function MainNav({ navItems, theme, onToggleTheme, onProfileClick }) {
               <span
                 className={[
                   "absolute inset-0 grid place-items-center transition-all duration-300 ease-out",
-                  theme === "dark" ? "opacity-0 -rotate-90 scale-75" : "opacity-100 rotate-0 scale-100",
+                  theme === "dark" ? "-rotate-90 scale-75 opacity-0" : "rotate-0 scale-100 opacity-100",
                 ].join(" ")}
               >
                 <Moon size={18} className="theme-toggle__icon drop-shadow-[0_0_10px_rgba(168,85,247,0.16)]" />
@@ -230,7 +232,7 @@ function MainNav({ navItems, theme, onToggleTheme, onProfileClick }) {
               <div className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200/70 bg-slate-50/80 px-3 py-3 dark:border-white/10 dark:bg-white/5">
                 <div>
                   <p className="text-sm font-semibold text-slate-900 dark:text-slate-100">Navigation mobile</p>
-                  <p className="text-xs text-slate-600 dark:text-slate-400">Accès rapide aux sections clés</p>
+                  <p className="text-xs text-slate-600 dark:text-slate-400">Acces rapide aux sections cles</p>
                 </div>
                 <a
                   href="#contact"

@@ -4,21 +4,19 @@ import StructuredData from "./components/StructuredData";
 export const metadata = {
   metadataBase: new URL("https://paul-claus.fr"),
   title: {
-    default: "Portfolio – Paul Claus | Ingénieur Informatique Junior",
+    default: "Portfolio - Paul Claus | Consultant .NET et developpeur C#",
     template: "%s | Paul Claus",
   },
   description:
-    "Portfolio professionnel de Paul Claus, ingénieur informatique junior spécialisé en développement web, réseau, IA générative et applications métier. Découvrez mes projets, compétences et expériences.",
+    "Portfolio de Paul Claus, consultant en informatique chez Actimage pour Euro Information. Developpement C#, ASP.NET Core, applications web metier, full-stack et UX.",
   keywords: [
-    "développeur",
-    "ingénieur informatique",
-    "web",
-    "réseau",
-    "IA",
-    "Python",
-    "JavaScript",
-    "React",
-    "Next.js",
+    "consultant informatique",
+    "developpeur c#",
+    "asp.net core",
+    "applications web",
+    "developpement full-stack",
+    "ux",
+    "git",
     "portfolio",
   ],
   applicationName: "Portfolio Paul Claus",
@@ -47,9 +45,9 @@ export const metadata = {
   formatDetection: { email: false, address: false, telephone: false },
   manifest: "/manifest.webmanifest",
   openGraph: {
-    title: "Portfolio – Paul Claus",
+    title: "Portfolio - Paul Claus",
     description:
-      "Découvrez le portfolio de Paul Claus, ingénieur informatique junior spécialisé en web, réseau et IA.",
+      "Consultant en informatique chez Actimage pour Euro Information - C#, ASP.NET Core, applications web metier et full-stack.",
     url: "/",
     type: "website",
     locale: "fr_FR",
@@ -65,13 +63,11 @@ export const metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Portfolio – Paul Claus",
-    description:
-      "Ingénieur informatique junior - Web, Réseau, IA générative",
+    title: "Portfolio - Paul Claus",
+    description: "Consultant .NET - C#, ASP.NET Core et applications web metier",
     images: ["/twitter-image"],
   },
 };
-
 
 export default function RootLayout({ children }) {
   return (
@@ -112,10 +108,8 @@ export default function RootLayout({ children }) {
     }
   };
 
-  // 1) Prefer user choice (localStorage). 2) Fallback to OS theme.
   apply(getStored() ?? getSystem());
 
-  // If the user has not chosen a theme yet, keep following OS changes.
   try {
     const mql = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
     if (!mql) return;

@@ -1,8 +1,8 @@
 const SITE_URL = "https://paul-claus.fr";
 const PERSON_NAME = "Paul Claus";
-const PAGE_NAME = "Portfolio – Paul Claus | Ingénieur Informatique Junior";
+const PAGE_NAME = "Portfolio - Paul Claus | Consultant .NET et developpeur C#";
 const PAGE_DESCRIPTION =
-  "Portfolio professionnel de Paul Claus, ingénieur informatique junior spécialisé en développement web, réseau, IA générative et applications métier. Découvrez mes projets, compétences et expériences.";
+  "Portfolio de Paul Claus, consultant en informatique chez Actimage pour Euro Information. Developpement C#, ASP.NET Core, applications web metier, full-stack et UX.";
 
 export default function StructuredData() {
   const jsonLd = {
@@ -14,10 +14,14 @@ export default function StructuredData() {
         name: PERSON_NAME,
         url: `${SITE_URL}/`,
         image: `${SITE_URL}/Paul_PDP_New.jpg`,
-        jobTitle: "Ingénieur informatique junior",
+        jobTitle: "Consultant en informatique",
+        worksFor: {
+          "@type": "Organization",
+          name: "Actimage",
+        },
         email: "mailto:paul.claus@viacesi.fr",
         sameAs: ["https://github.com/Paulclaus67", "https://www.linkedin.com/in/paul-claus/"],
-        knowsAbout: ["Développement web", "Réseau", "IA générative", "Next.js", "React", "Python"],
+        knowsAbout: ["C#", "ASP.NET Core", "Applications web", "Developpement full-stack", "UX", "Git"],
       },
       {
         "@type": "WebSite",
@@ -41,10 +45,5 @@ export default function StructuredData() {
     ],
   };
 
-  return (
-    <script
-      type="application/ld+json"
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
-    />
-  );
+  return <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />;
 }

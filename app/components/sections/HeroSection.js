@@ -6,7 +6,7 @@ import { ArrowRight, Download, Github, Linkedin, Mail } from "lucide-react";
 import { fadeInUp, staggerContainer } from "../../utils/motionVariants";
 
 const MOBILE_PROOFS = [
-  { label: "Disponible", value: "Maintenant" },
+  { label: "Poste", value: "Consultant .NET" },
   { label: "Base", value: "Strasbourg" },
 ];
 
@@ -22,25 +22,26 @@ function HeroSection() {
     >
       <motion.div
         variants={fadeInUp}
-        className="inline-flex items-center gap-2 rounded-full bg-slate-900/5 border border-slate-200/70 px-3 py-1 mb-6 backdrop-blur-md dark:bg-slate-900/50 dark:border-slate-700/50"
+        className="mb-6 inline-flex items-center gap-2 rounded-full border border-slate-200/70 bg-slate-900/5 px-3 py-1 backdrop-blur-md dark:border-slate-700/50 dark:bg-slate-900/50"
       >
         <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-          <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
+          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
         </span>
-        <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">Disponible dès maintenant</span>
+        <span className="text-xs font-medium text-emerald-700 dark:text-emerald-300">CDI en cours chez Actimage</span>
       </motion.div>
 
       <div className="md:hidden">
         <motion.h1 variants={fadeInUp} className="max-w-[10ch] text-[2.55rem] font-bold leading-[0.98] tracking-tight">
-          Développeur
-          <span className="block text-gradient-cyan">web, logiciel</span>
-          et IA.
+          Consultant
+          <span className="block text-gradient-cyan">.NET, web</span>
+          et C#.
         </motion.h1>
 
         <motion.p variants={fadeInUp} className="mt-4 max-w-[34ch] text-[15px] leading-7 text-slate-600 dark:text-slate-300">
-          Je conçois des produits utiles, lisibles et rapides à prendre en main. Sur mobile, l’objectif est simple:
-          comprendre vite, voir les meilleurs projets, puis me contacter.
+          Je developpe des applications web metier en environnement .NET, avec une approche claire cote code, UX et
+          maintenance. Sur mobile, l&apos;objectif est simple: comprendre vite mon profil, voir mes references, puis me
+          contacter.
         </motion.p>
 
         <motion.div variants={fadeInUp} className="mt-5 grid grid-cols-2 gap-2.5">
@@ -60,7 +61,7 @@ function HeroSection() {
             whileHover={{ y: -3, scale: 1.02 }}
             whileTap={{ y: 0, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 500, damping: 32 }}
-            className="btn-cta btn-text-dark inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 font-bold border border-cyan-400/35 bg-white hover:bg-white hover:border-cyan-400/55 transition-all shadow-[0_12px_35px_rgba(0,0,0,0.18),0_0_30px_rgba(34,211,238,0.14)]"
+            className="btn-cta btn-text-dark inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full border border-cyan-400/35 bg-white px-6 py-3.5 font-bold shadow-[0_12px_35px_rgba(0,0,0,0.18),0_0_30px_rgba(34,211,238,0.14)] transition-all hover:border-cyan-400/55 hover:bg-white"
           >
             Me contacter <ArrowRight size={18} />
           </motion.a>
@@ -71,9 +72,9 @@ function HeroSection() {
             whileHover={{ y: -2, scale: 1.01 }}
             whileTap={{ y: 0, scale: 0.99 }}
             transition={{ type: "spring", stiffness: 500, damping: 32 }}
-            className="btn-cta inline-flex min-h-13 w-full items-center justify-center gap-2 glass-panel hover:bg-slate-900/5 text-slate-900 font-medium px-6 py-3.5 rounded-full transition-all border border-slate-200/70 hover:border-slate-300 dark:hover:bg-white/10 dark:text-white dark:border-white/10 dark:hover:border-white/20"
+            className="btn-cta glass-panel inline-flex min-h-13 w-full items-center justify-center gap-2 rounded-full border border-slate-200/70 px-6 py-3.5 font-medium text-slate-900 transition-all hover:border-slate-300 hover:bg-slate-900/5 dark:border-white/10 dark:text-white dark:hover:border-white/20 dark:hover:bg-white/10"
           >
-            <Download size={18} /> Télécharger CV
+            <Download size={18} /> Telecharger CV
           </motion.a>
         </motion.div>
 
@@ -102,33 +103,27 @@ function HeroSection() {
       </div>
 
       <div className="hidden md:block">
-        <motion.h1
-          variants={fadeInUp}
-          className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight mb-6 leading-[1.08]"
-        >
-          Développeur <span className="text-gradient-cyan">Polyvalent</span>
+        <motion.h1 variants={fadeInUp} className="mb-6 text-4xl font-bold leading-[1.08] tracking-tight sm:text-5xl md:text-7xl">
+          Consultant <span className="text-gradient-cyan">.NET</span>
           <br />
-          et Créatif.
+          et Developpeur C#.
         </motion.h1>
 
-        <motion.p
-          variants={fadeInUp}
-          className="text-base sm:text-lg text-slate-600 max-w-2xl mb-8 leading-relaxed dark:text-slate-300"
-        >
-          Je suis <strong className="text-slate-900 dark:text-slate-200">Paul Claus</strong>. Ingénieur informatique
-          (CESI), je conçois des solutions web, logicielles et IA concrètes. Mon but:{" "}
+        <motion.p variants={fadeInUp} className="mb-8 max-w-2xl text-base leading-relaxed text-slate-600 dark:text-slate-300 sm:text-lg">
+          Je suis <strong className="text-slate-900 dark:text-slate-200">Paul Claus</strong>. Consultant en informatique
+          chez Actimage pour Euro Information, je concois des applications web metier en .NET et C#. Mon but:{" "}
           <span className="text-slate-900 dark:text-slate-200">
-            transformer la complexité technique en outils simples et performants.
+            transformer la complexite technique en outils utiles, maintenables et agreables a utiliser.
           </span>
         </motion.p>
 
-        <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row sm:flex-wrap gap-4">
+        <motion.div variants={fadeInUp} className="flex flex-col gap-4 sm:flex-row sm:flex-wrap">
           <motion.a
             href="#contact"
             whileHover={{ y: -3, scale: 1.02 }}
             whileTap={{ y: 0, scale: 0.98 }}
             transition={{ type: "spring", stiffness: 500, damping: 32 }}
-            className="btn-cta btn-text-dark inline-flex w-full sm:w-auto items-center justify-center gap-2 rounded-full px-6 py-3 font-bold border border-cyan-400/35 bg-white hover:bg-white hover:border-cyan-400/55 transition-all shadow-[0_12px_35px_rgba(0,0,0,0.45),0_0_30px_rgba(34,211,238,0.18)]"
+            className="btn-cta btn-text-dark inline-flex w-full items-center justify-center gap-2 rounded-full border border-cyan-400/35 bg-white px-6 py-3 font-bold shadow-[0_12px_35px_rgba(0,0,0,0.45),0_0_30px_rgba(34,211,238,0.18)] transition-all hover:border-cyan-400/55 hover:bg-white sm:w-auto"
           >
             Me contacter <ArrowRight size={18} />
           </motion.a>
@@ -139,37 +134,37 @@ function HeroSection() {
             whileHover={{ y: -2, scale: 1.01 }}
             whileTap={{ y: 0, scale: 0.99 }}
             transition={{ type: "spring", stiffness: 500, damping: 32 }}
-            className="btn-cta inline-flex w-full sm:w-auto items-center justify-center gap-2 glass-panel hover:bg-slate-900/5 text-slate-900 font-medium px-6 py-3 rounded-full transition-all border border-slate-200/70 hover:border-slate-300 dark:hover:bg-white/10 dark:text-white dark:border-white/10 dark:hover:border-white/20"
+            className="btn-cta glass-panel inline-flex w-full items-center justify-center gap-2 rounded-full border border-slate-200/70 px-6 py-3 font-medium text-slate-900 transition-all hover:border-slate-300 hover:bg-slate-900/5 dark:border-white/10 dark:text-white dark:hover:border-white/20 dark:hover:bg-white/10 sm:w-auto"
           >
-            <Download size={18} /> Télécharger CV
+            <Download size={18} /> Telecharger CV
           </motion.a>
         </motion.div>
 
-        <motion.div variants={fadeInUp} className="mt-12 flex flex-wrap justify-center sm:justify-start gap-3">
+        <motion.div variants={fadeInUp} className="mt-12 flex flex-wrap justify-center gap-3 sm:justify-start">
           <a
             href="https://github.com/Paulclaus67"
             target="_blank"
             rel="noreferrer noopener"
             aria-label="GitHub"
-            className="group inline-flex items-center justify-center rounded-full p-2 hover:bg-sky-400/10 transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/70"
+            className="group inline-flex items-center justify-center rounded-full p-2 transition-all hover:-translate-y-0.5 hover:bg-sky-400/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/70"
           >
-            <Github className="text-sky-600 group-hover:text-sky-700 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.12)] dark:text-sky-400 dark:group-hover:text-sky-300 dark:drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
+            <Github className="text-sky-600 drop-shadow-[0_0_10px_rgba(56,189,248,0.12)] transition-colors group-hover:text-sky-700 dark:text-sky-400 dark:drop-shadow-[0_0_10px_rgba(56,189,248,0.18)] dark:group-hover:text-sky-300" />
           </a>
           <a
             href="https://www.linkedin.com/in/paul-claus/"
             target="_blank"
             rel="noreferrer noopener"
             aria-label="LinkedIn"
-            className="group inline-flex items-center justify-center rounded-full p-2 hover:bg-sky-400/10 transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/70"
+            className="group inline-flex items-center justify-center rounded-full p-2 transition-all hover:-translate-y-0.5 hover:bg-sky-400/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/70"
           >
-            <Linkedin className="text-sky-600 group-hover:text-sky-700 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.12)] dark:text-sky-400 dark:group-hover:text-sky-300 dark:drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
+            <Linkedin className="text-sky-600 drop-shadow-[0_0_10px_rgba(56,189,248,0.12)] transition-colors group-hover:text-sky-700 dark:text-sky-400 dark:drop-shadow-[0_0_10px_rgba(56,189,248,0.18)] dark:group-hover:text-sky-300" />
           </a>
           <a
             href="mailto:paul.claus@viacesi.fr"
             aria-label="Email"
-            className="group inline-flex items-center justify-center rounded-full p-2 hover:bg-sky-400/10 transition-all hover:-translate-y-0.5 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/70"
+            className="group inline-flex items-center justify-center rounded-full p-2 transition-all hover:-translate-y-0.5 hover:bg-sky-400/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-400/70"
           >
-            <Mail className="text-sky-600 group-hover:text-sky-700 transition-colors drop-shadow-[0_0_10px_rgba(56,189,248,0.12)] dark:text-sky-400 dark:group-hover:text-sky-300 dark:drop-shadow-[0_0_10px_rgba(56,189,248,0.18)]" />
+            <Mail className="text-sky-600 drop-shadow-[0_0_10px_rgba(56,189,248,0.12)] transition-colors group-hover:text-sky-700 dark:text-sky-400 dark:drop-shadow-[0_0_10px_rgba(56,189,248,0.18)] dark:group-hover:text-sky-300" />
           </a>
         </motion.div>
       </div>

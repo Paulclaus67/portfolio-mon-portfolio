@@ -25,7 +25,7 @@ export default function TwitterImage() {
       >
         <div style={{ fontSize: 64, fontWeight: 800, letterSpacing: -1 }}>Paul Claus</div>
         <div style={{ marginTop: 18, fontSize: 32, fontWeight: 650, color: "#0e7490" }}>
-          Portfolio — Web, Réseau, IA
+          Consultant .NET - C# et ASP.NET Core
         </div>
         <div style={{ marginTop: 46, fontSize: 22, color: "#0f172a", opacity: 0.7 }}>paul-claus.fr</div>
       </div>
@@ -33,4 +33,3 @@ export default function TwitterImage() {
     size
   );
 }
-
