@@ -23,7 +23,7 @@ function ProjectDetail({ activeStudy, projectActionBullets }) {
         <div>
           <h3 className="text-2xl font-bold text-slate-900 mb-1 dark:text-white">{activeStudy.headline}</h3>
           <p className="text-cyan-700 font-medium dark:text-cyan-400">
-            {activeStudy.company} — {activeStudy.role}
+            {activeStudy.company} - {activeStudy.role}
           </p>
         </div>
         {activeStudy.key === "portfolio" ? (
@@ -157,10 +157,10 @@ function MobileProjectCard({ project, isSelected, onSelect }) {
             <ChevronDown size={18} className={`mt-1 shrink-0 text-slate-500 transition-transform dark:text-slate-400 ${isSelected ? "rotate-180" : ""}`} />
           </div>
 
-          <p className="mt-3 text-sm leading-6 text-slate-600 dark:text-slate-300">{project.summary}</p>
+          <p className="mt-3 line-clamp-2 text-sm leading-6 text-slate-600 dark:text-slate-300">{project.summary}</p>
 
           <div className="mt-3 flex flex-wrap gap-2">
-            {project.techs.slice(0, 3).map((tech) => (
+            {project.techs.slice(0, 2).map((tech) => (
               <span key={tech} className="mobile-chip rounded-full px-2.5 py-1 text-[11px] font-medium text-slate-700 dark:text-slate-200">
                 {tech}
               </span>
@@ -181,27 +181,17 @@ function MobileProjectCard({ project, isSelected, onSelect }) {
             <div className="border-t border-slate-200/70 px-4 pb-4 pt-4 dark:border-white/10">
               <div className="grid gap-3">
                 <div className="mobile-chip rounded-2xl p-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Contexte</p>
-                  <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-200">
-                    {project.contextBullets.slice(0, 2).map((bullet, index) => (
-                      <li key={index} className="flex gap-2">
-                        <span className="text-slate-400">•</span>
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Valeur</p>
+                  <p className="mt-3 text-sm leading-6 text-slate-700 dark:text-slate-200">
+                    {project.impactBullets?.[0] ?? project.contextBullets?.[0] ?? project.summary}
+                  </p>
                 </div>
 
                 <div className="mobile-chip rounded-2xl p-4">
-                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-600 dark:text-sky-300">Impact</p>
-                  <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-200">
-                    {project.impactBullets.slice(0, 2).map((bullet, index) => (
-                      <li key={index} className="flex gap-2">
-                        <span className="text-sky-400">•</span>
-                        <span>{bullet}</span>
-                      </li>
-                    ))}
-                  </ul>
+                  <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-600 dark:text-sky-300">Approche</p>
+                  <p className="mt-3 text-sm leading-6 text-slate-700 dark:text-slate-200">
+                    {project.actionsBullets?.[0] ?? project.contextBullets?.[0]}
+                  </p>
                 </div>
               </div>
 
@@ -243,18 +233,16 @@ function ProjectsSection({ recruiterMode, activeTab, onSelectTab, selectedProjec
   const scrollToProjectDetailOnMobile = () => {
     if (typeof window === "undefined" || !window.matchMedia("(max-width: 767px)").matches) return;
 
+    const selectedCard = document.querySelector(`[data-project-card="${selectedProjectKey}"]`);
     const nav = document.querySelector("[data-nav='main']");
     const navOffset = Math.round((nav?.getBoundingClientRect().height ?? 80) + 16);
+    const targetTop = selectedCard?.getBoundingClientRect().top;
+    if (typeof targetTop !== "number") return;
 
     window.requestAnimationFrame(() => {
-      window.requestAnimationFrame(() => {
-        const detailTop = detailRef.current?.getBoundingClientRect().top;
-        if (typeof detailTop !== "number") return;
-
-        window.scrollTo({
-          top: Math.max(0, window.scrollY + detailTop - navOffset),
-          behavior: "smooth",
-        });
+      window.scrollTo({
+        top: Math.max(0, window.scrollY + targetTop - navOffset),
+        behavior: "smooth",
       });
     });
   };
@@ -269,7 +257,7 @@ function ProjectsSection({ recruiterMode, activeTab, onSelectTab, selectedProjec
       >
         <div className="flex items-center gap-4">
           <div className="h-px w-12 bg-cyan-500/50" />
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Projets Sélectionnés</h2>
+          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Projets sélectionnés</h2>
         </div>
 
         <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-none">
@@ -297,12 +285,28 @@ function ProjectsSection({ recruiterMode, activeTab, onSelectTab, selectedProjec
 
       <div className="grid gap-4 md:hidden">
         {filteredProjectsList.map((project) => (
-          <MobileProjectCard
-            key={project.key}
-            project={project}
-            isSelected={selectedProjectKey === project.key}
-            onSelect={() => onSelectProjectKey(project.key)}
-          />
+          <div key={project.key} data-project-card={project.key}>
+            <MobileProjectCard
+              project={project}
+              isSelected={selectedProjectKey === project.key}
+              onSelect={() => {
+                onSelectProjectKey(selectedProjectKey === project.key ? null : project.key);
+                window.requestAnimationFrame(() => {
+                  if (selectedProjectKey === project.key) return;
+                  const nav = document.querySelector("[data-nav='main']");
+                  const navOffset = Math.round((nav?.getBoundingClientRect().height ?? 80) + 16);
+                  const card = document.querySelector(`[data-project-card="${project.key}"]`);
+                  const top = card?.getBoundingClientRect().top;
+                  if (typeof top === "number") {
+                    window.scrollTo({
+                      top: Math.max(0, window.scrollY + top - navOffset),
+                      behavior: "smooth",
+                    });
+                  }
+                });
+              }}
+            />
+          </div>
         ))}
       </div>
 

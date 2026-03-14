@@ -473,7 +473,7 @@ export const experiences = [
   {
     key: "schertz",
     title: "Administrateur systèmes – Stage",
-    place: "Groupe Schertz · 2022",
+    place: "Groupe Schertz",
     desc: "Déploiement d'un nouvel antivirus sur plus de 600 postes : scripts Bash, utilisation de Teamviewer, coordination avec les utilisateurs et gestion du changement.",
     shortDesc:
       "Déploiement d’un antivirus sur plus de 600 postes (scripts Bash, support utilisateurs).",

@@ -127,7 +127,7 @@ function MainNav({ navItems, theme, onToggleTheme, onProfileClick }) {
       />
 
       <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-3 px-4 sm:px-6 md:h-20 md:px-8">
-        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-3">
+        <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="flex min-w-0 items-center gap-3">
           <div
             className="relative h-9 w-9 cursor-pointer overflow-hidden rounded-full border border-slate-300 shadow-sm shadow-slate-900/10 dark:border-slate-600/70 dark:shadow-black/40 md:h-10 md:w-10"
             onClick={onProfileClick}
@@ -135,9 +135,9 @@ function MainNav({ navItems, theme, onToggleTheme, onProfileClick }) {
           >
             <Image src="/Paul_PDP_New.jpg" alt="Paul Claus" fill sizes="(max-width: 767px) 36px, 40px" className="object-cover" />
           </div>
-          <div className="leading-none">
+          <div className="min-w-0 leading-none">
             <span className="block text-[15px] font-semibold tracking-tight text-slate-900 dark:text-slate-100">Paul Claus</span>
-            <span className="mt-1 block text-[11px] text-slate-600 dark:text-slate-400/90 sm:hidden">Dev web & logiciel</span>
+            <span className="mt-1 block truncate text-[11px] text-slate-600 dark:text-slate-400/90 sm:hidden">Développeur web, logiciel et IA</span>
             <span className="mt-1 hidden text-[11px] text-slate-600 dark:text-slate-400/90 sm:block">Ingénieur Développeur C#</span>
           </div>
         </motion.div>
@@ -165,18 +165,6 @@ function MainNav({ navItems, theme, onToggleTheme, onProfileClick }) {
         </div>
 
         <div className="flex items-center gap-2">
-          <a
-            href="#contact"
-            onClick={() => {
-              setActiveSectionSafe("contact");
-              setMenuOpen(false);
-            }}
-            className="mobile-surface mobile-surface--strong inline-flex items-center gap-2 rounded-full px-3.5 py-2 text-[12px] font-semibold text-cyan-950 dark:text-cyan-100 md:hidden"
-          >
-            <Mail size={14} />
-            Contact
-          </a>
-
           <button
             type="button"
             onClick={onToggleTheme}
@@ -250,7 +238,7 @@ function MainNav({ navItems, theme, onToggleTheme, onProfileClick }) {
                     setActiveSectionSafe("contact");
                     setMenuOpen(false);
                   }}
-                  className="inline-flex items-center gap-2 rounded-full bg-slate-900 px-3 py-2 text-xs font-semibold text-white dark:bg-white dark:text-slate-950"
+                  className="inline-flex min-h-10 items-center gap-2 rounded-full border border-cyan-400/25 bg-cyan-500/12 px-3.5 py-2 text-xs font-semibold text-cyan-950 shadow-[0_8px_20px_rgba(34,211,238,0.10)] dark:border-cyan-400/20 dark:bg-cyan-400/12 dark:text-cyan-100 dark:shadow-[0_8px_20px_rgba(0,0,0,0.24)]"
                 >
                   <Mail size={13} />
                   Me joindre

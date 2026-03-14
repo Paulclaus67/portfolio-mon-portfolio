@@ -1,9 +1,9 @@
 "use client";
 
-import { memo, useCallback, useMemo, useState } from "react";
+import { memo, useCallback, useMemo, useRef, useState } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { Briefcase, CheckCircle2, ChevronDown, Copy, ExternalLink, Link2 } from "lucide-react";
+import { Briefcase, CheckCircle2, Copy, ExternalLink, Link2 } from "lucide-react";
 
 import { skills, skillCategories, skillDetails, skillExamples, trustedLogos } from "../../data";
 import { staggerContainer } from "../../utils/motionVariants";
@@ -12,7 +12,23 @@ function SkillsSection() {
   const [selectedSkillKey, setSelectedSkillKey] = useState("python");
   const [selectedCategory, setSelectedCategory] = useState("languages");
   const [copied, setCopied] = useState(false);
-  const [showMobileExample, setShowMobileExample] = useState(false);
+  const mobileDetailRef = useRef(null);
+
+  const scrollToMobileDetail = useCallback(() => {
+    if (typeof window === "undefined" || !window.matchMedia("(max-width: 767px)").matches) return;
+
+    window.requestAnimationFrame(() => {
+      const nav = document.querySelector("[data-nav='main']");
+      const navOffset = Math.round((nav?.getBoundingClientRect().height ?? 80) + 16);
+      const top = mobileDetailRef.current?.getBoundingClientRect().top;
+      if (typeof top !== "number") return;
+
+      window.scrollTo({
+        top: Math.max(0, window.scrollY + top - navOffset),
+        behavior: "smooth",
+      });
+    });
+  }, []);
 
   const pickFirstSkillKey = useCallback((categoryKey) => {
     return skills.find((s) => s.category === categoryKey)?.key ?? "python";
@@ -22,8 +38,9 @@ function SkillsSection() {
     (categoryKey) => {
       setSelectedCategory(categoryKey);
       setSelectedSkillKey(pickFirstSkillKey(categoryKey));
+      scrollToMobileDetail();
     },
-    [pickFirstSkillKey]
+    [pickFirstSkillKey, scrollToMobileDetail]
   );
 
   const currentSkillDetail = useMemo(
@@ -78,7 +95,7 @@ function SkillsSection() {
           <div>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Compétences Techniques</h2>
             <p className="mt-1 text-sm text-slate-600 dark:text-slate-300 md:hidden">
-              Une lecture mobile plus simple : choisir une famille, puis une compétence.
+              Une lecture mobile plus directe: choisir une famille, puis voir la valeur de la compétence.
             </p>
           </div>
         </div>
@@ -100,12 +117,15 @@ function SkillsSection() {
             ))}
           </div>
 
-          <div className="grid grid-cols-2 gap-2">
-            {filteredSkills.map((skill) => (
+          <div className="grid gap-2">
+            {filteredSkills.slice(0, 5).map((skill) => (
               <button
                 key={skill.key}
-                onClick={() => setSelectedSkillKey(skill.key)}
-                className={`rounded-2xl px-3 py-3 text-left text-sm font-semibold transition-colors ${
+                onClick={() => {
+                  setSelectedSkillKey(skill.key);
+                  scrollToMobileDetail();
+                }}
+                className={`rounded-2xl px-4 py-3 text-left text-sm font-semibold transition-colors ${
                   selectedSkillKey === skill.key
                     ? "mobile-surface mobile-surface--strong text-cyan-950 dark:text-cyan-100"
                     : "mobile-chip text-slate-700 dark:text-slate-200"
@@ -116,22 +136,14 @@ function SkillsSection() {
             ))}
           </div>
 
-          <div className="mobile-surface mobile-surface--strong rounded-[28px] p-5">
+          <div ref={mobileDetailRef} className="mobile-surface mobile-surface--strong rounded-[28px] p-5">
             <div className="flex items-start justify-between gap-3">
               <div>
                 <h3 className="text-xl font-bold text-slate-900 dark:text-white">{currentSkillDetail.title}</h3>
                 <div className={`mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full border text-[11px] font-semibold uppercase tracking-wider ${levelColor}`}>
-                  {currentSkillDetail.level === "prod" ? "Production" : "Projet / Expérimentation"}
+                  {currentSkillDetail.level === "prod" ? "Production" : "Projet / expérimentation"}
                 </div>
               </div>
-              <button
-                type="button"
-                onClick={() => setShowMobileExample((v) => !v)}
-                className="mobile-chip inline-flex items-center gap-1 rounded-full px-3 py-2 text-[11px] font-semibold text-slate-700 dark:text-slate-200"
-              >
-                Exemple
-                <ChevronDown size={14} className={`transition-transform ${showMobileExample ? "rotate-180" : ""}`} />
-              </button>
             </div>
 
             <p className="mt-4 text-sm leading-7 text-slate-600 dark:text-slate-300">{currentSkillDetail.desc}</p>
@@ -154,7 +166,7 @@ function SkillsSection() {
 
             {currentSkillDetail.tags?.length ? (
               <div className="mt-4 flex flex-wrap gap-2">
-                {currentSkillDetail.tags.slice(0, 6).map((tag) =>
+                {currentSkillDetail.tags.slice(0, 4).map((tag) =>
                   tag.href ? (
                     <a
                       key={`${selectedSkillKey}-${tag.label}`}
@@ -175,25 +187,6 @@ function SkillsSection() {
                     </span>
                   )
                 )}
-              </div>
-            ) : null}
-
-            {showMobileExample ? (
-              <div className="mt-4 rounded-2xl border border-slate-200/70 bg-slate-950 p-4 text-slate-100 dark:border-white/8">
-                <div className="mb-3 flex items-center justify-between gap-3">
-                  <span className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-400">Exemple</span>
-                  <button
-                    type="button"
-                    onClick={handleCopyExample}
-                    className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1.5 text-[11px] font-semibold text-slate-100"
-                  >
-                    <Copy size={14} />
-                    {copied ? "Copié" : "Copier"}
-                  </button>
-                </div>
-                <pre className="overflow-x-auto text-[12px] leading-6 text-slate-100">
-                  <code className="block whitespace-pre">{exampleText}</code>
-                </pre>
               </div>
             ) : null}
           </div>

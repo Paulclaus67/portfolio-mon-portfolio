@@ -18,6 +18,13 @@ import { fadeInUp, staggerContainer } from "../../utils/motionVariants";
 
 const caseStudyByKey = new Map(caseStudies.map((study) => [study.key, study]));
 
+function getExperienceYear(exp, study) {
+  if (study?.year) return study.year;
+
+  const match = exp.place?.match(/\b(20\d{2}(?:[–-]20\d{2})?)\b/);
+  return match?.[1] ?? null;
+}
+
 function ExperienceSection({ recruiterMode, expandedExperienceKey, onToggleExperience, onViewCaseStudy }) {
   return (
     <motion.section
@@ -34,7 +41,7 @@ function ExperienceSection({ recruiterMode, expandedExperienceKey, onToggleExper
           <div>
             <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100">Expériences</h2>
             <p className="text-sm text-slate-600 mt-1 dark:text-slate-300">
-              Résultats concrets, missions variées (réseau, web, IA) — cliquez pour voir les détails.
+              Résultats concrets, missions variées et cas utiles à voir rapidement sur mobile.
             </p>
           </div>
         </div>
@@ -48,7 +55,147 @@ function ExperienceSection({ recruiterMode, expandedExperienceKey, onToggleExper
         </div>
       </div>
 
-      <ol className="relative border-l border-slate-200/70 pl-6 lg:pl-10 space-y-6 dark:border-slate-800/60">
+      <div className="grid gap-4 md:hidden">
+        {experiences.map((exp) => {
+          const study = caseStudyByKey.get(exp.key);
+          const isExpanded = expandedExperienceKey === exp.key;
+          const proofBullet = recruiterMode ? study?.impactBullets?.[0] : study?.actionsBullets?.[0];
+          const yearLabel = getExperienceYear(exp, study);
+
+          return (
+            <motion.article
+              key={exp.key}
+              variants={fadeInUp}
+              className={`rounded-[28px] border p-4 transition-colors ${
+                isExpanded
+                  ? "mobile-surface mobile-surface--strong border-cyan-400/35"
+                  : "mobile-surface border-slate-200/70"
+              }`}
+            >
+              <div className="flex items-start gap-3">
+                <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-white p-2 ring-1 ring-white/10">
+                  <Image src={exp.logo} alt={exp.alt} width={40} height={40} className="h-full w-full object-contain" />
+                </div>
+
+                <div className="min-w-0 flex-1">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <h3 className="text-base font-semibold leading-snug text-slate-900 dark:text-slate-100">{exp.title}</h3>
+                      <p className="mt-1 text-sm font-medium text-cyan-700 dark:text-cyan-400">{study?.company ?? exp.place}</p>
+                    </div>
+                    {yearLabel ? (
+                      <span className="mobile-chip shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate-600 dark:text-slate-300">
+                        {yearLabel}
+                      </span>
+                    ) : null}
+                  </div>
+
+                  <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-slate-500 dark:text-slate-400">
+                    {study?.location ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        <MapPin size={13} /> {study.location}
+                      </span>
+                    ) : null}
+                    {study?.contractLabel ? (
+                      <span className="inline-flex items-center gap-1.5">
+                        <Briefcase size={13} /> {study.contractLabel}
+                      </span>
+                    ) : null}
+                  </div>
+                </div>
+              </div>
+
+              <p className="mt-4 text-sm leading-6 text-slate-600 dark:text-slate-300">{recruiterMode ? exp.shortDesc : exp.desc}</p>
+
+              {proofBullet ? (
+                <div className="mobile-chip mt-4 rounded-2xl px-4 py-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">
+                    {recruiterMode ? "Impact" : "Point clé"}
+                  </p>
+                  <p className="mt-2 text-sm leading-6 text-slate-800 dark:text-slate-100">{proofBullet}</p>
+                </div>
+              ) : null}
+
+              <div className="mt-4 flex flex-col gap-2">
+                {study ? (
+                  <button
+                    type="button"
+                    onClick={() => onViewCaseStudy(exp.key)}
+                    className="inline-flex min-h-12 w-full items-center justify-center gap-2 rounded-full bg-slate-900 px-4 py-3 text-sm font-semibold text-white dark:bg-white dark:text-slate-950"
+                  >
+                    Voir l’étude de cas <ArrowRight size={15} />
+                  </button>
+                ) : null}
+
+                {study ? (
+                  <button
+                    type="button"
+                    onClick={() => onToggleExperience(exp.key)}
+                    className="mobile-chip inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-slate-800 dark:text-slate-100"
+                    aria-expanded={isExpanded}
+                    aria-controls={`exp-${exp.key}-details`}
+                  >
+                    <span>{isExpanded ? "Masquer le détail" : "Voir le détail"}</span>
+                    <ChevronDown size={15} className={`transition-transform ${isExpanded ? "rotate-180" : ""}`} />
+                  </button>
+                ) : null}
+
+                {exp.url ? (
+                  <a
+                    href={exp.url}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full border border-slate-200/70 bg-white/70 px-4 py-2.5 text-sm font-semibold text-slate-800 dark:border-white/10 dark:bg-slate-950/30 dark:text-slate-200"
+                  >
+                    Site <ExternalLink size={14} />
+                  </a>
+                ) : null}
+              </div>
+
+              <AnimatePresence initial={false}>
+                {isExpanded && study ? (
+                  <motion.div
+                    id={`exp-${exp.key}-details`}
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.22 }}
+                    className="overflow-hidden"
+                  >
+                    <div className="mt-4 grid gap-3 border-t border-slate-200/70 pt-4 dark:border-white/10">
+                      <div className="mobile-chip rounded-2xl p-4">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500 dark:text-slate-400">Contexte</p>
+                        <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-200">
+                          {study.contextBullets?.slice(0, 2).map((bullet, index) => (
+                            <li key={index} className="flex gap-2">
+                              <span className="text-slate-400">•</span>
+                              <span>{bullet}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+
+                      <div className="mobile-chip rounded-2xl p-4">
+                        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">Impact</p>
+                        <ul className="mt-3 space-y-2 text-sm text-slate-700 dark:text-slate-200">
+                          {study.impactBullets?.slice(0, 2).map((bullet, index) => (
+                            <li key={index} className="flex gap-2">
+                              <span className="text-emerald-400">•</span>
+                              <span>{bullet}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                  </motion.div>
+                ) : null}
+              </AnimatePresence>
+            </motion.article>
+          );
+        })}
+      </div>
+
+      <ol className="relative hidden border-l border-slate-200/70 pl-6 lg:pl-10 space-y-6 dark:border-slate-800/60 md:block">
         {experiences.map((exp) => {
           const study = caseStudyByKey.get(exp.key);
           const isExpanded = expandedExperienceKey === exp.key;
